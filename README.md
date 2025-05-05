@@ -42,5 +42,6 @@ Desenvolvido com foco em **acessibilidade**, **empatia** e **tecnologia**, o TEA
 | 🚀 Vite         | Build rápido para desenvolvimento React |
 | 🎨 TailwindCSS  | Framework de estilização       |
 | 🔄 React Router | Navegação entre páginas        |
+| 🧩 Ícones       | React-Icons                    |
 
 ---
