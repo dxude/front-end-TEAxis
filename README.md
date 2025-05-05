@@ -1,7 +1,5 @@
 # 🌐 TEAXIS – Conectando Neurodivergentes a Apoio Especializado
 
-![GitHub last commit](https://img.shields.io/github/last-commit/seu-usuario/teaxis?style=flat-square)
-![GitHub repo size](https://img.shields.io/github/repo-size/seu-usuario/teaxis?style=flat-square)
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-blueviolet?style=flat-square)
 
 > Um hub digital inclusivo para pessoas neurodivergentes encontrarem profissionais, recursos educativos e apoio humano. 💙
