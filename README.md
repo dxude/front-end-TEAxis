@@ -1,5 +1,6 @@
 # 🌐 TEAXIS – Conectando Neurodivergentes a Apoio Especializado
 
+
 ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-blueviolet?style=flat-square)
 
 > Um hub digital inclusivo para pessoas neurodivergentes encontrarem profissionais, recursos educativos e apoio humano. 💙
@@ -26,22 +27,5 @@ Desenvolvido com foco em **acessibilidade**, **empatia** e **tecnologia**, o TEA
 - 🧠 **Plano colaborativo** entre profissionais, família e escola
 - 📚 **Recursos educativos** para familiares, cuidadores e educadores
 
-## 🎯 Público-Alvo
-
-- Pessoas neurodivergentes em busca de acompanhamento
-- Profissionais especializados (terapeutas, psicólogos, pedagogos)
-- Familiares, cuidadores e educadores que desejam aprender mais e acompanhar de perto
-
----
-
-## 🛠️ Tecnologias Utilizadas
-
-| Front-end       | Descrição principal           |
-|-----------------|-------------------------------|
-| ⚛️ React        | Biblioteca JS para UI          |
-| 🚀 Vite         | Build rápido para desenvolvimento React |
-| 🎨 TailwindCSS  | Framework de estilização       |
-| 🔄 React Router | Navegação entre páginas        |
-| 🧩 Ícones       | React-Icons                    |
 
 ---
