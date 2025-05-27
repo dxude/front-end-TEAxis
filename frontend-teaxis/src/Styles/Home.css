@@ -1,95 +1,429 @@
+.navbar-container {
+  display: flex; /* Para alinhar o logo e os links na mesma linha */
+  justify-content: space-between; /* Para espaçar o logo de um lado e os links do outro */
+  align-items: center; /* Para centralizar eles verticalmente */
+  padding: 1rem 2rem; /* Um respiro nas laterais e em cima/baixo (ajuste conforme o Figma) */
+  background-color: #FFFFFF; /* Um fundo branco, como parece no Figma. Podemos ajustar se for um tom de cinza/azul claro */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Uma sombrinha discreta pra dar um tchan */
+  font-family: 'Arial', sans-serif; /* Mantendo a fonte, mas você pode querer uma específica do Figma */
+}
+
+.navbar-logo {
+  font-size: 1.8rem; /* Tamanho da fonte do logo (ajuste!) */
+  font-weight: bold;
+  color: #2C5282; /* Um azul mais escuro pro logo, similar ao que vi em outros elementos do Figma */
+}
+
+.navbar-links {
+  list-style: none; /* Tirar as bolinhas da lista */
+  display: flex; /* Para alinhar os links na horizontal */
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li {
+  margin-left: 1.5rem; /* Espaçamento entre os links (ajuste!) */
+}
+
+.navbar-links a {
+  text-decoration: none; /* Tirar o sublinhado dos links */
+  color: #4A5568; /* Uma cor de texto para os links (ajuste!) */
+  font-weight: 500; /* Um pesinho na fonte */
+  font-size: 0.95rem; /* Tamanho da fonte dos links */
+}
+
+.navbar-links a:hover {
+  color: #2C5282; /* Uma corzinha diferente quando passar o mouse */
+}
+
+/* Ajuste no .home-container para não ter padding em cima se a navbar já cuida disso */
 .home-container {
-    padding: 2rem;
-    font-family: Arial, sans-serif;
-  }
-  
-  .hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #eef6fc;
-    padding: 2rem;
-    border-radius: 10px;
-  }
-  
-  .hero-text {
-    max-width: 50%;
-  }
-  
-  .hero-text h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .hero-buttons {
-    display: flex;
-    gap: 1rem;
-  }
-  
-  .btn-primary,
-  .btn-secondary {
-    padding: 0.8rem 1.5rem;
-    border: none;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .btn-primary {
-    background-color: #2c82f6;
-    color: white;
-  }
-  
-  .btn-secondary {
-    background-color: #d9e8fb;
-    color: #2c82f6;
-  }
-  
-  .hero-image img {
-    width: 300px;
-  }
-  
-  .como-funciona {
-    margin-top: 3rem;
-    text-align: center;
-  }
-  
-  .funciona-cards {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 1.5rem;
-  }
-  
-  .funciona-cards .card {
-    background-color: #f5f9ff;
-    padding: 1rem;
-    border-radius: 10px;
-    width: 25%;
-  }
-  
-  .beneficios ul {
-    display: flex;
-    justify-content: space-between;
-    margin: 2rem 0;
-    list-style: none;
-    padding: 0;
-  }
-  
-  .depoimento {
-    background-color: #f0f4f8;
-    padding: 2rem;
-    border-left: 4px solid #2c82f6;
-    margin: 2rem 0;
-    font-style: italic;
-  }
-  
-  .seguranca ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .seguranca ul li {
-    margin: 0.5rem 0;
-    font-weight: bold;
-  }
-  
+  /* padding: 2rem;  Pode comentar ou remover o padding-top se a navbar já der o espaçamento */
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 2rem;
+  font-family: Arial, sans-serif;
+}
+
+/* === HERO SECTION === */
+.hero {
+  display: flex;
+  justify-content: space-between; /* Mantém o texto à esquerda e imagem à direita */
+  align-items: center; /* Alinha verticalmente o texto e a imagem */
+  background-color: #FFFFFF; /* Fundo branco como no Figma */
+  padding: 3rem 2rem; /* Ajuste o padding conforme o Figma, especialmente em cima/baixo */
+  /* Remova o border-radius daqui se a seção toda não é arredondada no Figma */
+  /* border-radius: 10px; */
+}
+
+.hero-text {
+  flex-basis: 55%; /* Damos um pouco mais de espaço para o texto */
+  /* max-width: 50%; */ /* Podemos usar flex-basis para melhor controle com flexbox */
+  padding-right: 2rem; /* Adiciona um respiro entre o texto e a imagem */
+}
+
+.hero-text h1 {
+  font-size: 2.2rem; /* Pode ajustar o tamanho se necessário */
+  color: #343A40; /* Um tom de cinza escuro/azulado para o título, como no Figma */
+  margin-bottom: 1.5rem; /* Espaçamento abaixo do título */
+  line-height: 1.4; /* Melhora a legibilidade do texto longo */
+}
+
+.hero-buttons {
+  display: flex;
+  flex-direction: column; /* <<< IMPORTANTE: Botões um abaixo do outro */
+  align-items: flex-start; /* Alinha os botões à esquerda do container deles */
+  gap: 1rem; /* Espaçamento entre os botões */
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 0.9rem 1.8rem; /* Aumenta o padding para ficarem mais robustos */
+  border: none;
+  border-radius: 8px; /* Cantos arredondados como no Figma */
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 1rem; /* Tamanho da fonte dos botões */
+  min-width: 250px; /* Garante uma largura mínima bacana, ajuste se precisar */
+  text-align: center; /* Centraliza o texto dentro do botão */
+}
+
+.btn-primary {
+  background-color: #20C997; /* Verde do Figma */
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #1BAA80; /* Um verde um pouco mais escuro pro hover */
+}
+
+.btn-secondary {
+  background-color: #F0E6FF; /* Roxo claro do Figma */
+  color: #7B3FF2; /* Roxo mais escuro para o texto, do Figma */
+}
+
+.btn-secondary:hover {
+  background-color: #E0D1F2; /* Um roxo claro um pouco mais escuro pro hover */
+}
+
+.hero-image {
+  flex-basis: 40%; /* Espaço para a imagem */
+  display: flex; /* Para centralizar a imagem se ela for menor que o container */
+  justify-content: center;
+  align-items: center;
+}
+
+.hero-image img {
+  max-width: 100%; /* Garante que a imagem não ultrapasse o container */
+  height: auto; /* Mantém a proporção da imagem */
+  /* width: 300px; */ /* Melhor usar max-width para responsividade */
+}
+
+
+.como-funciona {
+  margin-top: 4rem; /* Um pouco mais de respiro em cima */
+  padding: 2rem; /* Adiciona um padding geral na seção */
+  text-align: center;
+  background-color: #F9FAFB; /* Um fundo bem clarinho para a seção, se houver no Figma, ou deixe branco (#FFFFFF) */
+}
+
+.como-funciona h2 {
+  font-size: 1.8rem; /* Tamanho do título da seção */
+  color: #343A40; /* Mesma cor do título do hero, para consistência */
+  margin-bottom: 2.5rem; /* Espaço maior abaixo do título da seção */
+}
+
+.funciona-cards {
+  display: flex;
+  justify-content: space-between; /* Isso vai espaçar os cards igualmente */
+  gap: 1.5rem; /* Espaçamento entre os cards */
+  margin-top: 1.5rem;
+}
+
+.funciona-cards .card {
+  background-color: #FFFFFF; /* Fundo branco para os cards, como no Figma */
+  padding: 2rem 1.5rem; /* Padding interno do card (vertical, horizontal) */
+  border-radius: 12px; /* Bordas arredondadas mais pronunciadas, como no Figma */
+  /* width: 25%; */ /* Remova o width fixo, vamos deixar o flex lidar com isso */
+  flex-basis: calc(33.333% - 1rem); /* Distribui o espaço igualmente, ajustando pelo gap. ( (100% / 3 cards) - (2/3 * gap) ) */
+  /* Se preferir, pode usar flex: 1; e garantir que o gap funcione bem */
+  text-align: center; /* Centraliza todo o conteúdo do card */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Uma sombra suave para destacar os cards */
+  display: flex; /* Para organizar o conteúdo interno do card */
+  flex-direction: column; /* Imagem e texto um abaixo do outro */
+  align-items: center; /* Centraliza horizontalmente a imagem e o texto */
+}
+
+.funciona-cards .card img {
+  /* Supondo que você terá ícones específicos aqui depois */
+  width: 60px; /* Defina um tamanho para os ícones/imagens */
+  height: 60px; /* Defina um tamanho para os ícones/imagens */
+  margin-bottom: 1.5rem; /* Espaço entre a imagem e o texto */
+  object-fit: contain; /* Para garantir que a imagem se ajuste bem */
+}
+
+.funciona-cards .card p {
+  font-size: 0.95rem; /* Tamanho do texto descritivo */
+  color: #4A5568; /* Cor do texto, um cinza médio */
+  line-height: 1.6; /* Melhora a legibilidade */
+  margin: 0; /* Remove margens padrão do parágrafo */
+}
+
+/* === BENEFÍCIOS SECTION - UPGRADE COM GLAMOUR === */
+.beneficios {
+  /* Cor de fundo: Vamos usar um gradiente suave!
+     Pegue duas cores roxas/lilases do seu Figma que combinem.
+     Exemplo: um lilás mais claro para um roxo um pouco mais escuro.
+     background-color: #7B3FF2; (Fallback caso o gradiente não carregue)
+  */
+  background-image: linear-gradient(135deg, #8A2BE2, #6A0DAD); /* EXEMPLO de gradiente: Azul Violeta para Roxo. USE AS CORES DO SEU FIGMA! */
+  padding: 3rem 2.5rem; /* Aumentei um pouco o padding vertical e horizontal */
+  margin-top: 4rem;
+  border-radius: 15px; /* <<< Cantos arredondados para a faixa! Ajuste o valor como preferir */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* Sombra mais pronunciada, mas ainda suave */
+  text-align: center;
+  position: relative; /* Para possíveis elementos decorativos no futuro, se quiser */
+  overflow: hidden; /* Garante que nada "vaze" dos cantos arredondados */
+}
+
+.beneficios ul {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start; /* Alinha pelo topo se os textos tiverem alturas diferentes */
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-wrap: wrap;
+  gap: 1.5rem; /* Um pouco mais de espaço entre os itens */
+}
+
+.beneficios li {
+  color: #FFFFFF;
+  font-size: 1.05rem; /* Levemente maior para mais impacto */
+  font-weight: 500;
+  flex-grow: 1;
+  flex-basis: 220px; /* Ajuste se necessário */
+  text-align: center;
+  padding: 1rem 0.5rem; /* Padding interno para cada item */
+  /* Para um toque extra, podemos adicionar um background sutil aos itens se quiser,
+     ou uma pequena borda interna, mas vamos manter simples por agora pra não sobrecarregar.
+     Ex: background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;
+  */
+  line-height: 1.5;
+  letter-spacing: 0.5px; /* Espaçamento sutil entre as letras para um look mais refinado */
+  /* Se for usar ícones, aqui seria um bom lugar para usar flex e alinhar ícone + texto */
+}
+
+/* Se quiser adicionar ícones (sugestão):
+   Você precisaria adicionar um <img> ou um <span> para o ícone dentro do <li> no HTML/JSX
+   E então estilizar aqui:
+*/
+/*
+.beneficios li .icone-beneficio {
+  display: block;
+  margin: 0 auto 0.8rem auto; // Centraliza e dá espaço abaixo do ícone
+  width: 40px; // Tamanho do ícone
+  height: 40px; // Tamanho do ícone
+  // filter: brightness(0) invert(1); // Para deixar ícones escuros brancos, se necessário
+}
+*/
+
+/* Para um efeitinho extra bem sutil (opcional): */
+.beneficios::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(transparent, rgba(0,0,0,0.05)); /* Leve vinheta no fundo */
+  pointer-events: none; /* Para não interferir com cliques */
+  border-radius: 15px; /* Acompanha o border-radius principal */
+}
+
+/* === SEGURANÇA SECTION === */
+.seguranca {
+  padding: 3rem 2rem; /* Espaçamento interno da seção */
+  margin-top: 4rem; /* Espaçamento da seção anterior */
+  background-color: #FFFFFF; /* Fundo branco ou um tom bem claro se o Figma indicar */
+}
+
+.seguranca h2 {
+  font-size: 1.8rem;
+  color: #343A40; /* Cor escura para o título */
+  text-align: center; /* Centraliza o título da seção */
+  margin-bottom: 2.5rem; /* Espaço abaixo do título */
+}
+
+.seguranca-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0 auto; /* Centraliza a lista na seção se ela não ocupar 100% */
+  max-width: 600px; /* Define uma largura máxima para a lista, para não ficar muito espalhada em telas grandes */
+}
+
+.seguranca-lista li {
+  display: flex; /* Para alinhar ícone e texto na mesma linha */
+  align-items: center; /* Alinha verticalmente o ícone e o texto */
+  margin-bottom: 1.8rem; /* Espaçamento entre os itens da lista */
+  font-size: 1.05rem; /* Tamanho da fonte do texto do item */
+  color: #4A5568; /* Cor do texto do item */
+}
+
+.seguranca-lista li:last-child {
+  margin-bottom: 0; /* Remove a margem do último item */
+}
+
+.icone-seguranca {
+  width: 48px; /* Largura do círculo do ícone */
+  height: 48px; /* Altura do círculo do ícone */
+  border-radius: 50%; /* Para fazer o círculo perfeito */
+  margin-right: 1.5rem; /* Espaço entre o ícone e o texto */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* Para o ícone de check dentro (simulado com pseudo-elemento ou você pode usar um SVG) */
+  position: relative; /* Necessário para o pseudo-elemento do check */
+  flex-shrink: 0; /* Impede que o ícone encolha se o texto for grande */
+}
+
+/* Cores dos círculos dos ícones (PEGUE AS CORES DO FIGMA!) */
+.icone-dados {
+  background-color: #D1E7FD; /* Azul claro para "Dados" - EXEMPLO */
+}
+.icone-consultas {
+  background-color: #E8DFF5; /* Lilás claro para "Consultas" - EXEMPLO */
+}
+.icone-acolhimento {
+  background-color: #D4EDDA; /* Verde claro para "Acolhimento" - EXEMPLO */
+}
+
+/* Simulação de um ícone de CHECK com CSS (OPCIONAL - melhor usar SVG) */
+.icone-seguranca::before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 16px;
+  border-style: solid;
+  border-width: 0 3px 3px 0;
+  /* Cor do check (precisa contrastar com o fundo do círculo) */
+  /* border-color: #007bff; /* Cor do check para .icone-dados - EXEMPLO */
+  transform: rotate(45deg) translate(-2px, -2px);
+}
+
+/* Cores específicas para os checks (se usar a simulação CSS) */
+.icone-dados::before {
+  border-color: #0D6EFD; /* Azul mais escuro para o check */
+}
+.icone-consultas::before {
+  border-color: #6F42C1; /* Roxo mais escuro para o check */
+}
+.icone-acolhimento::before {
+  border-color: #198754; /* Verde mais escuro para o check */
+}
+
+/* Se você for usar SVGs como <img> ou inline:
+.icone-seguranca img,
+.icone-seguranca svg {
+  width: 24px; // Ajuste o tamanho do SVG interno
+  height: 24px; // Ajuste o tamanho do SVG interno
+}
+*/
+
+/* === DEPOIMENTO E SEGURANÇA CONTAINER === */
+.depoimento-e-seguranca-container {
+  display: flex;
+  justify-content: space-between; /* Ou 'space-around' ou use 'gap' */
+  gap: 2rem; /* Espaço entre as duas colunas */
+  padding: 3rem 2rem; /* Padding da seção maior */
+  margin-top: 4rem;
+  align-items: flex-start; /* Alinha as colunas pelo topo */
+  background-color: #F9FAFB; /* Fundo para a seção inteira, se houver no Figma, ou deixe transparente/branco */
+}
+
+.depoimento-coluna {
+  flex-basis: 48%; /* Define a largura da coluna do depoimento (ajuste!) */
+  /* Ou use flex: 1; se quiser que as colunas dividam o espaço igualmente após o gap */
+}
+
+.seguranca-coluna {
+  flex-basis: 48%; /* Define a largura da coluna de segurança (ajuste!) */
+  /* Ou use flex: 1; */
+}
+
+/* Estilo do Card de Depoimento */
+.depoimento-card {
+  background-color: #E0E7FF; /* Um azul/lilás bem clarinho para o fundo do card - PEGUE A COR DO FIGMA! */
+  padding: 2rem;
+  border-radius: 12px; /* Cantos arredondados */
+  display: flex; /* Para alinhar avatar e conteúdo do depoimento lado a lado */
+  align-items: flex-start; /* Alinha pelo topo */
+  gap: 1.5rem; /* Espaço entre o avatar e o conteúdo */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07); /* Sombra suave */
+}
+
+.depoimento-avatar {
+  width: 80px; /* Tamanho do avatar */
+  height: 80px; /* Tamanho do avatar */
+  border-radius: 50%; /* Avatar redondo */
+  object-fit: cover; /* Garante que a imagem cubra o espaço sem distorcer */
+  flex-shrink: 0; /* Impede que o avatar encolha */
+}
+
+.depoimento-conteudo {
+  display: flex;
+  flex-direction: column;
+}
+
+.depoimento-texto {
+  font-size: 1rem;
+  color: #374151; /* Cor do texto do depoimento - PEGUE DO FIGMA! */
+  line-height: 1.6;
+  margin: 0 0 1rem 0; /* Margem inferior */
+  font-style: italic; /* Itálico como é comum em depoimentos */
+  position: relative; /* Para as aspas */
+}
+
+/* Aspas estilizadas (opcional, mas dá um charme!) */
+.depoimento-texto::before {
+  content: '“'; /* Aspas de abertura */
+  font-family: Georgia, serif; /* Uma fonte com aspas bonitas */
+  font-size: 2.5rem;
+  color: #A5B4FC; /* Cor das aspas - PEGUE DO FIGMA! */
+  position: absolute;
+  left: -1.5rem;
+  top: -0.5rem;
+  opacity: 0.8;
+}
+
+.depoimento-texto::after {
+  content: '”'; /* Aspas de fechamento */
+  font-family: Georgia, serif;
+  font-size: 2.5rem;
+  color: #A5B4FC; /* Cor das aspas - PEGUE DO FIGMA! */
+  position: absolute;
+  right: -0.5rem; /* Ajuste conforme necessário */
+  bottom: -1.5rem; /* Ajuste conforme necessário */
+  opacity: 0.8;
+  line-height: 0; /* Para não afetar a altura do bloco */
+}
+
+
+.depoimento-autor {
+  font-size: 0.9rem;
+  color: #4B5563; /* Cor do autor - PEGUE DO FIGMA! */
+  font-weight: bold;
+  align-self: flex-end; /* Alinha o autor à direita */
+}
+
+/* Ajustes na Coluna de Segurança (se necessário) */
+/* .seguranca-coluna h2 removido por estar vazio */
+
+.seguranca-coluna .seguranca-lista {
+  max-width: none; /* Remove a largura máxima, pois a coluna já controla */
+  /* margin: 0; */ /* Remove a margem auto, se não for mais centralizar */
+}
+
+
+/* CSS da .seguranca-lista, li, .icone-seguranca etc. que fizemos antes continua aqui... */
+/* Certifique-se de que ele não conflita ou adicione especificidade se necessário. */
