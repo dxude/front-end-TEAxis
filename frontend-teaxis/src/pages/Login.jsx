@@ -1,62 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import '../Styles/Login.css';
 
 export default function Login() {
+  const [usuario, setUsuario] = useState('');
+  const [senha, setSenha] = useState('');
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!usuario || !senha) {
+      alert('Por favor, preencha todos os campos.');
+      return;
+    }
+
+    console.log('Usuário logado:', usuario);
+    navigate('/perfil');
+  };
+
   return (
-    <div className="min-h-screen flex">
-      
-      {/* Lado esquerdo com imagem ilustrativa */}
-      <div className="w-1/2 bg-white flex items-center justify-center p-8">
-        <img 
-          src="/img/illustration-login.svg" /*corrigir para imagem do prototipo*/
-          alt="Ilustração de login" 
-          className="max-w-md w-full"
-        />
+    <div className="login-container">
+      <div className="login-illustration">
+        <img src="/img/login-illustration.svg" alt="Ilustração" className="w-full max-w-md" />
       </div>
 
-      {/* Lado direito com formulário */}
-      <div className="w-1/2 bg-blue-600 flex items-center justify-center">
-        <div className="bg-blue-600 text-white max-w-sm w-full px-10 py-12 rounded-lg">
-          <h2 className="text-2xl font-bold mb-2">Bem Vindo ao</h2>
-          <h1 className="text-3xl font-extrabold mb-6">TEAXIS!</h1>
+      <div className="login-form-section">
+        <form onSubmit={handleSubmit} className="login-form">
+          <h2 className="text-2xl font-bold text-center mb-1">Bem Vindo ao</h2>
+          <h1 className="text-4xl font-extrabold text-center mb-6">TEAXIS!</h1>
 
-          <p className="text-sm mb-6">
-            Você não tem uma conta ainda?{' '}
-            <a href="#" className="underline text-white font-semibold">Cadastre-se</a>
+          <p className="text-sm text-center mb-6">
+            Você não tem uma conta ainda? <Link to="/cadastro" className="underline text-white font-semibold">Cadastre-se</Link>
           </p>
 
-          <form>
-            <div className="mb-4">
-              <label className="block text-sm mb-1">Nome de usuário</label>
-              <input
-                type="text"
-                className="w-full px-4 py-2 rounded bg-white text-black border focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-            </div>
+          <label>Nome de usuário</label>
+          <input
+            type="text"
+            className="login-input"
+            value={usuario}
+            onChange={(e) => setUsuario(e.target.value)}
+          />
 
-            <div className="mb-4">
-              <label className="block text-sm mb-1">Senha</label>
-              <input
-                type="password"
-                className="w-full px-4 py-2 rounded bg-white text-black border focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-            </div>
+          <label>Senha</label>
+          <input
+            type="password"
+            className="login-input"
+            value={senha}
+            onChange={(e) => setSenha(e.target.value)}
+          />
 
-            <div className="flex items-center justify-between mb-6 text-sm">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                Manter-me conectado
-              </label>
-              <a href="#" className="underline">Esqueceu a sua senha?</a>
-            </div>
+          <div className="flex justify-between text-sm mb-6">
+            <label>
+              <input type="checkbox" className="mr-2" /> Manter-me conectado
+            </label>
+            <a href="#" className="underline text-white">Esqueceu a senha?</a>
+          </div>
 
-            <button
-              type="submit"
-              className="w-full bg-blue-800 hover:bg-blue-700 py-2 rounded font-bold text-white transition"
-            >
-              Entrar
-            </button>
-          </form>
-        </div>
+          <button type="submit" className="login-button">Entrar</button>
+        </form>
       </div>
     </div>
   );

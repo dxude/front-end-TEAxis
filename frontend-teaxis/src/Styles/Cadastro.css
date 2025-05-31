@@ -1,0 +1,90 @@
+.cadastro-container {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.cadastro-ilustracao {
+  width: 50%;
+  background: linear-gradient(to bottom right, #f3e8ff, #e0cffe);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.logo {
+  width: 140px;
+  margin-bottom: 2rem;
+}
+
+.illustration {
+  width: 320px;
+  max-width: 100%;
+}
+
+.cadastro-form-section {
+  width: 50%;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2.5rem;
+}
+
+.cadastro-form {
+  width: 100%;
+  max-width: 400px;
+  color: #5e2aa5;
+}
+
+.cadastro-form h1 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.cadastro-form p {
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+}
+
+.cadastro-form a {
+  color: #b266ff;
+  text-decoration: underline;
+}
+
+.cadastro-form label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.cadastro-form input {
+  width: 100%;
+  padding: 10px 14px;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background-color: #fefefe;
+  color: #333;
+}
+
+.cadastro-form button {
+  width: 100%;
+  padding: 12px;
+  background-color: #b266ff;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cadastro-form button:hover {
+  background-color: #9d47e0;
+}

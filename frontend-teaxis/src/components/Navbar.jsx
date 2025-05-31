@@ -1,20 +1,21 @@
-// src/components/Navbar.jsx
 import React from 'react';
-import '../Styles/Home.css'; // Certifique-se que o caminho para o CSS está correto
+import { Link } from 'react-router-dom';
+import '../Styles/Navbar.css';
 
-const Navbar = () => {
+export default function Navbar() {
   return (
-    <nav className="navbar-container"> {/* Adicionamos uma classe para estilizar o container da navbar */}
-      <div className="navbar-logo">
-        TEAxis
-      </div>
-      <ul className="navbar-links">
-        <li><a href="#">Buscar Especialistas</a></li>
-        <li><a href="#">Acessar Jogos Educativos</a></li>
-        <li><a href="#">Agendar Consulta</a></li>
-      </ul>
-    </nav>
-  );
-};
+    <header className="navbar">
+      <div className="navbar-container">
+        <Link to="/" className="navbar-logo">
+          TEAXIS
+        </Link>
 
-export default Navbar;
+        <nav className="navbar-links">
+          <Link to="/" className="nav-item">Início</Link>
+          <Link to="/login" className="nav-item">Login</Link>
+          <Link to="/cadastro" className="nav-item">Cadastro</Link>
+        </nav>
+      </div>
+    </header>
+  );
+}
