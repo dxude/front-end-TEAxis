@@ -178,13 +178,49 @@
   margin: 0; /* Remove margens padrão do parágrafo */
 }
 
-/* === BENEFÍCIOS SECTION - UPGRADE COM GLAMOUR === */
+.card-icon {
+  font-size: 3.5rem;
+  color: #4A5568; /* Cor padrão, um cinza escuro */
+  transition: color 0.3s ease, transform 0.3s ease; /* Transição suave para cor e transformação */
+}
+
+/* Cores INDIVIDUAIS para cada ícone (PEGUE AS CORES EXATAS DO SEU FIGMA!) */
+.icon-search {
+  color: #2C82F6; /* Exemplo: Azul para a lupa */
+}
+
+.icon-calendar {
+  color: #7B3FF2; /* Exemplo: Roxo para o calendário (o mesmo dos benefícios) */
+}
+
+.icon-puzzle {
+  color: #20C997; /* Exemplo: Verde/Turquesa para o quebra-cabeça (o mesmo do botão primário) */
+}
+
+/* === INTERATIVIDADE: EFEITO AO PASSAR O MOUSE SOBRE O CARD === */
+
+.funciona-cards .card {
+  /* Mantenha seus estilos de background, padding, border-radius, box-shadow, display, flex-direction, align-items, text-align */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transição suave para o card */
+}
+
+.funciona-cards .card:hover {
+  transform: translateY(-5px); /* O card "levanta" um pouquinho */
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); /* A sombra fica mais pronunciada */
+}
+
+/* Efeito no ÍCONE quando o CARD é hover */
+.funciona-cards .card:hover .card-icon {
+  transform: scale(1.1); /* O ícone aumenta um pouquinho */
+  color: #5A0FC8; /* Exemplo: Mude a cor do ícone para um tom mais vibrante ou a cor principal do site */
+}
+
+/* Efeito no PARÁGRAFO quando o CARD é hover */
+.funciona-cards .card:hover p {
+  color: #333333; /* Exemplo: Escurece o texto para dar destaque */
+}
+
 .beneficios {
-  /* Cor de fundo: Vamos usar um gradiente suave!
-     Pegue duas cores roxas/lilases do seu Figma que combinem.
-     Exemplo: um lilás mais claro para um roxo um pouco mais escuro.
-     background-color: #7B3FF2; (Fallback caso o gradiente não carregue)
-  */
   background-image: linear-gradient(135deg, #8A2BE2, #6A0DAD); /* EXEMPLO de gradiente: Azul Violeta para Roxo. USE AS CORES DO SEU FIGMA! */
   padding: 3rem 2.5rem; /* Aumentei um pouco o padding vertical e horizontal */
   margin-top: 4rem;
@@ -213,31 +249,39 @@
   flex-grow: 1;
   flex-basis: 220px; /* Ajuste se necessário */
   text-align: center;
-  padding: 1rem 0.5rem; /* Padding interno para cada item */
-  /* Para um toque extra, podemos adicionar um background sutil aos itens se quiser,
-     ou uma pequena borda interna, mas vamos manter simples por agora pra não sobrecarregar.
-     Ex: background-color: rgba(255, 255, 255, 0.05); border-radius: 8px;
-  */
+  padding: 1rem 0.5rem; 
   line-height: 1.5;
   letter-spacing: 0.5px; /* Espaçamento sutil entre as letras para um look mais refinado */
-  /* Se for usar ícones, aqui seria um bom lugar para usar flex e alinhar ícone + texto */
 }
 
-/* Se quiser adicionar ícones (sugestão):
-   Você precisaria adicionar um <img> ou um <span> para o ícone dentro do <li> no HTML/JSX
-   E então estilizar aqui:
-*/
-/*
-.beneficios li .icone-beneficio {
+.como-funciona h2 {
+  font-size: 2.4rem; /* Aumentar um pouco para dar mais destaque */
+  color: #074f9b; /* Cor escura para o título */
+  text-align: center;
+  margin-bottom: 2.5rem; /* Espaço abaixo do título */
+  font-weight: 700; /* Deixar ele mais "bold", mais impactante */
+  letter-spacing: 0.5px; /* Um leve espaçamento entre as letras para um visual mais clean */
+  text-transform: uppercase; /* Deixar em maiúsculas, se combinar com o Figma ou seu gosto */
+
+  /* Para centralizar e limitar a largura do título em telas grandes */
+  max-width: 800px; /* Limita a largura do título, ajuste se for diferente no Figma */
+  margin-left: auto;
+  margin-right: auto;
+
+  position: relative; /* Para possíveis pseudo-elementos ou animações */
+}
+
+.como-funciona h2::after {
+  content: '';
   display: block;
-  margin: 0 auto 0.8rem auto; // Centraliza e dá espaço abaixo do ícone
-  width: 40px; // Tamanho do ícone
-  height: 40px; // Tamanho do ícone
-  // filter: brightness(0) invert(1); // Para deixar ícones escuros brancos, se necessário
+  width: 60px; /* Largura da linha */
+  height: 4px; /* Espessura da linha */
+  background-color: #7B3FF2; /* Cor da linha (seu roxo primário) */
+  margin: 1rem auto 0 auto; /* Centraliza a linha e dá espaço */
+  border-radius: 2px; /* Cantos arredondados para a linha */
 }
-*/
 
-/* Para um efeitinho extra bem sutil (opcional): */
+
 .beneficios::before {
   content: '';
   position: absolute;
@@ -291,7 +335,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Para o ícone de check dentro (simulado com pseudo-elemento ou você pode usar um SVG) */
   position: relative; /* Necessário para o pseudo-elemento do check */
   flex-shrink: 0; /* Impede que o ícone encolha se o texto for grande */
 }
@@ -330,14 +373,6 @@
 .icone-acolhimento::before {
   border-color: #198754; /* Verde mais escuro para o check */
 }
-
-/* Se você for usar SVGs como <img> ou inline:
-.icone-seguranca img,
-.icone-seguranca svg {
-  width: 24px; // Ajuste o tamanho do SVG interno
-  height: 24px; // Ajuste o tamanho do SVG interno
-}
-*/
 
 /* === DEPOIMENTO E SEGURANÇA CONTAINER === */
 .depoimento-e-seguranca-container {
@@ -425,14 +460,7 @@
   align-self: flex-end; /* Alinha o autor à direita */
 }
 
-/* Ajustes na Coluna de Segurança (se necessário) */
-/* .seguranca-coluna h2 removido por estar vazio */
-
 .seguranca-coluna .seguranca-lista {
   max-width: none; /* Remove a largura máxima, pois a coluna já controla */
   /* margin: 0; */ /* Remove a margem auto, se não for mais centralizar */
 }
-
-
-/* CSS da .seguranca-lista, li, .icone-seguranca etc. que fizemos antes continua aqui... */
-/* Certifique-se de que ele não conflita ou adicione especificidade se necessário. */
