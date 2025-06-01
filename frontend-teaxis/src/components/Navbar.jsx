@@ -1,13 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import '../Styles/Navbar.css';
+import logo from '../assets/imagens/fundoLogo.png'
+
 
 export default function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo">
-          TEAXIS
+        <Link to="/">
+          <img src={logo} alt="Logo TEAxis" className="logo-img" /> {/* Adicionei uma classe para estilizar */}
         </Link>
 
         <nav className="navbar-links">

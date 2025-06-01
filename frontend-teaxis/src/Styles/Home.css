@@ -1,11 +1,20 @@
 .navbar-container {
-  display: flex; /* Para alinhar o logo e os links na mesma linha */
-  justify-content: space-between; /* Para espaçar o logo de um lado e os links do outro */
-  align-items: center; /* Para centralizar eles verticalmente */
-  padding: 1rem 2rem; /* Um respiro nas laterais e em cima/baixo (ajuste conforme o Figma) */
-  background-color: #FFFFFF; /* Um fundo branco, como parece no Figma. Podemos ajustar se for um tom de cinza/azul claro */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Uma sombrinha discreta pra dar um tchan */
-  font-family: 'Arial', sans-serif; /* Mantendo a fonte, mas você pode querer uma específica do Figma */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+
+  /* === ESTILOS PARA DEIXAR A NAVBAR FIXA === */
+  position: fixed; /* Isso faz ela fixar na tela */
+  top: 0; /* Cola no topo da tela */
+  left: 0; /* Cola na esquerda da tela */
+  right: 0; /* Estica até a direita da tela (ocupando 100% da largura) */
+  z-index: 1000; /* Garante que a Navbar fique por cima de outros conteúdos */
+  /* Ajuste a altura se precisar de um valor fixo, mas o padding já ajuda */
+  height: auto; /* Deixa a altura se ajustar ao conteúdo */
 }
 
 .navbar-logo {
@@ -27,13 +36,13 @@
 
 .navbar-links a {
   text-decoration: none; /* Tirar o sublinhado dos links */
-  color: #4A5568; /* Uma cor de texto para os links (ajuste!) */
+  color: #041128; /* Uma cor de texto para os links (ajuste!) */
   font-weight: 500; /* Um pesinho na fonte */
   font-size: 0.95rem; /* Tamanho da fonte dos links */
 }
 
 .navbar-links a:hover {
-  color: #2C5282; /* Uma corzinha diferente quando passar o mouse */
+  color: #3b4a61; /* Uma corzinha diferente quando passar o mouse */
 }
 
 /* Ajuste no .home-container para não ter padding em cima se a navbar já cuida disso */

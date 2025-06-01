@@ -1,8 +1,16 @@
-/* src/components/Footer.css */
 .footer {
   background-color: #f0f0f0;
   text-align: center;
   padding: 1rem;
   font-size: 0.9rem;
   color: #333;
+
+  /* === ESTILOS PARA DEIXAR O FOOTER FIXO === */
+  position: auto; /* Isso faz ele fixar na tela */
+  bottom: 0; /* Cola na parte inferior da tela */
+  left: 0; /* Cola na esquerda da tela */
+  right: 0; /* Estica até a direita da tela (ocupando 100% da largura) */
+  z-index: 999; /* Um z-index um pouco menor que a Navbar, mas ainda alto */
+  /* Ajuste a altura se precisar de um valor fixo, mas o padding já ajuda */
+  height: auto; /* Deixa a altura se ajustar ao conteúdo */
 }

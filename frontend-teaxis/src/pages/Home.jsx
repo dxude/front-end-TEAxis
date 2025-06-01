@@ -1,13 +1,14 @@
-// src/pages/Home.jsx - CORRIGIDO DE VERDADE AGORA!
 import React from 'react';
-import '../Styles/Home.css'; // Seu CSS da Home
-import heroImg from '../assets/imagens/images.jfif'; // Sua imagem hero
-// ... quaisquer outros imports que a Home precise para o conteúdo dela ...
+import '../Styles/Home.css'; 
+import heroImg from '../assets/imagens/images.jfif'; 
+import primeiraIMG from '../assets/imagens/primeiraImagem.png'
+import segundaIMG from '../assets/imagens/_Image_as7.png'
+import { FaSearch, FaCalendarAlt, FaPuzzlePiece } from 'react-icons/fa';
+
 
 const Home = () => {
   return (
-    // Você pode ter um Fragment <> ou diretamente o <main> se não precisar de outro wrapper
-    // O importante é NÃO TER <Navbar /> nem <Footer /> AQUI.
+
     <main className="home-container">
       <section className="hero">
         <div className="hero-text">
@@ -18,7 +19,7 @@ const Home = () => {
           </div>
         </div>
         <div className="hero-image">
-          <img src={heroImg} alt="Ilustração TEAxis" />
+          <img src={primeiraIMG} alt="Ilustração TEAxis" />
         </div>
       </section>
 
@@ -26,17 +27,25 @@ const Home = () => {
         <h2>Como Funciona</h2>
         <div className="funciona-cards">
           <div className="card">
-            <img src={heroImg} alt="Buscar especialista" />
-            <p>Pesquise e encontre profissionais especializados</p>
-          </div>
-          <div className="card">
-            <img src={heroImg} alt="Agendar consulta" />
-            <p>Agende consultas online com facilidade</p>
-          </div>
-          <div className="card">
-            <img src={heroImg} alt="Jogos educativos" />
-            <p>Desenvolva-se com jogos e trilhas educativas</p>
-          </div>
+        <div className="card-icon-wrapper"> 
+          <FaSearch className="card-icon" /> 
+        </div>
+        <p>Pesquise e encontre profissionais especializados</p>
+       </div>
+
+      <div className="card">
+        <div className="card-icon-wrapper">
+          <FaCalendarAlt className="card-icon" /> {/* O ÍCONE DE CALENDÁRIO */}
+        </div>
+        <p>Agende consultas online <br></br> com facilidade</p>
+      </div>
+
+      <div className="card">
+        <div className="card-icon-wrapper">
+          <FaPuzzlePiece className="card-icon" /> {/* O ÍCONE DE QUEBRA-CABEÇA */}
+        </div>
+        <p>Desenvolva-se com jogos e trilhas educativas</p>
+      </div>
         </div>
       </section>
 
@@ -54,7 +63,7 @@ const Home = () => {
         <div className="depoimento-coluna">
           <div className="depoimento-card">
             <img
-              src={heroImg} // <<< LEMBRE-SE DE TROCAR PELA FOTO DO LUCAS
+              src={segundaIMG} 
               alt="Lucas, 14 anos"
               className="depoimento-avatar"
             />
