@@ -27,25 +27,26 @@ const Home = () => {
         <h2>Como Funciona</h2>
         <div className="funciona-cards">
           <div className="card">
-        <div className="card-icon-wrapper"> 
-          <FaSearch className="card-icon" /> 
-        </div>
-        <p>Pesquise e encontre profissionais especializados</p>
-       </div>
+            <div className="card-icon-wrapper">
+              {/* Adicionando classes específicas para cada ícone */}
+              <FaSearch className="card-icon icon-search" />
+            </div>
+            <p>Pesquise e encontre profissionais especializados</p>
+          </div>
 
-      <div className="card">
-        <div className="card-icon-wrapper">
-          <FaCalendarAlt className="card-icon" /> {/* O ÍCONE DE CALENDÁRIO */}
-        </div>
-        <p>Agende consultas online <br></br> com facilidade</p>
-      </div>
+          <div className="card">
+            <div className="card-icon-wrapper">
+              <FaCalendarAlt className="card-icon icon-calendar" />
+            </div>
+            <p>Agende consultas online <br></br> com facilidade</p>
+          </div>
 
-      <div className="card">
-        <div className="card-icon-wrapper">
-          <FaPuzzlePiece className="card-icon" /> {/* O ÍCONE DE QUEBRA-CABEÇA */}
-        </div>
-        <p>Desenvolva-se com jogos e trilhas educativas</p>
-      </div>
+          <div className="card">
+            <div className="card-icon-wrapper">
+              <FaPuzzlePiece className="card-icon icon-puzzle" />
+            </div>
+            <p>Desenvolva-se com jogos <br></br>e trilhas educativas</p>
+          </div>
         </div>
       </section>
 
