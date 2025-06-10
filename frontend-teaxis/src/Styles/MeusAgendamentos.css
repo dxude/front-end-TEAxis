@@ -1,0 +1,341 @@
+.meus-agendamentos-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    font-family: 'Arial', sans-serif;
+    background-color: #F9FAFB;
+}
+
+.agendamentos-header {
+    background-color: #FFFFFF;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+.agendamentos-header .header-left {
+    display: flex;
+    align-items: center;
+}
+
+.agendamentos-header .header-logo {
+    width: 100px;
+    height: auto;
+}
+
+.agendamentos-header .header-nav {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.agendamentos-header .nav-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #4A5568;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.agendamentos-header .nav-link:hover {
+    background-color: #F0E6FF;
+    color: #7B3FF2;
+}
+
+.agendamentos-header .nav-link.active {
+    background-color: #7B3FF2;
+    color: white;
+    font-weight: bold;
+}
+
+.agendamentos-header .nav-icon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+    color: #7B3FF2;
+    transition: color 0.3s ease;
+}
+
+.agendamentos-header .nav-link.active .nav-icon {
+    color: white;
+}
+
+.agendamentos-header .logout-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Arial', sans-serif;
+    padding: 0.5rem 0.8rem;
+    display: flex;
+    align-items: center;
+    color: #4A5568;
+    font-weight: 500;
+    font-size: 0.95rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.agendamentos-header .logout-btn .nav-icon {
+    color: #dc3545;
+}
+
+.agendamentos-header .logout-btn:hover {
+    background-color: #ffe0e3;
+    color: #dc3545;
+}
+
+/* Conteúdo Principal da Página */
+.agendamentos-main-content {
+    flex-grow: 1;
+    padding: 2rem;
+    padding-top: 6.5rem; /* Espaçamento para o header fixo */
+    max-width: 900px; /* Largura máxima para o conteúdo */
+    margin: 0 auto; /* Centraliza */
+}
+
+.agendamentos-main-content h1 {
+    font-size: 2.2rem;
+    color: #343A40;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.agendamentos-main-content .subtitle {
+    font-size: 1rem;
+    color: #4A5568;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Seções de Agendamentos (Futuros, Anteriores) */
+.agendamentos-section {
+    background-color: #FFFFFF;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    margin-bottom: 2rem;
+}
+
+.agendamentos-section h2 {
+    font-size: 1.5rem;
+    color: #074f9b;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.agendamentos-section h2::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 3px;
+    background-color: #7B3FF2;
+    margin: 0.5rem auto 0 auto;
+    border-radius: 2px;
+}
+
+.agendamentos-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.agendamento-card {
+    background-color: #F9FAFB;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; /* Permite quebrar linha em telas menores */
+    gap: 1rem; /* Espaçamento entre info e botões */
+}
+
+.agendamento-card.passado {
+    opacity: 0.8; /* Menos destaque para agendamentos passados */
+}
+
+.agendamento-card .card-info {
+    flex-grow: 1; /* Ocupa o máximo de espaço */
+}
+
+.agendamento-card .card-info h3 {
+    font-size: 1.1rem;
+    color: #343A40;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.agendamento-card .card-info p {
+    font-size: 0.9rem;
+    color: #4A5568;
+    margin-bottom: 0.3rem;
+}
+
+.agendamento-card .card-info .status {
+    font-weight: bold;
+    margin-top: 0.5rem;
+}
+
+.agendamento-card .card-info .status.confirmado {
+    color: #20C997; /* Verde */
+}
+
+.agendamento-card .card-info .status.cancelado {
+    color: #dc3545; /* Vermelho */
+}
+
+.agendamento-card .card-info .status.concluido {
+    color: #6B7280; /* Cinza */
+}
+
+.agendamento-card .card-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap; /* Botões quebram linha */
+    justify-content: flex-end; /* Alinha botões à direita */
+}
+
+/* Estilos de Botão */
+.btn-primary, .btn-secondary, .btn-danger, .btn-join-room, .btn-view-prof {
+    padding: 0.6rem 1.2rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none; /* Para links/botões */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.btn-primary {
+    background-color: #20C997;
+    color: white;
+}
+.btn-primary:hover {
+    background-color: #1BAA80;
+    transform: translateY(-1px);
+}
+
+.btn-secondary {
+    background-color: #F0E6FF;
+    color: #7B3FF2;
+}
+.btn-secondary:hover {
+    background-color: #E0D1F2;
+    color: #5A0FC8;
+    transform: translateY(-1px);
+}
+
+.btn-danger {
+    background-color: #FFE0E3; /* Vermelho claro */
+    color: #dc3545; /* Vermelho */
+}
+.btn-danger:hover {
+    background-color: #ffccc7;
+    transform: translateY(-1px);
+}
+
+.btn-join-room {
+    background-color: #D1E7FD; /* Azul claro */
+    color: #0D6EFD; /* Azul escuro */
+}
+.btn-join-room:hover {
+    background-color: #bee5f7;
+    transform: translateY(-1px);
+}
+
+.btn-view-prof {
+    background-color: #E0E7FF; /* Lilás claro */
+    color: #5A0FC8; /* Roxo escuro */
+}
+.btn-view-prof:hover {
+    background-color: #d1d8f2;
+    transform: translateY(-1px);
+}
+
+.no-agendamentos-message {
+    text-align: center;
+    font-size: 1rem;
+    color: #6B7280;
+    padding: 1.5rem;
+    background-color: #F9FAFB;
+    border-radius: 8px;
+}
+.no-agendamentos-message a {
+    color: #7B3FF2;
+    text-decoration: none;
+    font-weight: bold;
+}
+.no-agendamentos-message a:hover {
+    text-decoration: underline;
+}
+
+/* === AJUSTES RESPONSIVOS === */
+@media (max-width: 768px) {
+    .agendamentos-header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1rem;
+    }
+    .agendamentos-header .header-nav {
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    .agendamentos-header .nav-link, .agendamentos-header .logout-btn {
+        padding: 0.5rem;
+        font-size: 0.85rem;
+    }
+    .agendamentos-header .header-logo {
+        width: 80px;
+        margin-bottom: 0.5rem;
+    }
+
+    .agendamentos-main-content {
+        padding: 1.5rem;
+        padding-top: 8rem; /* Mais espaçamento para o header empilhado */
+    }
+
+    .agendamentos-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .agendamentos-card .card-actions {
+        width: 100%;
+        justify-content: flex-start;
+        margin-top: 1rem;
+    }
+    .btn-primary, .btn-secondary, .btn-danger, .btn-join-room, .btn-view-prof {
+        width: 100%; /* Botões ocupam largura total em mobile */
+        margin-top: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .agendamentos-header .header-nav {
+        gap: 0.3rem;
+    }
+    .agendamentos-header .nav-link, .agendamentos-header .logout-btn {
+        font-size: 0.75rem;
+    }
+}

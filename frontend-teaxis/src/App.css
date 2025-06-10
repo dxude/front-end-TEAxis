@@ -42,7 +42,6 @@
 }
 
 .content-wrapper {
-  /* Mantenha os padding-top e padding-bottom que você já ajustou */
   padding-top: 80px;
   padding-bottom: 70px;
   min-height: calc(100vh - var(--navbar-height, 80px) - var(--footer-height, 70px));
@@ -54,7 +53,6 @@
   margin-right: auto; /* Centraliza horizontalmente */
   /* Ou a shorthand: margin: 0 auto; se não tiver outros margins */
 
-  /* Adicione padding lateral para evitar que o conteúdo cole nas bordas em telas menores */
   padding-left: 1rem; /* Um respiro nas laterais */
   padding-right: 1rem; /* Um respiro nas laterais */
 }

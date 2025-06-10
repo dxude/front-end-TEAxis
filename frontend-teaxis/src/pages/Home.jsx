@@ -28,7 +28,6 @@ const Home = () => {
         <div className="funciona-cards">
           <div className="card">
             <div className="card-icon-wrapper">
-              {/* Adicionando classes específicas para cada ícone */}
               <FaSearch className="card-icon icon-search" />
             </div>
             <p>Pesquise e encontre profissionais especializados</p>
@@ -79,7 +78,6 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Coluna da Segurança */}
         <div className="seguranca-coluna">
           <h2>Área segura para todos</h2>
           <ul className="seguranca-lista">

@@ -1,64 +1,65 @@
-.navbar { 
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem; 
+  background-color: #FFFFFF;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
+
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   z-index: 1000;
-  background-color: #FFFFFF;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  padding-top: 1.5rem; /* Ajuste o padding vertical aqui */
-  padding-bottom: 1.5rem; /* Ajuste o padding vertical aqui */
-
-  display: flex;
-  align-items: center;
 }
 
-.navbar-container { /* Este é o <div> dentro do <header> */
-  display: flex;
-  justify-content: space-between; /* Mantém logo e links separados */
-  align-items: center;
-  width: 100%; /* Ocupa 100% do espaço disponível dentro do .navbar */
-
-  /* === AJUSTES PARA CENTRALIZAR O CONTEÚDO E ALINHAR COM O RESTO DO SITE === */
-  max-width: 1200px; /* <<< USE O MESMO VALOR DO max-width DO SEU .content-wrapper no App.css! */
-  margin: 0 auto; /* Centraliza este container dentro do .navbar (que é 100% largura) */
-
-  /* Adicione um padding horizontal aqui para o espaçamento interno */
-  padding-left: 2rem; /* Espaçamento da borda esquerda do conteúdo */
-  padding-right: 2rem; /* Espaçamento da borda direita do conteúdo */
+.navbar-logo {
+  font-size: 1.8rem; 
+  font-weight: bold;
+  color: #2C5282;
 }
 
-/* Estilos para a IMAGEM DA LOGO, que tem a classe 'logo-img' */
 .logo-img {
-  height: 40px; /* <<< AJUSTE ESSA ALTURA! Tente 40px, 50px, veja qual fica melhor */
-  width: auto; /* Mantém a proporção da imagem */
-  max-width: 180px; /* Garante que ela não fique gigante, ajuste se precisar */
-  object-fit: contain; /* Garante que a imagem se ajuste sem cortar */
-  display: block; /* Para garantir que o tamanho seja respeitado */
+  height: 70px; 
+  width: auto;
+  max-width: 200px; 
+  object-fit: contain;
+  display: block;
 }
 
-/* Estilos para a <nav> dos links, que tem a classe 'navbar-links' */
 .navbar-links {
   display: flex;
-  gap: 1.5rem; /* Espaçamento entre os links */
-  font-family: 'Arial', sans-serif; /* Ou a fonte do seu projeto */
+  gap: 1.5rem; 
+  font-family: 'Arial', sans-serif;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
-/* Estilos para cada link individual, que tem a classe 'nav-item' */
 .nav-item {
-  text-decoration: none; /* Tira o sublinhado */
-  color: #4A5568; /* Cor dos links */
+  text-decoration: none;
+  color: #4A5568;
   font-weight: 500;
   font-size: 0.95rem;
-  transition: color 0.3s ease; /* Transição suave para o hover */
+  transition: color 0.3s ease;
 }
 
 .nav-item:hover {
-  color: #7B3FF2; /* Cor ao passar o mouse (exemplo: seu roxo do benefício) */
+  color: #7B3FF2;
 }
 
+.home-container,
+.content-wrapper {
+  padding-top: 4rem; 
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 2rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
 
-/* Botão verde (ação principal) */
 .btn-green {
   background-color: #10b981;
   color: white;
@@ -74,7 +75,6 @@
   background-color: #059669;
 }
 
-/* Botão lilás (ação secundária) */
 .btn-purple {
   background-color: #f3e8ff;
   color: #7c3aed;
