@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../Styles/Login.css';
+import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 export default function Login() {
   const [usuario, setUsuario] = useState('');
@@ -11,27 +12,30 @@ export default function Login() {
     e.preventDefault();
 
     if (!usuario || !senha) {
-      alert('Por favor, preencha todos os campos.');
+      alert('Por favor, preencha o nome de usuário e a senha.');
       return;
     }
 
-    console.log('Usuário logado:', usuario);
+    console.log('Tentativa de login com o usuário:', usuario);
+
+    alert('Login bem-sucedido!');
     navigate('/perfil');
   };
 
   return (
     <div className="login-container">
       <div className="login-illustration">
-        <img src="/img/login-illustration.svg" alt="Ilustração" className="w-full max-w-md" />
+        <img src={logoTeaxis} alt="Logo TEAxis" className="logo" />
+
       </div>
 
       <div className="login-form-section">
         <form onSubmit={handleSubmit} className="login-form">
-          <h2 className="text-2xl font-bold text-center mb-1">Bem Vindo ao</h2>
-          <h1 className="text-4xl font-extrabold text-center mb-6">TEAXIS!</h1>
+          <h1>Bem Vindo ao</h1>
+          <h2>TEAXIS!</h2>
 
-          <p className="text-sm text-center mb-6">
-            Você não tem uma conta ainda? <Link to="/cadastro" className="underline text-white font-semibold">Cadastre-se</Link>
+          <p>
+            Você não tem uma conta ainda? <Link to="/cadastro">Cadastre-se</Link>
           </p>
 
           <label>Nome de usuário</label>
@@ -40,6 +44,7 @@ export default function Login() {
             className="login-input"
             value={usuario}
             onChange={(e) => setUsuario(e.target.value)}
+            required
           />
 
           <label>Senha</label>
@@ -48,13 +53,14 @@ export default function Login() {
             className="login-input"
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
+            required
           />
 
-          <div className="flex justify-between text-sm mb-6">
-            <label>
-              <input type="checkbox" className="mr-2" /> Manter-me conectado
+          <div className="checkbox-and-link-group">
+            <label className="checkbox-label">
+              <input type="checkbox" /> Manter-me conectado
             </label>
-            <a href="#" className="underline text-white">Esqueceu a senha?</a>
+            <Link to="/esqueceu-senha">Esqueceu a senha?</Link>
           </div>
 
           <button type="submit" className="login-button">Entrar</button>
