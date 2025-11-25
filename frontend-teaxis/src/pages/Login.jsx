@@ -1,71 +1,66 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import '../Styles/Login.css';
-import logoTeaxis from '../assets/imagens/fundoLogo.png';
+import React, { useState } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
+import "../Styles/Login.css";
+import { FaGoogle, FaEnvelope, FaLock } from "react-icons/fa";
 
-export default function Login() {
-  const [usuario, setUsuario] = useState('');
-  const [senha, setSenha] = useState('');
-  const navigate = useNavigate();
+const Login = () => {
+  const [captchaValido, setCaptchaValido] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleCaptcha = (value) => {
+    console.log("Captcha value:", value);
+    setCaptchaValido(!!value);
+  };
+
+  const handleLogin = (e) => {
     e.preventDefault();
-
-    if (!usuario || !senha) {
-      alert('Por favor, preencha o nome de usuário e a senha.');
+    if (!captchaValido) {
+      alert("Por favor, confirme que você não é um robô antes de continuar.");
       return;
     }
-
-    console.log('Tentativa de login com o usuário:', usuario);
-
-    alert('Login bem-sucedido!');
-    navigate('/perfil');
+    alert("Login realizado com sucesso!");
   };
 
   return (
     <div className="login-container">
-      <div className="login-illustration">
-        <img src={logoTeaxis} alt="Logo TEAxis" className="logo" />
+      <div className="login-card">
+        <h2>Bem-vindo(a) de volta! 👋</h2>
 
-      </div>
+        <button className="btn btn-google">
+          <FaGoogle /> Entrar com Google
+        </button>
 
-      <div className="login-form-section">
-        <form onSubmit={handleSubmit} className="login-form">
-          <h1>Bem Vindo ao</h1>
-          <h2>TEAXIS!</h2>
+        <div className="divider">OU ENTRE COM EMAIL</div>
 
-          <p>
-            Você não tem uma conta ainda? <Link to="/cadastro">Cadastre-se</Link>
-          </p>
+        <form onSubmit={handleLogin}>
+          <label>
+            <FaEnvelope /> Email:
+          </label>
+          <input type="email" placeholder="Seu email" required />
 
-          <label>Nome de usuário</label>
-          <input
-            type="text"
-            className="login-input"
-            value={usuario}
-            onChange={(e) => setUsuario(e.target.value)}
-            required
-          />
+          <label>
+            <FaLock /> Senha:
+          </label>
+          <input type="password" placeholder="Sua senha" required />
 
-          <label>Senha</label>
-          <input
-            type="password"
-            className="login-input"
-            value={senha}
-            onChange={(e) => setSenha(e.target.value)}
-            required
-          />
-
-          <div className="checkbox-and-link-group">
-            <label className="checkbox-label">
-              <input type="checkbox" /> Manter-me conectado
-            </label>
-            <Link to="/esqueceu-senha">Esqueceu a senha?</Link>
+          {/* === reCAPTCHA === */}
+          <div className="captcha-wrapper">
+            <ReCAPTCHA
+              sitekey="6Lfu2QssAAAAAO7L1Os1H12CYVrIxj0LH1Ck6c6E"
+              onChange={handleCaptcha}
+            />
           </div>
 
-          <button type="submit" className="login-button">Entrar</button>
+          <button type="submit" className="btn btn-green">
+            ENTRAR
+          </button>
         </form>
+
+        <p className="register-link">
+          Não tem conta? <a href="/cadastro">Crie sua conta aqui!</a>
+        </p>
       </div>
     </div>
   );
-}
+};
+
+export default Login;
