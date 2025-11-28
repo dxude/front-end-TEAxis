@@ -1,0 +1,173 @@
+/*
+ * Styles/Triagem.css
+ * Estilos para a funcionalidade de Triagem e Match (Axis)
+ */
+
+/* ---------------------------------------------------- */
+/* === Paleta de Cores (Referência) === */
+/* ---------------------------------------------------- */
+:root {
+    --color-green-soft: #66BB6A;
+    --color-lilac-main: #7F58AF;
+    --color-blue-main: #276FF7;
+    --color-dark: #1A1A2E; 
+}
+
+/* ---------------------------------------------------- */
+/* === LAYOUT E CARD PRINCIPAL === */
+/* ---------------------------------------------------- */
+
+/* Reutiliza o estilo de contêiner para fundo e centralização */
+.cadastro-page-container {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    font-family: Arial, sans-serif;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.triagem-card {
+    background-color: white; /* Base Branca para contraste */
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15); 
+    max-width: 650px; /* Mais largo que o login para acomodar opções */
+    width: 100%;
+    text-align: center;
+    position: relative; 
+    z-index: 5;
+}
+
+.axis-illustration-container {
+    margin-bottom: 20px;
+}
+
+.axis-triagem-img {
+    max-width: 120px;
+    margin: 0 auto;
+    display: block;
+    /* Adiciona a animação de flutuar (definida no Home.css, mas necessária aqui) */
+    animation: flutuar 3.5s ease-in-out infinite; 
+}
+
+/* Definição da animação (Pode ser copiada do seu Home.css) */
+@keyframes flutuar {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.question-text {
+    font-size: 1.2rem;
+    color: var(--color-dark);
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* ---------------------------------------------------- */
+/* === BOTÕES E OPÇÕES DE INTERAÇÃO === */
+/* ---------------------------------------------------- */
+
+.action-buttons-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+/* Base do Botão */
+.btn {
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.btn-primary-green {
+    background-color: var(--color-green-soft);
+    color: white;
+}
+.btn-primary-green:hover {
+    background-color: #55a059;
+}
+
+.btn-secondary-lilac {
+    background-color: transparent;
+    color: var(--color-lilac-main);
+    border: 2px solid var(--color-lilac-main);
+}
+.btn-secondary-lilac:hover {
+    background-color: rgba(127, 88, 175, 0.1); 
+}
+
+.btn-full {
+    width: 100%;
+}
+
+/* Grid de Opções de Resposta (Perguntas 2 e 3) */
+.option-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.option-button {
+    padding: 15px;
+    border: 2px solid var(--color-lilac-main);
+    background-color: transparent;
+    border-radius: 8px;
+    color: var(--color-lilac-main);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.option-button:hover, .option-button.selected {
+    background-color: var(--color-lilac-main);
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ---------------------------------------------------- */
+/* === ESTADOS DE CARREGAMENTO/ERRO === */
+/* ---------------------------------------------------- */
+.loading-text {
+    font-size: 1.1rem;
+    color: var(--color-lilac-main);
+    font-style: italic;
+}
+
+.error-message {
+    color: #D32F2F; /* Vermelho */
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.error-icon {
+    font-size: 3em;
+    color: #D32F2F;
+    margin-bottom: 10px;
+}
+
+/* ---------------------------------------------------- */
+/* === RESPONSIVIDADE === */
+/* ---------------------------------------------------- */
+@media (max-width: 600px) {
+    .triagem-card {
+        padding: 30px 15px;
+    }
+    .option-grid {
+        grid-template-columns: 1fr; /* Força uma coluna em telas pequenas */
+    }
+    .action-buttons-group {
+        max-width: 100%;
+    }
+}
