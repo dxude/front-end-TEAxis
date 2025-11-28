@@ -1,0 +1,125 @@
+/* === NAVBAR === */
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* 🔹 Navbar mais estreita e compacta */
+  padding: 0.7rem 2rem;
+  background-color: #ffffff; /* branca sólida, sem transparência */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  font-family: 'Arial', sans-serif;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+/* === LOGO === */
+.navbar-logo {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2C5282;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.logo-img {
+  height: 100px; /* 🔹 diminuída para harmonizar com navbar mais estreita */
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  display: block;
+}
+
+/* === LINKS DO MENU === */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-item {
+  position: relative;
+  text-decoration: none;
+  color: #4A5568;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: color 0.3s ease;
+}
+
+/* 🔹 linha lilás animada abaixo do texto */
+.nav-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 3px;
+  background-color: #7B3FF2;
+  transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+/* animação ao passar o mouse */
+.nav-item:hover {
+  color: #7B3FF2;
+}
+
+.nav-item:hover::after {
+  width: 100%;
+}
+
+/* === BOTÕES === */
+.btn-green {
+  background-color: #10b981;
+  color: white;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-green:hover {
+  background-color: #059669;
+  transform: scale(1.05);
+}
+
+.btn-purple {
+  background-color: #f3e8ff;
+  color: #7c3aed;
+  padding: 0.5rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-purple:hover {
+  background-color: #ede9fe;
+  color: #6d28d9;
+  transform: scale(1.05);
+}
+
+/* === AJUSTE DO CONTEÚDO PRINCIPAL === */
+.home-container,
+.content-wrapper {
+  padding-top: 4rem; 
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 2rem;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
