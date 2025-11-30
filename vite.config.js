@@ -8,7 +8,7 @@ export default defineConfig({
     alias: [
       {
         find: /^react-router$/,
-        replacement: path.resolve(__dirname, "node_modules/react-router/dist/index.js")
+        replacement: path.resolve(__dirname, "src/vendor/react-router.js")
       }
     ]
   }
