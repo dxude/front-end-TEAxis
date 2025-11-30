@@ -169,18 +169,8 @@ const Login = () => {
 
       {showSimPopup && (
         <div className="sim-popup" role="dialog" aria-live="polite">
-          <div className="sim-popup-left">
-            <svg width="36" height="36" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-              <path fill="#4285F4" d="M24 9.5c3.2 0 5.9 1.2 7.9 3.1l5.9-5.9C34.6 3.2 29.6 1.5 24 1.5 14.6 1.5 6.9 6.9 3.1 14.8l6.9 5.3C11.2 14.2 17 9.5 24 9.5z" />
-              <path fill="#34A853" d="M46.9 24.5c0-1-.1-1.8-.3-2.6H24v6.1h12.8c-.5 2.6-2.3 4.7-4.8 6.1l7.6 5.9C44.8 36.2 46.9 30.9 46.9 24.5z" />
-              <path fill="#FBBC05" d="M10 28.6c-.6-1.8-1-3.7-1-5.6s.4-3.8 1-5.6L3.1 12.1C1.1 15.7 0 19.8 0 24c0 4.2 1.1 8.3 3.1 11.9L10 28.6z" />
-              <path fill="#EA4335" d="M24 46.5c5.6 0 10.6-1.7 14.4-4.7l-7.6-5.9c-2 1.3-4.5 2.1-6.8 2.1-7 0-12.8-4.7-14-11.3L3.1 28.1C6.9 36 14.6 41.5 24 41.5z" />
-            </svg>
-          </div>
-          <div className="sim-popup-body">
-            <div className="sim-popup-title">front-end-TEAxis</div>
-            <div className="sim-popup-sub">usuario.simulado@example.com</div>
-            <div className="sim-popup-message">{simPopupMessage}</div>
+          <div style={{ width: '100%', textAlign: 'center', fontWeight: 600, color: '#202124' }}>
+            Redirecionando..
           </div>
         </div>
       )}
