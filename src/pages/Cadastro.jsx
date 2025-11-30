@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import '../Styles/Cadastro.css'; 
+import '../Styles/Login.css'; // importa estilos do popup simulado
 import { FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
 
 // Endpoints da sua API de Registro. SUBSTITUA PELAS SUAS URLS REAIS!
 const API_REGISTRO_USUARIO = 'SUA_URL_DA_API/api/v1/usuarios/registro'; 
 const API_REGISTRO_PROFISSIONAL = 'SUA_URL_DA_API/api/v1/profissionais/registro'; 
-// NOVO ENDPOINT: Onde o backend recebe o token do Google para autenticar/cadastrar
+// Removido o fluxo real do Google. Mantemos apenas o modo simulado.
 const API_LOGIN_SOCIAL = 'SUA_URL_DA_API/api/v1/auth/google'; 
 
-const GOOGLE_CLIENT_ID = '758588038448-q7gogvej1nfkmftglh6669iv1huqkvu3.apps.googleusercontent.com'; 
+// ⚠️ MODO SIMULADO: definir true para testar o registo/login via Google sem backend
+const SIMULATED_GOOGLE_LOGIN = true;
 
 const Cadastro = () => {
     const navigate = useNavigate();
@@ -111,73 +113,32 @@ const Cadastro = () => {
     };
     
 
-    // FUNÇÃO DE LOGIN SOCIAL COM GOOGLE (GIS + API)
-    const handleGoogleLoginAPI = async (token) => {
-        try {
-            // 1. Envia o token JWT do Google + o tipo de perfil para o backend
-            const response = await fetch(API_LOGIN_SOCIAL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ 
-                    token: token,
-                    perfil_tipo: perfil // O backend saberá se deve registrar ou logar
-                })
-            });
+    // Estado e função para o popup simulado (mesmo comportamento do Login.jsx)
+    const [showSimPopup, setShowSimPopup] = useState(false);
+    const [simPopupMessage, setSimPopupMessage] = useState('');
 
-            if (!response.ok) {
-                 const errorData = await response.json();
-                 throw new Error(errorData.message || 'Falha na autenticação com Google na API.');
-            }
-
-            const data = await response.json();
-            
-            // 2. O backend retorna o token de autenticação (JWT próprio do TEAXIS)
-            const teaxisToken = data.token; 
-            
-            if (teaxisToken) {
-                // 3. Salva o token localmente e redireciona
-                localStorage.setItem('teaxis_auth_token', teaxisToken);
-                alert(`✅ Login Social bem-sucedido! Redirecionando para o Dashboard.`);
-                navigate('/dashboard-usuario');
-            }
-
-        } catch (error) {
-            alert(error.message);
-        }
-    };
-
-    // ⚠️ FUNÇÃO QUE INICIA O PROCESSO DO GOOGLE (Gatilha o pop-up ou redireciona)
-    const initGoogleLogin = () => {
+    const handleSimulatedGoogle = async () => {
         if (!perfil) {
-            alert("Por favor, selecione primeiro se você é Utilizador ou Profissional.");
+            alert('Por favor, selecione primeiro se você é Utilizador ou Profissional.');
             return;
         }
 
-        if (window.google && window.google.accounts && window.google.accounts.id) {
-            window.google.accounts.id.prompt(); // Inicia o processo de pop-up ou One Tap
-        } else {
-            alert("Serviços do Google ainda não carregados. Tente novamente em instantes.");
+        if (SIMULATED_GOOGLE_LOGIN) {
+            const token = `simulated_token_${Date.now()}`;
+            localStorage.setItem('teaxis_auth_token', token);
+            localStorage.setItem('login_method', 'google_simulated');
+            localStorage.setItem('user_email', email || 'usuario.simulado@example.com');
+            setSimPopupMessage('✅ Login/Cadastro Simulado bem-sucedido! Redirecionando...');
+            setShowSimPopup(true);
+            setTimeout(() => {
+                setShowSimPopup(false);
+                navigate('/dashboard-usuario');
+            }, 1500);
+            return;
         }
+
+        alert('Integração social removida — apenas modo simulado disponível.');
     };
-    
-    // ⚠️ useEffect para INICIALIZAR o GIS e manipular o token
-    React.useEffect(() => {
-        if (window.google) {
-            window.google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                // Função que captura o token JWT retornado pelo Google
-                callback: (response) => {
-                    // response.credential é o ID Token JWT
-                    if (response.credential) {
-                        handleGoogleLoginAPI(response.credential);
-                    }
-                },
-                ux_mode: "popup" 
-            });
-        }
-    }, [perfil, navigate]); 
 
     const PerfilSelector = () => (
         <div className="perfil-selector">
@@ -215,9 +176,9 @@ const Cadastro = () => {
                 Crie a sua conta como {tipo === 'usuario' ? 'Utilizador' : 'Profissional'}
             </h2>
 
-            {/* Login Social (CONECTADO) */}
-            <button type="button" className="btn btn-social btn-google mb-4" onClick={initGoogleLogin}>
-                <FaGoogle className="mr-2" /> Continuar com Google
+            {/* Login Social (agora apenas simulado) */}
+            <button type="button" className="btn btn-social btn-google mb-4" onClick={() => handleSimulatedGoogle()}>
+                <FaGoogle className="mr-2" /> Continuar com Google (Simulado)
             </button>
             
             <div className="divider mb-4">
@@ -343,6 +304,24 @@ const Cadastro = () => {
     return (
         <div className="cadastro-page-container">
             {perfil ? <CadastroForm tipo={perfil} /> : <PerfilSelector setPerfil={setPerfil} />}
+
+            {showSimPopup && (
+                <div className="sim-popup" role="dialog" aria-live="polite">
+                    <div className="sim-popup-left">
+                        <svg width="36" height="36" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#4285F4" d="M24 9.5c3.2 0 5.9 1.2 7.9 3.1l5.9-5.9C34.6 3.2 29.6 1.5 24 1.5 14.6 1.5 6.9 6.9 3.1 14.8l6.9 5.3C11.2 14.2 17 9.5 24 9.5z"/>
+                            <path fill="#34A853" d="M46.9 24.5c0-1-.1-1.8-.3-2.6H24v6.1h12.8c-.5 2.6-2.3 4.7-4.8 6.1l7.6 5.9C44.8 36.2 46.9 30.9 46.9 24.5z"/>
+                            <path fill="#FBBC05" d="M10 28.6c-.6-1.8-1-3.7-1-5.6s.4-3.8 1-5.6L3.1 12.1C1.1 15.7 0 19.8 0 24c0 4.2 1.1 8.3 3.1 11.9L10 28.6z"/>
+                            <path fill="#EA4335" d="M24 46.5c5.6 0 10.6-1.7 14.4-4.7l-7.6-5.9c-2 1.3-4.5 2.1-6.8 2.1-7 0-12.8-4.7-14-11.3L3.1 28.1C6.9 36 14.6 41.5 24 41.5z"/>
+                        </svg>
+                    </div>
+                    <div className="sim-popup-body">
+                        <div className="sim-popup-title">front-end-TEAxis</div>
+                        <div className="sim-popup-sub">{email || 'usuario.simulado@example.com'}</div>
+                        <div className="sim-popup-message">{simPopupMessage}</div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
