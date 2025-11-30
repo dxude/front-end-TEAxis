@@ -8,6 +8,7 @@ export default function ChatAxis() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false); // para notificação
   const bottomRef = useRef(null);
+  const STORAGE_KEY = "chataxis_history_v1";
 
   async function sendMessage(e) {
   e.preventDefault();
@@ -22,12 +23,20 @@ export default function ChatAxis() {
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: input, history: messages }), // <--- aqui
+      body: JSON.stringify({ message: input, history: [...messages, userMessage] }),
     });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error || "Erro na requisição");
+    }
 
     const data = await res.json();
     const botMessage = { sender: "bot", text: data.reply };
     setMessages((m) => [...m, botMessage]);
+
+    // Se o chat estiver fechado, exibe notificação visual
+    if (!isOpen) setHasNewMessage(true);
   } catch (err) {
     setMessages((m) => [
       ...m,
@@ -42,10 +51,50 @@ export default function ChatAxis() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
 
+  // Carrega histórico do localStorage ao montar
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed)) setMessages(parsed);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // Persiste histórico sempre que as mensagens mudam
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } catch (e) {
+      // ignore
+    }
+  }, [messages]);
+
   // Ao abrir o chat, limpa notificação
   function openChat() {
     setIsOpen(true);
     setHasNewMessage(false);
+  }
+
+  function clearHistory() {
+    setMessages([]);
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+  }
+
+  function sendQuick(text) {
+    setInput(text);
+    // enviar imediatamente
+    setTimeout(() => {
+      // find a way to submit: create synthetic event by calling sendMessage with a fake event
+      // we'll call the same logic by programmatically creating a form submit-like flow
+      const ev = { preventDefault: () => {} };
+      // set input and call sendMessage
+      setInput(text);
+      sendMessage(ev);
+    }, 100);
   }
 
   return (
@@ -68,12 +117,15 @@ export default function ChatAxis() {
             className="chat-axis-logo"
           />
           <span>ChatAxis</span>
-          <button
-            className="chat-axis-close"
-            onClick={() => setIsOpen(false)}
-          >
-            ✖
-          </button>
+          <div style={{display:'flex',gap:8,alignItems:'center'}}>
+            <button className="chataxis-clear" onClick={clearHistory} title="Limpar histórico">Limpar</button>
+            <button
+              className="chat-axis-close"
+              onClick={() => setIsOpen(false)}
+            >
+              ✖
+            </button>
+          </div>
         </div>
 
         <div className="chat-axis-messages">
@@ -90,6 +142,12 @@ export default function ChatAxis() {
           )}
 
           <div ref={bottomRef}></div>
+        </div>
+
+        <div className="chat-axis-quick-replies">
+          <button onClick={() => sendQuick("Estou ansioso")}>Estou ansioso</button>
+          <button onClick={() => sendQuick("Não consigo dormir")}>Não consigo dormir</button>
+          <button onClick={() => sendQuick("Quero ajuda com TDAH")}>TDAH</button>
         </div>
 
         <form className="chat-axis-input-area" onSubmit={sendMessage}>
