@@ -5,11 +5,7 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   resolve: {
-    alias: [
-      {
-        find: /^react-router$/,
-        replacement: path.resolve(__dirname, "src/vendor/react-router.js")
-      }
-    ]
+    // No alias: rely on normal node resolution for react-router/@remix-run/router
+    // If Vercel still fails, we'll add targeted optimizeDeps or a safe alias.
   }
 });
