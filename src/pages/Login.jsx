@@ -4,9 +4,9 @@ import ReCAPTCHA from "react-google-recaptcha";
 import "../Styles/Login.css";
 import { FaGoogle, FaEnvelope, FaLock } from "react-icons/fa";
 
-// Endpoints da sua API de Registro. SUBSTITUA PELA SUA URL
-const API_LOGIN_SOCIAL = "SUA_URL_DA_API/api/v1/auth/google";
-const API_LOGIN_EMAIL = "SUA_URL_DA_API/api/v1/auth/login";
+// Endpoints da sua API de Registro.
+const API_LOGIN_SOCIAL = "https://back-end-plataforma-teaxis.onrender.com/api/v1/auth/google";
+const API_LOGIN_EMAIL = "https://back-end-plataforma-teaxis.onrender.com/api/v1/auth/login";
 
 // ⚠️ MODO SIMULADO: defina como true para testar sem Google Cloud Console
 const SIMULATED_GOOGLE_LOGIN = true;
