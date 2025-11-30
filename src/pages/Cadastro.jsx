@@ -4,13 +4,10 @@ import '../Styles/Cadastro.css';
 import '../Styles/Login.css'; // importa estilos do popup simulado
 import { FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
 
-// Endpoints da sua API de Registro. SUBSTITUA PELAS SUAS URLS REAIS!
 const API_REGISTRO_USUARIO = 'SUA_URL_DA_API/api/v1/usuarios/registro'; 
 const API_REGISTRO_PROFISSIONAL = 'SUA_URL_DA_API/api/v1/profissionais/registro'; 
-// Removido o fluxo real do Google. Mantemos apenas o modo simulado.
 const API_LOGIN_SOCIAL = 'SUA_URL_DA_API/api/v1/auth/google'; 
 
-// ⚠️ MODO SIMULADO: definir true para testar o registo/login via Google sem backend
 const SIMULATED_GOOGLE_LOGIN = true;
 
 const Cadastro = () => {
@@ -178,7 +175,7 @@ const Cadastro = () => {
 
             {/* Login Social (agora apenas simulado) */}
             <button type="button" className="btn btn-social btn-google mb-4" onClick={() => handleSimulatedGoogle()}>
-                <FaGoogle className="mr-2" /> Continuar com Google (Simulado)
+                <FaGoogle className="mr-2" /> Continuar com Google
             </button>
             
             <div className="divider mb-4">

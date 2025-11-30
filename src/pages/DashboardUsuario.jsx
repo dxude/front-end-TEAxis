@@ -6,7 +6,7 @@ import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 export default function DashboardUsuario() {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState('Fulano de Tal');
+  const [userName, setUserName] = useState('Seja bem vindo(a)');
 
   const [activeLink, setActiveLink] = useState('home');
 

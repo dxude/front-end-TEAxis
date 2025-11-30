@@ -7,7 +7,7 @@ import defaultProfilePic from '../assets/imagens/default-profile.png';
 export default function Perfil() {
   const navigate = useNavigate();
 
-  const [userName, setUserName] = useState('Fulano');
+  const [userName, setUserName] = useState('O que deseja fazer?');
 
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');

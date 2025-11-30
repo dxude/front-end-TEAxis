@@ -27,7 +27,6 @@ const Login = () => {
     try {
       console.log("🔐 Token do Google recebido:", token ? token.slice(0, 50) + "..." : token);
 
-      // MODO SIMULADO: salva token fictício e redireciona
       if (SIMULATED_GOOGLE_LOGIN) {
         localStorage.setItem("teaxis_auth_token", token || `google_token_${Date.now()}`);
         localStorage.setItem("login_method", "google");
@@ -128,10 +127,9 @@ const Login = () => {
         {SIMULATED_GOOGLE_LOGIN && (
           <div style={{ textAlign: "center", marginBottom: "1rem", fontSize: "0.85rem", color: "#666" }}>
             <p>
-              📱 <strong>Modo Simulado Ativo</strong> — usando token simulado para testes
             </p>
             <button type="button" className="btn btn-social mb-4" onClick={() => handleGoogleLoginAPI(`simulated_token_${Date.now()}`)} style={{ marginTop: "0.5rem" }}>
-              <FaGoogle /> Login Simulado com Google
+              <FaGoogle /> Continuar com o Google
             </button>
           </div>
         )}
