@@ -15,7 +15,8 @@ export default function ChatAxis() {
   if (!input.trim()) return;
 
   const userMessage = { sender: "user", text: input };
-  setMessages((m) => [...m, userMessage]);
+  const updatedMessages = [...messages, userMessage];
+  setMessages(updatedMessages);
   setInput("");
   setLoading(true);
 
@@ -23,7 +24,7 @@ export default function ChatAxis() {
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: input, history: [...messages, userMessage] }),
+      body: JSON.stringify({ message: input, history: updatedMessages }),
     });
 
     if (!res.ok) {
@@ -38,6 +39,7 @@ export default function ChatAxis() {
     // Se o chat estiver fechado, exibe notificação visual
     if (!isOpen) setHasNewMessage(true);
   } catch (err) {
+    console.error("Chat error:", err);
     setMessages((m) => [
       ...m,
       { sender: "bot", text: "Erro ao conectar. Tenta de novo!" },
@@ -85,16 +87,39 @@ export default function ChatAxis() {
   }
 
   function sendQuick(text) {
-    setInput(text);
-    // enviar imediatamente
-    setTimeout(() => {
-      // find a way to submit: create synthetic event by calling sendMessage with a fake event
-      // we'll call the same logic by programmatically creating a form submit-like flow
-      const ev = { preventDefault: () => {} };
-      // set input and call sendMessage
-      setInput(text);
-      sendMessage(ev);
-    }, 100);
+    // criar uma mensagem e enviar logo
+    const userMessage = { sender: "user", text };
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
+    setLoading(true);
+
+    (async () => {
+      try {
+        const res = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, history: updatedMessages }),
+        });
+
+        if (!res.ok) {
+          throw new Error("Erro na requisição");
+        }
+
+        const data = await res.json();
+        const botMessage = { sender: "bot", text: data.reply };
+        setMessages((m) => [...m, botMessage]);
+
+        if (!isOpen) setHasNewMessage(true);
+      } catch (err) {
+        console.error("Quick reply error:", err);
+        setMessages((m) => [
+          ...m,
+          { sender: "bot", text: "Erro ao conectar. Tenta de novo!" },
+        ]);
+      }
+
+      setLoading(false);
+    })();
   }
 
   return (
