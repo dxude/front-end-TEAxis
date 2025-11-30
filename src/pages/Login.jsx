@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom"; 
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import ReCAPTCHA from "react-google-recaptcha"; 
 import "../Styles/Login.css";
 import { FaGoogle, FaEnvelope, FaLock } from "react-icons/fa";
@@ -8,7 +9,7 @@ import { FaGoogle, FaEnvelope, FaLock } from "react-icons/fa";
 const API_LOGIN_SOCIAL = 'SUA_URL_DA_API/api/v1/auth/google'; 
 const API_LOGIN_EMAIL = 'SUA_URL_DA_API/api/v1/auth/login'; 
 
-const GOOGLE_CLIENT_ID = 'I758588038448-q7gogvej1nfkmftglh6669iv1huqkvu3.apps.googleusercontent.com'; 
+const GOOGLE_CLIENT_ID = '758588038448-q7gogvej1nfkmftglh6669iv1huqkvu3.apps.googleusercontent.com'; 
 
 const Login = () => {
     const navigate = useNavigate();
@@ -22,6 +23,19 @@ const Login = () => {
 
     const handleGoogleLoginAPI = async (token) => {
         try {
+            console.log('🔐 Token do Google recebido:', token.substring(0, 50) + '...');
+            
+            // Verifica se a API está configurada
+            if (API_LOGIN_SOCIAL.includes('SUA_URL_DA_API')) {
+                // Modo de teste/desenvolvimento: salva o token no localStorage e simula sucesso
+                console.log('⚠️ API_LOGIN_SOCIAL não configurada. Modo teste ativado.');
+                localStorage.setItem('teaxis_auth_token', token);
+                localStorage.setItem('login_method', 'google');
+                alert(`✅ Login Social bem-sucedido (TESTE)! Redirecionando para o Dashboard.`);
+                navigate('/dashboard-usuario');
+                return;
+            }
+
             // 1. Envia o token JWT do Google para o backend
             const response = await fetch(API_LOGIN_SOCIAL, {
                 method: 'POST',
@@ -47,45 +61,26 @@ const Login = () => {
             if (teaxisToken) {
                 // 3. Salva o token localmente e redireciona
                 localStorage.setItem('teaxis_auth_token', teaxisToken);
+                localStorage.setItem('login_method', 'google');
                 alert(`✅ Login Social bem-sucedido! Redirecionando para o Dashboard.`);
                 navigate('/dashboard-usuario');
             }
 
         } catch (error) {
+            console.error('❌ Erro no login social:', error);
             alert(error.message);
         }
     };
 
-    // ⚠️ useEffect para INICIALIZAR o GIS e manipular o token
+    // ⚠️ useEffect para INICIALIZAR o GIS (não mais necessário com @react-oauth/google)
     React.useEffect(() => {
-        if (window.google) {
-            window.google.accounts.id.initialize({
-                client_id: GOOGLE_CLIENT_ID,
-                // Função que captura o token JWT retornado pelo Google
-                callback: (response) => {
-                    // response.credential é o ID Token JWT
-                    if (response.credential) {
-                        handleGoogleLoginAPI(response.credential);
-                    }
-                },
-                // Define o modo de UX
-                ux_mode: "popup" 
-            });
-        }
-        // Limpeza é crucial se este componente for desmontado rapidamente
-        return () => {
-             if (window.google) {
-                 window.google.accounts.id.cancel(); 
-             }
-        };
+        // A biblioteca @react-oauth/google cuida da inicialização do Google
+        console.log('✅ Login.jsx carregado e pronto para Google Sign-In');
     }, [navigate]); 
 
     const handleGoogleLoginInit = () => {
-        if (window.google && window.google.accounts && window.google.accounts.id) {
-            window.google.accounts.id.prompt(); // Inicia o processo de pop-up ou One Tap
-        } else {
-            alert("Serviços do Google ainda não carregados. Tente novamente em instantes.");
-        }
+        // O botão GoogleLogin cuida de tudo — não precisa chamar nada aqui
+        console.log('Google Sign-In button clicado');
     };
 
     const handleLogin = async (e) => {
@@ -124,66 +119,76 @@ const Login = () => {
     };
 
     return (
-        <div className="cadastro-page-container">
-            <div className="login-form-card"> 
-                <h2>Bem-vindo(a) de volta! 👋</h2>
+        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <div className="cadastro-page-container">
+                <div className="login-form-card"> 
+                    <h2>Bem-vindo(a) de volta! 👋</h2>
 
-                {/* BOTÃO DO GOOGLE CONECTADO AO FLUXO DA API */}
-                <button 
-                    type="button" 
-                    className="btn btn-social mb-4"
-                    onClick={handleGoogleLoginInit} 
-                >
-                    <FaGoogle /> Entrar com Google
-                </button>
-
-                <div className="divider">OU ENTRE COM EMAIL</div>
-
-                <form onSubmit={handleLogin}>
-                    <div className="input-group">
-                        <label>
-                            <FaEnvelope /> Email:
-                        </label>
-                        <input 
-                            type="email" 
-                            placeholder="Seu email" 
-                            required 
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                    {/* BOTÃO DO GOOGLE CONECTADO AO FLUXO DA API */}
+                    <div className="mb-4" style={{ display: 'flex', justifyContent: 'center' }}>
+                        <GoogleLogin
+                            onSuccess={(credentialResponse) => {
+                                console.log('✅ Google login sucesso:', credentialResponse);
+                                handleGoogleLoginAPI(credentialResponse.credential);
+                            }}
+                            onError={() => {
+                                console.error('❌ Falha no login do Google');
+                                alert('Falha ao fazer login com Google. Tente novamente.');
+                            }}
+                            theme="outline"
+                            size="large"
+                            text="signin_with"
                         />
                     </div>
 
-                    <div className="input-group">
-                        <label>
-                            <FaLock /> Senha:
-                        </label>
-                        <input 
-                            type="password" 
-                            placeholder="Sua senha" 
-                            required
-                            value={senha}
-                            onChange={(e) => setSenha(e.target.value)}
-                        />
-                    </div>
-                    
-                    {/* === reCAPTCHA === */}
-                    <div className="captcha-wrapper">
-                        <ReCAPTCHA
-                            sitekey="6Lfu2QssAAAAAO7L1Os1H12CYVrIxj0LH1Ck6c6E"
-                            onChange={handleCaptcha}
-                        />
-                    </div>
+                    <div className="divider">OU ENTRE COM EMAIL</div>
 
-                    <button type="submit" className="btn btn-primary-green btn-full">
-                        ENTRAR
-                    </button>
-                </form>
+                    <form onSubmit={handleLogin}>
+                        <div className="input-group">
+                            <label>
+                                <FaEnvelope /> Email:
+                            </label>
+                            <input 
+                                type="email" 
+                                placeholder="Seu email" 
+                                required 
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
 
-                <p className="login-link mt-4 text-center">
-                    Não tem conta? <a href="/cadastro">Crie sua conta aqui!</a>
-                </p>
+                        <div className="input-group">
+                            <label>
+                                <FaLock /> Senha:
+                            </label>
+                            <input 
+                                type="password" 
+                                placeholder="Sua senha" 
+                                required
+                                value={senha}
+                                onChange={(e) => setSenha(e.target.value)}
+                            />
+                        </div>
+                        
+                        {/* === reCAPTCHA === */}
+                        <div className="captcha-wrapper">
+                            <ReCAPTCHA
+                                sitekey="6Lfu2QssAAAAAO7L1Os1H12CYVrIxj0LH1Ck6c6E"
+                                onChange={handleCaptcha}
+                            />
+                        </div>
+
+                        <button type="submit" className="btn btn-primary-green btn-full">
+                            ENTRAR
+                        </button>
+                    </form>
+
+                    <p className="login-link mt-4 text-center">
+                        Não tem conta? <a href="/cadastro">Crie sua conta aqui!</a>
+                    </p>
+                </div>
             </div>
-        </div>
+        </GoogleOAuthProvider>
     );
 };
 
