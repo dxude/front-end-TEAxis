@@ -22,158 +22,143 @@ export default defineConfig({
             try {
               const { message, history = [] } = JSON.parse(body);
 
-              // Local response generator (humanized, same as in api/chat.js)
+              // Local response generator (humanized, with TEAxis knowledge)
               const generateLocalReply = (msg, history) => {
                 const text = msg.toLowerCase().trim();
                 
-                const responseVariants = {
-                  greeting: [
-                    "Oi! Fico feliz em conversar com você. Como posso ajudar?",
-                    "Olá! Bem-vindo ao ChatAxis. Estou aqui para ouvir e ajudar. O que tá acontecendo?",
-                    "E aí! Tudo bem? Pode contar comigo — estou aqui para ajudar.",
-                  ],
-                  listening: [
-                    "Entendo — obrigado por compartilhar isso comigo.",
-                    "Tá certo, estou ouvindo. Continue, fico aqui pra te apoiar.",
-                    "Sério? Isso deve ser difícil. Me conta mais sobre isso.",
-                  ],
-                  thanks: [
-                    "Fico feliz em ajudar! Quer explorar mais alguma coisa?",
-                    "Que bom! Espero ter contribuído. Tem mais algo em que eu possa ajudar?",
-                    "Que legal que gostou! Se precisar de mais dicas ou de um profissional, é só chamar.",
-                  ],
-                };
-
                 const professions = {
                   ansiedade: {
-                    prof: "psicólogo(a) ou psiquiatra",
                     tips: ["Técnicas de respiração podem ajudar agora", "Exercício físico é ótimo para ansiedade", "Limitar cafeína também ajuda"],
                     questions: ["Quando começou essa ansiedade?", "Tem algo específico que dispara isso?", "Isso afeta seu sono ou dia a dia?"],
+                    teaxis_msg: "No TEAxis você encontra profissionais especializados em ansiedade que oferecem técnicas eficazes!",
                   },
                   depressao: {
-                    prof: "psicólogo(a) especializado em depressão",
                     tips: ["Buscar apoio de pessoas próximas é importante", "Pequenas atividades ajudam", "Não ache ruim buscar medicação se precisar"],
                     questions: ["Há quanto tempo sente isso?", "Está afetando sua rotina?", "Tem alguém de confiança para conversar?"],
+                    teaxis_msg: "Com o TEAxis você pode agendar consultas regularmente e acompanhar sua evolução com um profissional confiável.",
                   },
                   tdah: {
-                    prof: "psicólogo(a) ou neuropsicólogo com experiência em TDAH",
                     tips: ["Rotinas estruturadas ajudam muito", "Listas de tarefas visuais são aliadas", "Terapia comportamental funciona bem"],
                     questions: ["Tem dificuldade pra se concentrar?", "Desde criança ou só agora?", "Isso afeta o trabalho/estudo?"],
+                    teaxis_msg: "No TEAxis você conecta com especialistas em TDAH que entendem os desafios reais!",
                   },
                   autismo: {
-                    prof: "neurologista ou psiquiatra infantil",
                     tips: ["Cada pessoa no espectro é única", "Aceitar suas características é importante", "Rotinas e previsibilidade ajudam"],
-                    questions: ["Quando percebeu essas características?", "Quer avaliar ou só entender melhor?", "Tem alguém ajudando você nesse processo?"],
+                    questions: ["Quando percebeu essas características?", "Quer avaliar ou só entender melhor?", "Tem alguém ajudando você?"],
+                    teaxis_msg: "No TEAxis você encontra profissionais que celebram a neurodiversidade!",
                   },
                   sono: {
-                    prof: "psiquiatra do sono ou clínico geral",
                     tips: ["Reduzir tela antes de dormir ajuda", "Horário regular de sono é importante", "Um quarto escuro e frio é ideal"],
                     questions: ["Há quanto tempo tem dificuldade de dormir?", "Acorda no meio da noite?", "Estresse pode estar envolvido?"],
+                    teaxis_msg: "Com o TEAxis você agenda consultas rápidas e resuelve problemas de sono com segurança!",
                   },
                   estresse: {
-                    prof: "psicólogo(a) ou coach de bem-estar",
                     tips: ["Pausas durante o dia fazem diferença", "Meditação ou yoga podem ajudar", "Estabelecer limites é essencial"],
                     questions: ["O que tá causando esse estresse?", "Como tá sua vida profissional/pessoal?", "Tem tempo pra relaxar?"],
+                    teaxis_msg: "No TEAxis você encontra profissionais especializados em controle de estresse e bem-estar!",
                   },
                 };
 
                 const pickRandom = (arr) => arr[Math.floor(Math.random() * arr.length)];
                 const hasHistoryContext = history && history.length > 0;
 
-                // 1. Greeting
-                if (/^(oi|olá|opa|hey|e aí|tudo bem|opa|oi[!.]|olá[!.])/i.test(text)) {
-                  return pickRandom(responseVariants.greeting);
+                // Saudações
+                if (/^(oi|olá|opa|hey|e aí|tudo bem)/i.test(text)) {
+                  const greetings = [
+                    "Oi! Fico feliz em conversar com você. Como posso ajudar?",
+                    "Olá! Bem-vindo ao ChatAxis. Estou aqui para ouvir e ajudar. O que tá acontecendo?",
+                    "E aí! Tudo bem? Pode contar comigo — estou aqui para ajudar.",
+                  ];
+                  return pickRandom(greetings);
                 }
 
-                // 2. Thanks
+                // Perguntas sobre TEAxis
+                if (/(teaxis|como funciona|o que é|vantagens|agendamento|profissionais|plataforma|site)/i.test(text)) {
+                  const teaxis_responses = [
+                    "O TEAxis é uma plataforma que conecta pessoas neurodivergentes como você a profissionais especializados! Você consegue buscar, agendar consultas e acompanhar sua evolução — tudo de forma segura e com respeito. Quer saber mais?",
+                    "No TEAxis você encontra profissionais de vários tipos (psicólogos, terapeutas, pedagogos), agenda consultas online com facilidade, e tudo fica seguro e organizado. A melhor parte? Um matching inteligente que te recomenda profissionais que combinam com você!",
+                    "TEAxis oferece: busca de profissionais, agendamento fácil, segurança de dados, acompanhamento de metas, e um espaço acolhedor. É feito especialmente para neurodivergentes! Tem algo específico que você gostaria de saber?",
+                  ];
+                  return pickRandom(teaxis_responses);
+                }
+
+                // Agradecimentos
                 if (/(obrigad|valeu|thanks|obg|muito bom|legal)/i.test(text)) {
-                  return pickRandom(responseVariants.thanks);
+                  return "Que bom! Se precisar de mais dicas ou de um profissional, é só chamar. No TEAxis você encontra muitas opções!";
                 }
 
-                // 3. Anxiety/stress
+                // Ansiedade
                 if (/(ansiedade|ansioso|ansiosa|ataque de pânico|pânico|nervoso|nervosa|com medo)/i.test(text)) {
-                  const prof = professions.ansiedade;
-                  const tip = pickRandom(prof.tips);
-                  const q = pickRandom(prof.questions);
-                  return `Ansiedade é bem comum, sabia? Muita gente passa por isso. ${tip}. E aí, ${q}`;
+                  const p = professions.ansiedade;
+                  return `Ansiedade é bem comum, saiba que você não está sozinho. ${pickRandom(p.tips)}. ${pickRandom(p.questions)} ${p.teaxis_msg}`;
                 }
 
-                // 4. Depression
-                if (/(depress|triste|tristeza|desanim|sem vontade|tudo cinza|vontade de morrer)/i.test(text)) {
-                  if (/vontade de morrer|suicid|acabar/.test(text)) {
-                    return "Sinto que você está em um lugar muito escuro agora. Mas quero que saiba que não está sozinho. Se está em risco, por favor procure ajuda IMEDIATA: SAMU 192 (Brasil), Disque 188, ou vá ao PS mais próximo. Tem também o CVV (1140-155-000). Você merece ajuda profissional agora.";
+                // Depressão/suicídio
+                if (/(depress|triste|tristeza|desanim|sem vontade|vontade de morrer)/i.test(text)) {
+                  if (/morrer|suicid|acabar/.test(text)) {
+                    return "Sinto que você está em um lugar muito escuro. Você NÃO está sozinho. Procure ajuda IMEDIATA: SAMU 192, Disque 188, CVV (1140-155-000) ou vá ao PS. No TEAxis você pode conectar com profissionais qualificados. Você merece ajuda agora.";
                   }
-                  const prof = professions.depressao;
-                  const tip = pickRandom(prof.tips);
-                  const q = pickRandom(prof.questions);
-                  return `Depressão é real e tratável. Você não está sozinho nisso. ${tip}. Diga-me, ${q}`;
+                  const p = professions.depressao;
+                  return `Depressão é real e tratável. Você não está sozinho. ${pickRandom(p.tips)}. ${pickRandom(p.questions)} ${p.teaxis_msg}`;
                 }
 
-                // 5. ADHD
+                // TDAH
                 if (/(tdah|atenção|distraído|hiperatividade|não consigo me concentrar|desorganizado)/i.test(text)) {
-                  const prof = professions.tdah;
-                  const tip = pickRandom(prof.tips);
-                  const q = pickRandom(prof.questions);
-                  return `TDAH afeta muita gente — e tem tratamento! ${tip}. Me ajuda a entender: ${q}`;
+                  const p = professions.tdah;
+                  return `TDAH afeta muita gente — tem tratamento! ${pickRandom(p.tips)}. ${pickRandom(p.questions)} ${p.teaxis_msg}`;
                 }
 
-                // 6. Autism
+                // Autismo
                 if (/(autis|autismo|asperger|espectro)/i.test(text)) {
-                  const prof = professions.autismo;
-                  const tip = pickRandom(prof.tips);
-                  const q = pickRandom(prof.questions);
-                  return `Neurodiversidade é beleza! ${tip}. Por curiosidade, ${q}`;
+                  const p = professions.autismo;
+                  return `Neurodiversidade é beleza! ${pickRandom(p.tips)}. ${pickRandom(p.questions)} ${p.teaxis_msg}`;
                 }
 
-                // 7. Sleep
+                // Sono
                 if (/(insônia|sono|dormir|acordar|cansaço|insone)/i.test(text)) {
-                  const prof = professions.sono;
-                  const tip = pickRandom(prof.tips);
-                  const q = pickRandom(prof.questions);
-                  return `Sono ruim afeta tudo mesmo. ${tip}. Deixa eu entender melhor: ${q}`;
+                  const p = professions.sono;
+                  return `Sono ruim afeta tudo mesmo. ${pickRandom(p.tips)}. ${pickRandom(p.questions)} ${p.teaxis_msg}`;
                 }
 
-                // 8. Stress
+                // Estresse
                 if (/(estresse|sobrecarregado|burnout|cansado|saturado|muita pressão)/i.test(text)) {
-                  const prof = professions.estresse;
-                  const tip = pickRandom(prof.tips);
-                  const q = pickRandom(prof.questions);
-                  return `Estresse é normal, mas não pode tomar conta. ${tip}. Fala comigo: ${q}`;
+                  const p = professions.estresse;
+                  return `Estresse é normal, mas não pode controlar sua vida. ${pickRandom(p.tips)}. ${pickRandom(p.questions)} ${p.teaxis_msg}`;
                 }
 
-                // 9. Help request
-                if (/(ajuda|o que faço|não sei|como lidar|dica|conselho|preciso de ajuda|me ajuda)/i.test(text)) {
-                  if (hasHistoryContext) {
-                    const lastUserMsg = history.slice().reverse().find((m) => m.sender === "user")?.text || "";
-                    return `Entendi. Deixa eu resumir: você falou de "${lastUserMsg.slice(0, 60)}..." e quer saber como lidar com isso, certo? Depende de alguns detalhes — pode me contar mais?`;
-                  }
-                  return "Fico feliz que me procurou! Pra eu te dar a melhor ajuda, me conta um pouco mais sobre o que tá acontecendo?";
+                // Ajuda/recomendação
+                if (/(ajuda|o que faço|não sei|como lidar|dica|conselho|preciso|me ajuda)/i.test(text)) {
+                  return "Fico feliz que me procurou! Me conta mais sobre o que tá acontecendo, e depois posso recomendar um profissional no TEAxis que pode te ajudar!";
                 }
 
-                // 10. Affirmation
-                if (/(sim|é verdade|exato|com certeza|de fato)/i.test(text)) {
-                  return "Ótimo, então temos um ponto em comum aqui. Como isso tá afetando você?";
+                // Cadastro
+                if (/(cadastro|me registrar|como entrar|criar conta|sign up|login)/i.test(text)) {
+                  return "Para começar no TEAxis, acesse a página de cadastro. Escolha se você é usuário (buscando apoio) ou profissional. Preencha suas informações, e em poucos passos você já consegue encontrar profissionais!";
                 }
 
-                // 11. Negation
-                if (/(não|nope|acho que não|de jeito nenhum)/i.test(text)) {
-                  return "Tá, entendi. Que tal explorar uma outra angle então?";
+                // Segurança
+                if (/(segurança|privacidade|dados|confiança|seguro)/i.test(text)) {
+                  return "Segurança é essencial! No TEAxis seus dados estão protegidos, privacidade garantida, com criptografia e conformidade com leis. Você pode confiar plenamente! 🔒";
                 }
 
-                // 12. Professional inquiry
+                // Agendamento
+                if (/(agendamento|consulta|sessão|marcar|horário|online)/i.test(text)) {
+                  return "No TEAxis agendar é muito simples! Escolha o profissional, veja a disponibilidade, marca dia e hora. As sessões são online, seguras e você acompanha tudo na plataforma!";
+                }
+
+                // Profissional
                 if (/(qual.*profissional|onde.*procurar|como.*encontrar|recomendação|tipo de.*médico)/i.test(text)) {
-                  return "Depende bastante do que você tá sentindo. Se falou algo que reconheci antes, já tenho uma ideia. Senão, me conta melhor aonde dói — e eu te aponto pra frente certa!";
+                  return "Ótimo que quer procurar ajuda profissional! Me conta mais sobre o que você tá sentindo, e depois você busca no TEAxis, que tem uma ótima seleção de profissionais qualificados!";
                 }
 
-                // 13. Generic contextual responses
+                // Genérico
                 const genericResponses = [
-                  "Entendo. Pode me contar um pouquinho mais sobre isso? Quero realmente entender sua situação.",
+                  "Entendo. Pode me contar um pouquinho mais? Quero realmente entender sua situação.",
                   "Bacana. E como você tá se sentindo com tudo isso agora?",
                   "Interessante. Isso é algo que vem de há tempo ou é mais recente?",
                   "Tá certo. Qual é a parte que mais tá te incomodando?",
-                  "Faz sentido. Tem algo específico que dispara isso ou é mais uma coisa constante?",
-                  "Ah, entendi. E você já conversou com alguém sobre isso — amigos, família, profissional?",
-                  "Bacana demais. Acha que consegue me dar mais detalhes?",
+                  "Faz sentido. Tem algo específico que dispara isso?",
+                  "Ah, entendi. E você já conversou com alguém — amigos, família, ou profissional?",
                 ];
 
                 return pickRandom(genericResponses);
