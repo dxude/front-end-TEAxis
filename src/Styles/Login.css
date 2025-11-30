@@ -160,3 +160,36 @@
         max-width: 95%;
     }
 }
+
+/* Simulated Google popup styling */
+.sim-popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+    padding: 12px 14px;
+    z-index: 9999;
+    width: 360px;
+    gap: 12px;
+    animation: simPopupIn 240ms ease-out;
+}
+.sim-popup-left svg { border-radius: 6px; }
+.sim-popup-body { flex: 1; }
+.sim-popup-title { font-weight: 700; color: #202124; font-size: 0.98rem; }
+.sim-popup-sub { color: #5f6368; font-size: 0.85rem; margin-top: 2px; }
+.sim-popup-message { margin-top: 8px; color: #202124; font-size: 0.95rem; }
+
+@keyframes simPopupIn {
+    from { transform: translateX(-50%) translateY(-8px); opacity: 0; }
+    to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+/* Small responsive tweak */
+@media (max-width: 420px) {
+    .sim-popup { width: calc(100% - 32px); left: 16px; transform: none; }
+}

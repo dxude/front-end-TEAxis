@@ -11,11 +11,17 @@ const API_LOGIN_EMAIL = 'SUA_URL_DA_API/api/v1/auth/login';
 
 const GOOGLE_CLIENT_ID = '758588038448-q7gogvej1nfkmftglh6669iv1huqkvu3.apps.googleusercontent.com'; 
 
+// ⚠️ MODO SIMULADO: defina como true para testar sem Google Cloud Console
+const SIMULATED_GOOGLE_LOGIN = true;
+
 const Login = () => {
     const navigate = useNavigate();
     const [captchaValido, setCaptchaValido] = useState(false);
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
+    // Popup state for simulated login
+    const [showSimPopup, setShowSimPopup] = useState(false);
+    const [simPopupMessage, setSimPopupMessage] = useState('');
 
     const handleCaptcha = (value) => {
         setCaptchaValido(!!value);
@@ -24,6 +30,24 @@ const Login = () => {
     const handleGoogleLoginAPI = async (token) => {
         try {
             console.log('🔐 Token do Google recebido:', token.substring(0, 50) + '...');
+            
+            // ⚠️ MODO SIMULADO
+            if (SIMULATED_GOOGLE_LOGIN) {
+                console.log('📱 MODO SIMULADO ATIVO: salvando token simulado no localStorage');
+                localStorage.setItem('teaxis_auth_token', token || `google_token_${Date.now()}`);
+                localStorage.setItem('login_method', 'google');
+                localStorage.setItem('user_email', 'walbepereira@gmail.com');
+                // show styled popup
+                const codespaceName = 'front-end-TEAxis';
+                setSimPopupMessage(`✅ Login Simulado bem-sucedido! Redirecionando para o Dashboard.`);
+                setShowSimPopup(true);
+                // auto close and redirect
+                setTimeout(() => {
+                    setShowSimPopup(false);
+                    navigate('/dashboard-usuario');
+                }, 1500);
+                return;
+            }
             
             // Verifica se a API está configurada
             if (API_LOGIN_SOCIAL.includes('SUA_URL_DA_API')) {
@@ -62,8 +86,13 @@ const Login = () => {
                 // 3. Salva o token localmente e redireciona
                 localStorage.setItem('teaxis_auth_token', teaxisToken);
                 localStorage.setItem('login_method', 'google');
-                alert(`✅ Login Social bem-sucedido! Redirecionando para o Dashboard.`);
-                navigate('/dashboard-usuario');
+                // show styled popup for real flow too
+                setSimPopupMessage(`✅ Login Social bem-sucedido! Redirecionando para o Dashboard.`);
+                setShowSimPopup(true);
+                setTimeout(() => {
+                    setShowSimPopup(false);
+                    navigate('/dashboard-usuario');
+                }, 1500);
             }
 
         } catch (error) {
@@ -141,6 +170,20 @@ const Login = () => {
                         />
                     </div>
 
+                        {SIMULATED_GOOGLE_LOGIN && (
+                            <div style={{ textAlign: 'center', marginBottom: '1rem', fontSize: '0.85rem', color: '#666' }}>
+                                <p>📱 <strong>Modo Simulado Ativo</strong> — usando token simulado para testes</p>
+                                <button
+                                    type="button"
+                                    className="btn btn-social mb-4"
+                                    onClick={() => handleGoogleLoginAPI(`simulated_token_${Date.now()}`)}
+                                    style={{ marginTop: '0.5rem' }}
+                                >
+                                    <FaGoogle /> Login Simulado com Google
+                                </button>
+                            </div>
+                        )}
+
                     <div className="divider">OU ENTRE COM EMAIL</div>
 
                     <form onSubmit={handleLogin}>
@@ -187,6 +230,23 @@ const Login = () => {
                         Não tem conta? <a href="/cadastro">Crie sua conta aqui!</a>
                     </p>
                 </div>
+                    {showSimPopup && (
+                        <div className="sim-popup" role="dialog" aria-live="polite">
+                            <div className="sim-popup-left">
+                                <svg width="36" height="36" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill="#4285F4" d="M24 9.5c3.2 0 5.9 1.2 7.9 3.1l5.9-5.9C34.6 3.2 29.6 1.5 24 1.5 14.6 1.5 6.9 6.9 3.1 14.8l6.9 5.3C11.2 14.2 17 9.5 24 9.5z"/>
+                                    <path fill="#34A853" d="M46.9 24.5c0-1-.1-1.8-.3-2.6H24v6.1h12.8c-.5 2.6-2.3 4.7-4.8 6.1l7.6 5.9C44.8 36.2 46.9 30.9 46.9 24.5z"/>
+                                    <path fill="#FBBC05" d="M10 28.6c-.6-1.8-1-3.7-1-5.6s.4-3.8 1-5.6L3.1 12.1C1.1 15.7 0 19.8 0 24c0 4.2 1.1 8.3 3.1 11.9L10 28.6z"/>
+                                    <path fill="#EA4335" d="M24 46.5c5.6 0 10.6-1.7 14.4-4.7l-7.6-5.9c-2 1.3-4.5 2.1-6.8 2.1-7 0-12.8-4.7-14-11.3L3.1 28.1C6.9 36 14.6 41.5 24 41.5z"/>
+                                </svg>
+                            </div>
+                            <div className="sim-popup-body">
+                                <div className="sim-popup-title">front-end-TEAxis</div>
+                                <div className="sim-popup-sub">walbepereira@gmail.com</div>
+                                <div className="sim-popup-message">{simPopupMessage}</div>
+                            </div>
+                        </div>
+                    )}
             </div>
         </GoogleOAuthProvider>
     );
