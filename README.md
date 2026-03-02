@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # TEAxis – Plataforma de Acompanhamento Terapêutico para Neurodivergentes
 
 ## 💡 Sobre o projeto
