@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../Styles/Login.css";
 import { FaGoogle, FaEnvelope, FaLock } from "react-icons/fa";
-import { signInWithGoogle } from "../firebaseConfig"; // ajuste o caminho conforme seu projeto
+import { signInWithGoogle } from "../firebase";
 
 const API_LOGIN_EMAIL = "https://back-end-plataforma-teaxis.onrender.com/api/v1/auth/login";
 
