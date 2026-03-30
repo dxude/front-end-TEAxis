@@ -105,16 +105,17 @@ export default function BuscarProfissionais() {
         <p className="subtitle">Utilize a busca e os filtros para encontrar profissionais que entendam suas necessidades.</p>
 
         <form onSubmit={handleSearch} className="search-form">
-          <input
-            type="text"
-            placeholder="Pesquisar por nome do profissional..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-          <div className="filters-group">
-            <select value={especializacao} onChange={(e) => setEspecializacao(e.target.value)} className="filter-select">
-              <option value="">Especialização</option>
+  <input
+    type="text"
+    placeholder="Pesquisar por nome..."
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    className="search-input"
+  />
+  
+  <div className="filters-group">
+    <select value={especializacao} onChange={(e) => setEspecializacao(e.target.value)} className="filter-select">
+      <option value="">Especialização</option>
               <option value="psicologia">Psicologia</option>
               <option value="terapia ocupacional">Terapia Ocupacional</option>
               <option value="psicopedagogia">Psicopedagogia</option>
