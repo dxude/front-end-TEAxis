@@ -16,6 +16,11 @@ const Home = () => {
     section?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const scrollToBottom = () => {
+    const section = document.querySelector('.cta-section');
+    section?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   // efeito de fade-in ao rolar a página
   useEffect(() => {
     const elements = document.querySelectorAll('.fade-in');
@@ -42,7 +47,7 @@ const Home = () => {
           <h1>Conectamos você a profissionais que entendem o seu jeito de aprender e crescer.</h1>
           <p>O Axis te guia na busca pelo especialista ideal para o seu desenvolvimento.</p>
           <div className="hero-buttons">
-            <button className="btn btn-primary" onClick={handleCadastro}>
+            <button className="btn btn-primary" onClick={scrollToBottom}>
               Encontre Seu Especialista
             </button>
             <button className="btn btn-secondary" onClick={scrollToComoFunciona}>

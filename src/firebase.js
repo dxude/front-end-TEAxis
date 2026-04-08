@@ -5,12 +5,19 @@ const firebaseConfig = {
   apiKey: "AIzaSyBiztuOiweQqp3zhO29pbidEA_biLYstSU",
   authDomain: "teaxis.firebaseapp.com",
   projectId: "teaxis",
-  appId: "1:220465530060:web:26d15d0167d779a15bee69"
+  storageBucket: "teaxis.firebasestorage.app",
+  messagingSenderId: "220465530060",
+  appId: "1:220465530060:web:26d15d0167d779a15bee69",
+  measurementId: "G-M737SM8YN6"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+
+// Configurar escopos adicionais para o Google
+provider.addScope('profile');
+provider.addScope('email');
 
 const signInWithGoogle = async () => {
   try {
@@ -20,7 +27,11 @@ const signInWithGoogle = async () => {
 
     return { user, token };
   } catch (error) {
-    console.error("Erro no login com Google:", error);
+    console.error("Erro detalhado no login com Google:", {
+      code: error.code,
+      message: error.message,
+      error: error
+    });
     throw error;
   }
 };

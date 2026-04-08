@@ -34,7 +34,23 @@ const Login = () => {
       alert("✅ Login com Google realizado com sucesso!");
       navigate("/dashboard-usuario");
     } catch (error) {
-      alert("Erro ao fazer login com Google. Por favor, tente novamente.");
+      console.error("Detalhes do erro de login com Google:", error);
+      console.error("Código do erro:", error.code);
+      console.error("Mensagem do erro:", error.message);
+      
+      let mensagemErro = "Erro ao fazer login com Google. Por favor, tente novamente.";
+      
+      if (error.code === "auth/popup-blocked") {
+        mensagemErro = "O popup foi bloqueado. Verifique as configurações do seu navegador.";
+      } else if (error.code === "auth/cancelled-popup-request") {
+        mensagemErro = "Login cancelado.";
+      } else if (error.code === "auth/operation-not-supported-in-this-environment") {
+        mensagemErro = "Login com Google não disponível neste ambiente.";
+      } else if (error.code === "auth/unauthorized-domain") {
+        mensagemErro = "Domínio não autorizado. Contate o suporte.";
+      }
+      
+      alert(mensagemErro);
     } finally {
       setLoadingGoogle(false);
     }
