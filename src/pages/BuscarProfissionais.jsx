@@ -105,68 +105,98 @@ export default function BuscarProfissionais() {
         <p className="subtitle">Utilize a busca e os filtros para encontrar profissionais que entendam suas necessidades.</p>
 
         <form onSubmit={handleSearch} className="search-form">
-  <input
-    type="text"
-    placeholder="Pesquisar por nome..."
-    value={searchTerm}
-    onChange={(e) => setSearchTerm(e.target.value)}
-    className="search-input"
-  />
+  {/* Campo de Nome com Ícone */}
+  <div className="input-group-wrapper">
+    <FaSearch className="input-icon" />
+    <input
+      type="text"
+      placeholder="Nome do profissional..."
+      value={searchTerm}
+      onChange={(e) => setSearchTerm(e.target.value)}
+      className="search-input"
+    />
+  </div>
   
   <div className="filters-group">
-    <select value={especializacao} onChange={(e) => setEspecializacao(e.target.value)} className="filter-select">
-      <option value="">Especialização</option>
-              <option value="psicologia">Psicologia</option>
-              <option value="terapia ocupacional">Terapia Ocupacional</option>
-              <option value="psicopedagogia">Psicopedagogia</option>
-              <option value="fonoaudiologia">Fonoaudiologia</option>
-              <option value="tdah">TDAH</option>
-              <option value="tea">TEA</option>
-              <option value="ansiedade">Ansiedade</option>
-              <option value="dislexia">Dislexia</option>
-            </select>
-            <input
-              type="text"
-              placeholder="Localização (Cidade/Estado)"
-              value={localizacao}
-              onChange={(e) => setLocalizacao(e.target.value)}
-              className="filter-input"
-            />
-            <select value={disponibilidade} onChange={(e) => setDisponibilidade(e.target.value)} className="filter-select">
-              <option value="">Disponibilidade</option>
-              <option value="hoje">Hoje</option>
-              <option value="esta semana">Esta Semana</option>
-              <option value="online">Online</option>
-            </select>
-            <button type="submit" className="search-button">
-              <FaSearch /> Buscar
-            </button>
-          </div>
-        </form>
+    {/* Especialização */}
+    <div className="filter-item">
+      <FaBullseye className="input-icon" />
+      <select value={especializacao} onChange={(e) => setEspecializacao(e.target.value)} className="filter-select">
+        <option value="">Especialização</option>
+        <option value="psicologia">Psicologia</option>
+        <option value="terapia ocupacional">Terapia Ocupacional</option>
+        <option value="psicopedagogia">Psicopedagogia</option>
+        <option value="fonoaudiologia">Fonoaudiologia</option>
+        <option value="tdah">TDAH</option>
+        <option value="tea">TEA</option>
+        <option value="ansiedade">Ansiedade</option>
+        <option value="dislexia">Dislexia</option>
+      </select>
+    </div>
 
+    {/* Localização */}
+    <div className="filter-item">
+      <FaMapMarkerAlt className="input-icon" />
+      <input
+        type="text"
+        placeholder="Cidade ou Estado"
+        value={localizacao}
+        onChange={(e) => setLocalizacao(e.target.value)}
+        className="filter-input"
+      />
+    </div>
+
+    {/* Disponibilidade (Opcional, seguindo seu original) */}
+    <div className="filter-item hide-mobile">
+      <FaCalendarAlt className="input-icon" />
+      <select value={disponibilidade} onChange={(e) => setDisponibilidade(e.target.value)} className="filter-select">
+        <option value="">Disponibilidade</option>
+        <option value="hoje">Hoje</option>
+        <option value="esta semana">Esta Semana</option>
+        <option value="online">Online</option>
+      </select>
+    </div>
+
+    {/* Botão de Busca */}
+    <button type="submit" className="search-button">
+      <FaSearch /> <span>Buscar</span>
+    </button>
+  </div>
+</form>
         {/* Listagem de Profissionais */}
         <section className="professional-listing">
           {profissionais.length > 0 ? (
             <div className="professional-grid">
               {profissionais.map(prof => (
-                <div key={prof.id} className="professional-card">
-                  <div className="card-header">
-                    <img src={prof.foto} alt={prof.nome} className="professional-photo" />
-                    <div className="professional-info">
-                      <h3>{prof.nome}</h3>
-                      <p className="specialization">{prof.especializacao}</p>
-                      <div className="rating">
-                        {[...Array(5)].map((_, i) => (
-                          <FaStar key={i} className={i < Math.floor(prof.avaliacao) ? 'star filled' : 'star'} />
-                        ))}
-                        <span>({prof.avaliacao})</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="card-actions">
-                    <button className="btn-view-profile" onClick={() => navigate(`/perfil-profissional/${prof.id}`)}>Ver Perfil</button>
-                  </div>
-                </div>
+<div key={prof.id} className="professional-card">
+  <div className="card-header-visual">
+    <div className="photo-wrapper">
+      <img src={prof.foto} alt={prof.nome} className="professional-photo" />
+    </div>
+    <div className="professional-info">
+      <h3>{prof.nome}</h3>
+      <p className="specialization">{prof.especializacao}</p>
+
+      <div className="location-tag">
+        <FaMapMarkerAlt className="loc-icon" />
+        <span>{prof.localidades.join(' • ')}</span>
+      </div>
+
+      <div className="rating">
+        {[...Array(5)].map((_, i) => (
+          <FaStar key={i} className={i < Math.floor(prof.avaliacao) ? 'star filled' : 'star'} />
+        ))}
+        <span>({prof.avaliacao})</span>
+      </div>
+    </div>
+  </div>
+
+  <div className="card-actions">
+    <button className="btn-view-profile" onClick={() => navigate(`/perfil-profissional/${prof.id}`)}>
+      Ver Perfil
+    </button>
+  </div>
+</div>
               ))}
             </div>
           ) : (
