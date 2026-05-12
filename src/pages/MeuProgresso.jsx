@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaChartLine, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaStar, FaBrain, FaPuzzlePiece, FaComments, FaBullseye, FaArrowLeft } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/MeuProgresso.css'; // Novo CSS
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 export default function MeuProgresso() {
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [progressoGeral, setProgressoGeral] = useState(65); 
   const [progressoPorArea, setProgressoPorArea] = useState([
@@ -21,12 +23,17 @@ export default function MeuProgresso() {
   ]);
 
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
   return (
     <div className="meu-progresso-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       <header className="progresso-header">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">

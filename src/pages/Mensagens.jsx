@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaComments, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaPaperPlane, FaReply, FaTrash, FaInfoCircle, FaCheck, FaArrowLeft } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/Mensagens.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
@@ -18,6 +19,7 @@ export default function Mensagens() {
   ]);
 
   const [mensagemDetalhe, setMensagemDetalhe] = useState(null); 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleMarcarLida = (id, tipo) => {
     if (tipo === 'recebidas') {
@@ -41,12 +43,17 @@ export default function Mensagens() {
   };
 
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
   return (
     <div className="mensagens-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       {/* Top Bar de Navegação Interna */}
       <header className="mensagens-header">
         <div className="header-left">

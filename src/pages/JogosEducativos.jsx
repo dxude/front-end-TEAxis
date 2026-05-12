@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaGamepad, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaStar, FaArrowLeft } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/JogosEducativos.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 export default function JogosEducativos() {
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [jogos, setJogos] = useState([
     {
@@ -52,12 +54,17 @@ export default function JogosEducativos() {
   };
 
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
   return (
     <div className="jogos-educativos-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       <header className="jogos-header">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaUser, FaCalendarAlt, FaBrain, FaPuzzlePiece, FaComments, FaSignOutAlt, FaSearch, FaChartLine, FaBullseye, FaArrowRight, FaCheckCircle, FaClock, FaStar } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/DashboardUsuario.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 export default function DashboardUsuario() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('Seja bem vindo(a)');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [activeLink, setActiveLink] = useState('home');
 
@@ -21,12 +23,17 @@ export default function DashboardUsuario() {
   ];
 
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
   return (
     <div className="dashboard-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaUserCircle, FaSignOutAlt, FaSearch, FaTimesCircle, FaCheckCircle, FaInfoCircle, FaStar, FaArrowLeft } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/MeusAgendamentos.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
@@ -55,8 +56,14 @@ export default function MeusAgendamentos() {
     navigate(`/avaliar/${idProfissional}`);
   };
 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
@@ -65,6 +72,7 @@ export default function MeusAgendamentos() {
 
   return (
     <div className="meus-agendamentos-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       <header className="agendamentos-header">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">

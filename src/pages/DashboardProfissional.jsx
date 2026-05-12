@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaUser, FaCalendarAlt, FaUsers, FaComments, FaSignOutAlt, FaChartBar, FaFileAlt } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/DashboardProfissional.css'; 
 import logoTeaxis from '../assets/imagens/fundoLogo.png'; 
 
 export default function DashboardProfissional() {
   const navigate = useNavigate();
   const [professionalName, setProfessionalName] = useState('Dra. Ana Silva'); 
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [activeLink, setActiveLink] = useState('home');
 
@@ -20,12 +22,17 @@ export default function DashboardProfissional() {
   const avaliacaoMedia = 4.8;
 
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
   return (
     <div className="dashboard-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       {/* Sidebar */}
       <aside className="sidebar">
         <div className="sidebar-header">

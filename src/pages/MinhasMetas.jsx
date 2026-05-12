@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaPlus, FaCheck, FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/MinhasMetas.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png'; 
 
 export default function MinhasMetas() {
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [metas, setMetas] = useState([
     { id: 1, descricao: 'Ler 10 páginas por dia', dataLimite: '2025-07-15', concluida: false },
     { id: 2, descricao: 'Praticar mindfulness 15 minutos', dataLimite: '2025-06-30', concluida: true },
@@ -36,12 +38,17 @@ export default function MinhasMetas() {
   };
 
     const handleLogout = () => {
-        alert('Você foi desconectado.');
-        navigate('/login');
+      setShowLogoutModal(true);
+    };
+
+    const confirmLogout = () => {
+      setShowLogoutModal(false);
+      navigate('/login');
     };
 
   return (
     <div className="minhas-metas-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       <header className="minhas-metas-header">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">

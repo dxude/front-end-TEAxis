@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaBookOpen, FaChartLine, FaCheck, FaTimes, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaBullseye, FaPuzzlePiece, FaComments, FaArrowLeft } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/MinhasTrilhas.css'; // Novo CSS
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 export default function MinhasTrilhas() {
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [trilhas, setTrilhas] = useState([
     {
@@ -55,12 +57,17 @@ export default function MinhasTrilhas() {
   };
 
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
   return (
     <div className="minhas-trilhas-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       {/* Header de Navegação Interna */}
       <header className="trilhas-header">
         <div className="header-left">

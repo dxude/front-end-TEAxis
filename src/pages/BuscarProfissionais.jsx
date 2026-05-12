@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaHome, FaBullseye, FaArrowLeft } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/BuscarProfissionais.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
@@ -10,9 +11,14 @@ export default function BuscarProfissionais() {
   const [especializacao, setEspecializacao] = useState('');
   const [localizacao, setLocalizacao] = useState('');
   const [disponibilidade, setDisponibilidade] = useState('');
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
 
@@ -79,6 +85,7 @@ export default function BuscarProfissionais() {
 
   return (
     <div className="buscar-profissionais-container">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       {/* Top Bar de Navegação Interna */}
       <header className="buscar-header">
         <div className="header-left">

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FaStar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaCertificate, FaToolbox, FaCalendarAlt, FaSearch, FaUserCircle, FaSignOutAlt, FaComments, FaBullseye, FaArrowLeft } from 'react-icons/fa';
+import LogoutModal from '../components/LogoutModal';
 import '../Styles/PerfilProfissionalDetalhado.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png'; 
 
 export default function PerfilProfissionalDetalhado() {
   const { id } = useParams(); 
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const [professional, setProfessional] = useState(null); // Inicia como null para indicar carregamento
   const [userRating, setUserRating] = useState(0);
@@ -95,13 +97,23 @@ export default function PerfilProfissionalDetalhado() {
   };
 
   const handleLogout = () => {
-    alert('Você foi desconectado.');
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
     navigate('/login');
   };
+
+  const logoutModal = (
+    <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
+  );
 
   if (!professional) {
     return (
       <div className="perfil-profissional-container">
+        {logoutModal}
+        {logoutModal}
         <header className="perfil-profissional-header">
           <div className="header-left">
             <Link to="/dashboard-usuario" className="back-to-space-btn">
