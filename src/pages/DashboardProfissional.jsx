@@ -50,6 +50,11 @@ export default function DashboardProfissional() {
               </Link>
             </li>
             <li>
+              <Link to="/meus-agendamentos" className={activeLink === 'agendamentos' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('agendamentos')}>
+                <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
+              </Link>
+            </li>
+            <li>
               <Link to="/meus-clientes" className={activeLink === 'clientes' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('clientes')}>
                 <FaUsers className="nav-icon" /> Meus Clientes
               </Link>

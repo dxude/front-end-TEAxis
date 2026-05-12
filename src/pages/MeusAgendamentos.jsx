@@ -40,16 +40,19 @@ export default function MeusAgendamentos() {
   ]);
 
   const handleCancelamento = (idAgendamento) => {
-    if (window.confirm('Tem certeza que deseja cancelar este agendamento?')) {
-      setAgendamentos(agendamentos.map(ag =>
-        ag.id === idAgendamento ? { ...ag, status: 'Cancelado' } : ag
-      ));
-      alert('Agendamento cancelado com sucesso!');
-    }
+    navigate(`/cancelar/${idAgendamento}`);
   };
 
   const handleReschedule = (idAgendamento) => {
-    alert(`Redirecionando para remarcar agendamento ${idAgendamento}`);
+    navigate(`/remarcar/${idAgendamento}`);
+  };
+
+  const handleJoinRoom = (idAgendamento) => {
+    navigate(`/sala/${idAgendamento}`);
+  };
+
+  const handleAvaliar = (idProfissional) => {
+    navigate(`/avaliar/${idProfissional}`);
   };
 
   const handleLogout = () => {
@@ -98,7 +101,7 @@ export default function MeusAgendamentos() {
                     <p className={`status ${ag.status.toLowerCase()}`}>{ag.status}</p>
                   </div>
                   <div className="card-actions">
-                    <button className="btn-join-room" onClick={() => window.open(ag.linkSala, '_blank')}>
+                    <button className="btn-join-room" onClick={() => handleJoinRoom(ag.id)}>
                       <FaInfoCircle /> Entrar na Sala
                     </button>
                     <button className="btn-secondary" onClick={() => handleReschedule(ag.id)}>
@@ -132,8 +135,8 @@ export default function MeusAgendamentos() {
                   </div>
                   <div className="card-actions">
                     {ag.status === 'Concluído' && (
-                      <button className="btn-primary" onClick={() => alert(`Avaliar ${ag.profissional}`)}>
-                        <FaStar /> Avaliar {/* Onde FaStar é usado */}
+                      <button className="btn-primary" onClick={() => handleAvaliar(ag.idProfissional)}>
+                        <FaStar /> Avaliar
                       </button>
                     )}
                      <Link to={`/perfil-profissional/${ag.idProfissional}`} className="btn-view-prof">

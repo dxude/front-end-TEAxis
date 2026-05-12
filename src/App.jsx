@@ -18,6 +18,10 @@ import MinhasTrilhas from './pages/MinhasTrilhas';
 import JogosEducativos from './pages/JogosEducativos';
 import Mensagens from './pages/Mensagens';
 import MeuProgresso from './pages/MeuProgresso';
+import RemarcarAgendamento from './pages/RemarcarAgendamento';
+import AvaliarProfissional from './pages/AvaliarProfissional';
+import SalaAgendamento from './pages/SalaAgendamento';
+import CancelarAgendamento from './pages/CancelarAgendamento';
 
 import './App.css';
 
@@ -57,6 +61,10 @@ function App() {
           <Route path="/minhas-metas" element={<MinhasMetas />} />
           <Route path="/perfil-profissional/:id" element={<PerfilProfissionalDetalhado />} />
           <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
+          <Route path="/remarcar/:id" element={<RemarcarAgendamento />} />
+          <Route path="/avaliar/:idProfissional" element={<AvaliarProfissional />} />
+          <Route path="/sala/:id" element={<SalaAgendamento />} />
+          <Route path="/cancelar/:id" element={<CancelarAgendamento />} />
           <Route path="/minhas-trilhas" element={<MinhasTrilhas />} />
           <Route path="/jogos-educativos" element={<JogosEducativos />} />
           <Route path="/mensagens" element={<Mensagens />} />
