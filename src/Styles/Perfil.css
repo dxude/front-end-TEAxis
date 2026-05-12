@@ -7,6 +7,39 @@
     align-items: stretch;
 }
 
+.perfil-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 1rem 2rem;
+    z-index: 1000;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #7B3FF2;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.back-link:hover {
+    background-color: #F0E6FF;
+    color: #5A0FC8;
+}
+
+.back-icon {
+    font-size: 1rem;
+}
+
 .perfil-hero-section {
     background: linear-gradient(135deg, #E8DFF5, #F0E6FF);
     color: #4A5568;

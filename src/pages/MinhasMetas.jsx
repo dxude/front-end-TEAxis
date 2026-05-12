@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaPlus, FaCheck, FaEdit, FaTrash } from 'react-icons/fa';
+import { FaPlus, FaCheck, FaEdit, FaTrash, FaArrowLeft } from 'react-icons/fa';
 import '../Styles/MinhasMetas.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png'; 
 
@@ -44,6 +44,9 @@ export default function MinhasMetas() {
     <div className="minhas-metas-container">
       <header className="minhas-metas-header">
         <div className="header-left">
+          <Link to="/dashboard-usuario" className="back-to-space-btn">
+            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+          </Link>
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
         </div>
         <nav className="header-nav">

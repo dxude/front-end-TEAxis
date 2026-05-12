@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaUserCircle, FaSignOutAlt, FaSearch, FaTimesCircle, FaCheckCircle, FaInfoCircle, FaStar } from 'react-icons/fa';
+import { FaCalendarAlt, FaUserCircle, FaSignOutAlt, FaSearch, FaTimesCircle, FaCheckCircle, FaInfoCircle, FaStar, FaArrowLeft } from 'react-icons/fa';
 import '../Styles/MeusAgendamentos.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
@@ -67,6 +67,9 @@ export default function MeusAgendamentos() {
     <div className="meus-agendamentos-container">
       <header className="agendamentos-header">
         <div className="header-left">
+          <Link to="/dashboard-usuario" className="back-to-space-btn">
+            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+          </Link>
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
         </div>
         <nav className="header-nav">

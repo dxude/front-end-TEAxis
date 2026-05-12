@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBookOpen, FaChartLine, FaCheck, FaTimes, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaBullseye, FaPuzzlePiece, FaComments } from 'react-icons/fa';
+import { FaBookOpen, FaChartLine, FaCheck, FaTimes, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaBullseye, FaPuzzlePiece, FaComments, FaArrowLeft } from 'react-icons/fa';
 import '../Styles/MinhasTrilhas.css'; // Novo CSS
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
@@ -64,6 +64,9 @@ export default function MinhasTrilhas() {
       {/* Header de Navegação Interna */}
       <header className="trilhas-header">
         <div className="header-left">
+          <Link to="/dashboard-usuario" className="back-to-space-btn">
+            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+          </Link>
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
         </div>
         <nav className="header-nav">

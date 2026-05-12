@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaStar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaCertificate, FaToolbox, FaCalendarAlt, FaSearch, FaUserCircle, FaSignOutAlt, FaComments, FaBullseye } from 'react-icons/fa';
+import { FaStar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaCertificate, FaToolbox, FaCalendarAlt, FaSearch, FaUserCircle, FaSignOutAlt, FaComments, FaBullseye, FaArrowLeft } from 'react-icons/fa';
 import '../Styles/PerfilProfissionalDetalhado.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png'; 
 
@@ -104,6 +104,9 @@ export default function PerfilProfissionalDetalhado() {
       <div className="perfil-profissional-container">
         <header className="perfil-profissional-header">
           <div className="header-left">
+            <Link to="/dashboard-usuario" className="back-to-space-btn">
+              <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+            </Link>
             <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
           </div>
           <nav className="header-nav">
@@ -132,6 +135,9 @@ export default function PerfilProfissionalDetalhado() {
     <div className="perfil-profissional-container">
       <header className="perfil-profissional-header">
         <div className="header-left">
+          <Link to="/dashboard-usuario" className="back-to-space-btn">
+            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+          </Link>
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
         </div>
         <nav className="header-nav">

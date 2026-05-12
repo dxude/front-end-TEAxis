@@ -20,9 +20,32 @@
     z-index: 1000;
 }
 
-.agendamentos-header .header-left {
+.header-left {
     display: flex;
     align-items: center;
+    gap: 1.5rem;
+}
+
+.back-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: #7B3FF2;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.back-link:hover {
+    background-color: #F0E6FF;
+    color: #5A0FC8;
+}
+
+.back-icon {
+    font-size: 1rem;
 }
 
 .agendamentos-header .header-logo {

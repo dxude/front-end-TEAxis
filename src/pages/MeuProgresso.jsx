@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaChartLine, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaStar, FaBrain, FaPuzzlePiece, FaComments, FaBullseye } from 'react-icons/fa';
+import { FaChartLine, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaStar, FaBrain, FaPuzzlePiece, FaComments, FaBullseye, FaArrowLeft } from 'react-icons/fa';
 import '../Styles/MeuProgresso.css'; // Novo CSS
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
@@ -29,6 +29,9 @@ export default function MeuProgresso() {
     <div className="meu-progresso-container">
       <header className="progresso-header">
         <div className="header-left">
+          <Link to="/dashboard-usuario" className="back-to-space-btn">
+            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+          </Link>
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
         </div>
         <nav className="header-nav">

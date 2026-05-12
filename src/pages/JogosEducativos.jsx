@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaGamepad, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaStar } from 'react-icons/fa';
+import { FaGamepad, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaStar, FaArrowLeft } from 'react-icons/fa';
 import '../Styles/JogosEducativos.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
@@ -60,6 +60,9 @@ export default function JogosEducativos() {
     <div className="jogos-educativos-container">
       <header className="jogos-header">
         <div className="header-left">
+          <Link to="/dashboard-usuario" className="back-to-space-btn">
+            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+          </Link>
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
         </div>
         <nav className="header-nav">

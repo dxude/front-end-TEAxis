@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import { FaArrowLeft } from 'react-icons/fa';
 import '../Styles/Perfil.css';
-import logoTeaxis from '../assets/imagens/fundoLogo.png'; 
+import logoTeaxis from '../assets/imagens/fundoLogo.png';
 import defaultProfilePic from '../assets/imagens/default-profile.png'; 
 
 export default function Perfil() {
@@ -89,6 +90,12 @@ export default function Perfil() {
 
   return (
     <div className="perfil-container">
+      <header className="perfil-header">
+        <Link to="/dashboard-usuario" className="back-to-space-btn">
+          <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+        </Link>
+      </header>
+
       <section className="perfil-hero-section">
         <div className="perfil-hero-content">
           <img src={logoTeaxis} alt="Logo TEAxis" className="perfil-hero-logo" />

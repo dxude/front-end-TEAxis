@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaHome, FaBullseye } from 'react-icons/fa';
-import '../Styles/BuscarProfissionais.css'; 
+import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaHome, FaBullseye, FaArrowLeft } from 'react-icons/fa';
+import '../Styles/BuscarProfissionais.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 export default function BuscarProfissionais() {
@@ -10,6 +10,11 @@ export default function BuscarProfissionais() {
   const [especializacao, setEspecializacao] = useState('');
   const [localizacao, setLocalizacao] = useState('');
   const [disponibilidade, setDisponibilidade] = useState('');
+
+  const handleLogout = () => {
+    alert('Você foi desconectado.');
+    navigate('/login');
+  };
 
   const [profissionais, setProfissionais] = useState([
     {
@@ -72,16 +77,14 @@ export default function BuscarProfissionais() {
     setProfissionais(filtered);
   };
 
-  const handleLogout = () => {
-    alert('Você foi desconectado.');
-    navigate('/login');
-  };
-
   return (
     <div className="buscar-profissionais-container">
       {/* Top Bar de Navegação Interna */}
       <header className="buscar-header">
         <div className="header-left">
+          <Link to="/dashboard-usuario" className="back-to-space-btn">
+            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+          </Link>
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
         </div>
         <nav className="header-nav">
