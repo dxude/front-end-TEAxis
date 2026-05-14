@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaHome, FaUser, FaCalendarAlt, FaBrain, FaPuzzlePiece, FaComments, FaSignOutAlt, FaSearch, FaChartLine, FaBullseye, FaArrowRight, FaCheckCircle, FaClock, FaStar } from 'react-icons/fa';
+import { FaHome, FaUser, FaCalendarAlt, FaBrain, FaPuzzlePiece, FaComments, FaSignOutAlt, FaSearch, FaChartLine, FaBullseye, FaArrowRight, FaCheckCircle, FaClock, FaStar, FaBars, FaTimes } from 'react-icons/fa';
 import ChatAxis from '../components/ChatAxis';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/DashboardUsuario.css';
@@ -13,8 +13,8 @@ export default function DashboardUsuario() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [showChatInRobot, setShowChatInRobot] = useState(false);
   const [showRobotTooltip, setShowRobotTooltip] = useState(false);
-
   const [activeLink, setActiveLink] = useState('home');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const proximosAgendamentos = [
     { id: 1, profissional: 'Dra. Ana Silva', data: '15/07/2025', hora: '10:00' },
@@ -39,10 +39,25 @@ export default function DashboardUsuario() {
     <div className="dashboard-container">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       
-      {/* Sidebar Fixo */}
-      <aside className="sidebar">
+      {/* Botão Hamburger (As três linhas) */}
+      <button className="hamburger-btn" onClick={() => setIsSidebarOpen(true)}>
+        <FaBars />
+      </button>
+
+      {/* Overlay escurecido */}
+      <div 
+        className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
+        onClick={() => setIsSidebarOpen(false)}
+      ></div>
+
+      {/* Sidebar Drawer */}
+      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}>
+          <FaTimes />
+        </button>
+
         <div className="sidebar-header">
-          <img src={logoTeaxis} alt="Logo TEAxis" className="sidebar-logo" />
+          <img src={logoTeaxis} alt="Logo" className="sidebar-logo" />
           <p className="user-welcome">Olá, {userName}!</p>
         </div>
         <nav className="sidebar-nav">
@@ -53,7 +68,6 @@ export default function DashboardUsuario() {
               </Link>
             </li>
             <li>
-              {/* Link PROEMINENTE para a página de busca de profissionais */}
               <Link to="/buscar-profissionais" className={activeLink === 'buscar' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('buscar')}>
                 <FaSearch className="nav-icon" /> Buscar Especialista
               </Link>
@@ -105,7 +119,7 @@ export default function DashboardUsuario() {
       <main className="main-content">
         <header className="main-content-header">
           <div className="header-content">
-            <h1>Meu Espaço TEAxis</h1>
+            <h1>Meu Espaço</h1>
             <p className="header-subtitle">Seu centro de apoio e desenvolvimento</p>
           </div>
         </header>
@@ -135,8 +149,8 @@ export default function DashboardUsuario() {
         <section className="robot-section">
           <div className="robot-panel">
             <div className="robot-copy">
-              <p className="robot-tag">Chat do TEAxis</p>
-              <h2>O robô TEAxis está aqui para te ajudar</h2>
+              <p className="robot-tag">Chat</p>
+              <h2>O robô está aqui para te ajudar</h2>
               <p>Ele pode sugerir profissionais, explicar sua jornada e responder dúvidas rápidas. Passe o mouse sobre o robô ou clique no botão para começar a conversar.</p>
               <div className="robot-links">
                 <Link to="/buscar-profissionais" className="btn-primary robot-action">Buscar Especialista</Link>
@@ -151,20 +165,20 @@ export default function DashboardUsuario() {
               <button 
                 className="robot-chat-button axis-flutuando" 
                 onClick={() => setShowChatInRobot(!showChatInRobot)}
-                title="Abrir chat com TEAxis"
+                title="Abrir chat"
               >
                 💬
               </button>
               
               {showRobotTooltip && (
                 <div className="robot-tooltip">
-                  Converse com o TEAxis
+                  Converse agora
                 </div>
               )}
 
               <img 
                 src={axisImg} 
-                alt="Robô TEAxis" 
+                alt="Robô" 
                 className="robot-image axis-flutuando"
                 title="Clique no botão acima ou passe o mouse para abrir o chat"
               />
