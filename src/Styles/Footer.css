@@ -1,16 +1,244 @@
+/* === FOOTER GLOBAL === */
 .footer {
-  background-color: #f0f0f0;
-  text-align: center;
-  padding: 1rem;
-  font-size: 0.9rem;
-  color: #333;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #e0e0e0;
+  padding: 3rem 2rem 1rem;
+  margin-top: 4rem;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  border-top: 2px solid rgba(123, 63, 242, 0.2);
+}
 
-  /* === ESTILOS PARA DEIXAR O FOOTER FIXO === */
-  position: auto; /* Isso faz ele fixar na tela */
-  bottom: 0; /* Cola na parte inferior da tela */
-  left: 0; /* Cola na esquerda da tela */
-  right: 0; /* Estica até a direita da tela (ocupando 100% da largura) */
-  z-index: 999; /* Um z-index um pouco menor que a Navbar, mas ainda alto */
-  /* Ajuste a altura se precisar de um valor fixo, mas o padding já ajuda */
-  height: auto; /* Deixa a altura se ajustar ao conteúdo */
+/* === CONTEÚDO PRINCIPAL === */
+.footer-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2.5rem;
+  padding-bottom: 2rem;
+}
+
+/* === SEÇÃO DO FOOTER === */
+.footer-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.footer-section h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  color: #ffffff;
+  position: relative;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #7B3FF2;
+  display: inline-block;
+  width: fit-content;
+}
+
+.footer-section p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #b0b0b0;
+  margin: 0;
+}
+
+/* === REDES SOCIAIS === */
+.footer-social {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.social-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(123, 63, 242, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7B3FF2;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: 2px solid transparent;
+}
+
+.social-icon:hover {
+  background: #7B3FF2;
+  color: white;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(123, 63, 242, 0.3);
+  border-color: #7B3FF2;
+}
+
+/* === LINKS === */
+.footer-links {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.footer-links li a {
+  color: #b0b0b0;
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: all 0.25s ease;
+  position: relative;
+  padding-left: 0.5rem;
+}
+
+.footer-links li a::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 2px;
+  background: #7B3FF2;
+  transition: width 0.3s ease;
+}
+
+.footer-links li a:hover {
+  color: #ffffff;
+  padding-left: 1rem;
+}
+
+.footer-links li a:hover::before {
+  width: 4px;
+}
+
+/* === CONTATO === */
+.footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.95rem;
+  color: #b0b0b0;
+  transition: all 0.25s ease;
+}
+
+.contact-icon {
+  color: #7B3FF2;
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+}
+
+.contact-item a {
+  color: #b0b0b0;
+  text-decoration: none;
+  transition: all 0.25s ease;
+}
+
+.contact-item a:hover {
+  color: #7B3FF2;
+}
+
+.contact-item:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+/* === DIVIDER === */
+.footer-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(123, 63, 242, 0.3), transparent);
+  margin: 1.5rem 0;
+}
+
+/* === FOOTER BOTTOM === */
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  padding: 1rem 0 0;
+}
+
+.footer-bottom p {
+  margin: 0.25rem 0;
+  font-size: 0.9rem;
+  color: #808080;
+}
+
+.footer-tagline {
+  color: #7B3FF2;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* === RESPONSIVIDADE === */
+@media (max-width: 768px) {
+  .footer {
+    padding: 2rem 1rem 1rem;
+    margin-top: 3rem;
+  }
+
+  .footer-content {
+    gap: 2rem;
+  }
+
+  .footer-section h3 {
+    font-size: 1rem;
+  }
+
+  .footer-section p {
+    font-size: 0.9rem;
+  }
+
+  .footer-social {
+    gap: 0.75rem;
+  }
+
+  .social-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .footer-links li a {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer {
+    padding: 1.5rem 1rem 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .footer-section h3 {
+    font-size: 0.95rem;
+  }
+
+  .footer-section p {
+    font-size: 0.85rem;
+  }
+
+  .footer-links {
+    gap: 0.5rem;
+  }
+
+  .footer-bottom p {
+    font-size: 0.85rem;
+  }
 }

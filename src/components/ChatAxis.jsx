@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import "../Styles/ChatAxis.css";
 
-export default function ChatAxis() {
+export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null, isIntegrated = false }) {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -9,6 +9,17 @@ export default function ChatAxis() {
   const [hasNewMessage, setHasNewMessage] = useState(false); // para notificação
   const bottomRef = useRef(null);
   const STORAGE_KEY = "chataxis_history_v1";
+  
+  // Determina se usa o estado externo ou interno
+  const shouldUseExternalState = isOpenExternal !== null;
+  const isOpenState = shouldUseExternalState ? isOpenExternal : isOpen;
+  const setIsOpenState = (value) => {
+    if (shouldUseExternalState && onCloseExternal) {
+      onCloseExternal(value);
+    } else {
+      setIsOpen(value);
+    }
+  };
 
   async function sendMessage(e) {
   e.preventDefault();
@@ -37,7 +48,7 @@ export default function ChatAxis() {
     setMessages((m) => [...m, botMessage]);
 
     // Se o chat estiver fechado, exibe notificação visual
-    if (!isOpen) setHasNewMessage(true);
+    if (!isOpenState) setHasNewMessage(true);
   } catch (err) {
     console.error("Chat error:", err);
     setMessages((m) => [
@@ -77,7 +88,7 @@ export default function ChatAxis() {
 
   // Ao abrir o chat, limpa notificação
   function openChat() {
-    setIsOpen(true);
+    setIsOpenState(true);
     setHasNewMessage(false);
   }
 
@@ -109,7 +120,7 @@ export default function ChatAxis() {
         const botMessage = { sender: "bot", text: data.reply };
         setMessages((m) => [...m, botMessage]);
 
-        if (!isOpen) setHasNewMessage(true);
+        if (!isOpenState) setHasNewMessage(true);
       } catch (err) {
         console.error("Quick reply error:", err);
         setMessages((m) => [
@@ -123,9 +134,9 @@ export default function ChatAxis() {
   }
 
   return (
-    <div className="chat-axis-container">
+    <div className={`chat-axis-container ${isIntegrated ? 'integrated' : ''}`}>
       {/* Widget flutuante */}
-      {!isOpen && (
+      {!isOpenState && !isIntegrated && (
         <div className="chat-axis-button" onClick={openChat}>
           <span className="chat-icon">💬</span>
           <span className="chat-text">Fale com o ChatAxis</span>
@@ -134,7 +145,7 @@ export default function ChatAxis() {
       )}
 
       {/* Chat popup */}
-      <div className={`chat-axis-popup ${isOpen ? "open" : "closed"}`}>
+      <div className={`chat-axis-popup ${isOpenState ? "open" : "closed"} ${isIntegrated ? 'integrated' : ''}`}>
         <div className="chat-axis-header">
           <img
             src="https://i.imgur.com/MO6rE2F.png"
@@ -146,7 +157,7 @@ export default function ChatAxis() {
             <button className="chataxis-clear" onClick={clearHistory} title="Limpar histórico">Limpar</button>
             <button
               className="chat-axis-close"
-              onClick={() => setIsOpen(false)}
+              onClick={() => setIsOpenState(false)}
             >
               ✖
             </button>

@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaHome, FaUser, FaCalendarAlt, FaBrain, FaPuzzlePiece, FaComments, FaSignOutAlt, FaSearch, FaChartLine, FaBullseye, FaArrowRight, FaCheckCircle, FaClock, FaStar } from 'react-icons/fa';
+import ChatAxis from '../components/ChatAxis';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/DashboardUsuario.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
+import axisImg from '../assets/imagens/axis-sorridente.png';
 
 export default function DashboardUsuario() {
   const navigate = useNavigate();
   const [userName, setUserName] = useState('Seja bem vindo(a)');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [showChatInRobot, setShowChatInRobot] = useState(false);
+  const [showRobotTooltip, setShowRobotTooltip] = useState(false);
 
   const [activeLink, setActiveLink] = useState('home');
 
@@ -34,7 +38,8 @@ export default function DashboardUsuario() {
   return (
     <div className="dashboard-container">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
-      {/* Sidebar */}
+      
+      {/* Sidebar Fixo */}
       <aside className="sidebar">
         <div className="sidebar-header">
           <img src={logoTeaxis} alt="Logo TEAxis" className="sidebar-logo" />
@@ -99,7 +104,7 @@ export default function DashboardUsuario() {
 
       <main className="main-content">
         <header className="main-content-header">
-          <div>
+          <div className="header-content">
             <h1>Meu Espaço TEAxis</h1>
             <p className="header-subtitle">Seu centro de apoio e desenvolvimento</p>
           </div>
@@ -125,6 +130,55 @@ export default function DashboardUsuario() {
               </Link>
             </div>
           </div>
+        </section>
+
+        <section className="robot-section">
+          <div className="robot-panel">
+            <div className="robot-copy">
+              <p className="robot-tag">Chat do TEAxis</p>
+              <h2>O robô TEAxis está aqui para te ajudar</h2>
+              <p>Ele pode sugerir profissionais, explicar sua jornada e responder dúvidas rápidas. Passe o mouse sobre o robô ou clique no botão para começar a conversar.</p>
+              <div className="robot-links">
+                <Link to="/buscar-profissionais" className="btn-primary robot-action">Buscar Especialista</Link>
+                <Link to="/mensagens" className="btn-secondary robot-action">Ver Mensagens</Link>
+              </div>
+            </div>
+            <div 
+              className="robot-visual"
+              onMouseEnter={() => setShowRobotTooltip(true)}
+              onMouseLeave={() => setShowRobotTooltip(false)}
+            >
+              <button 
+                className="robot-chat-button axis-flutuando" 
+                onClick={() => setShowChatInRobot(!showChatInRobot)}
+                title="Abrir chat com TEAxis"
+              >
+                💬
+              </button>
+              
+              {showRobotTooltip && (
+                <div className="robot-tooltip">
+                  Converse com o TEAxis
+                </div>
+              )}
+
+              <img 
+                src={axisImg} 
+                alt="Robô TEAxis" 
+                className="robot-image axis-flutuando"
+                title="Clique no botão acima ou passe o mouse para abrir o chat"
+              />
+            </div>
+          </div>
+          {showChatInRobot && (
+            <div className="robot-chat-section">
+              <ChatAxis 
+                isOpenExternal={showChatInRobot} 
+                onCloseExternal={setShowChatInRobot}
+                isIntegrated={true}
+              />
+            </div>
+          )}
         </section>
 
         {/* Seção de Status Atual */}
