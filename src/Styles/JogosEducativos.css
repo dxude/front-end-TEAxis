@@ -97,7 +97,7 @@
 .jogos-main-content {
     flex-grow: 1;
     padding: 2rem;
-    padding-top: 6.5rem;
+    padding-top: 8rem;
     max-width: 900px;
     margin: 0 auto;
 }
@@ -251,7 +251,7 @@
 
     .jogos-main-content {
         padding: 1.5rem;
-        padding-top: 8rem;
+        padding-top: 10rem;
     }
 
     .jogos-list-section {

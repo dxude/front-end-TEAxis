@@ -20,7 +20,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 70px 2rem 2rem 2rem;
+    padding: 8rem 2rem 2rem 2rem;
     font-family: Arial, sans-serif;
     color: var(--color-text-base);
     
@@ -206,5 +206,9 @@
 @media (max-width: 768px) {
     .card-selection-wrapper {
         flex-direction: column;
+    }
+
+    .cadastro-page-container {
+        padding-top: 10rem;
     }
 }

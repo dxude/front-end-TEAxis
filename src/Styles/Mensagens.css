@@ -99,7 +99,7 @@
 .mensagens-main-content {
     flex-grow: 1;
     padding: 2rem;
-    padding-top: 6.5rem; /* Espaçamento para o header fixo */
+    padding-top: 8rem; /* Espaçamento para o header fixo */
     max-width: 900px;
     margin: 0 auto;
 }
@@ -407,7 +407,7 @@
 
     .mensagens-main-content {
         padding: 1.5rem;
-        padding-top: 8rem;
+        padding-top: 10rem;
     }
 
     .mensagens-tabs {
