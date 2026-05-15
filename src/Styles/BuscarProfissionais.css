@@ -235,7 +235,7 @@
 }
 
 .btn-view-profile {
-    width: 100%; /* Faz o botão ocupar 100% da largura do card-actions */
+    width: 100%;
     padding: 1rem; 
     background-color: var(--primary-purple);
     color: white;
@@ -244,7 +244,7 @@
     font-weight: 700;
     cursor: pointer;
     transition: 0.3s;
-    display: block; /* Garante que ele se comporte como um bloco que ocupa a linha toda */
+    display: block; 
 }
 
 .btn-view-profile:hover {
