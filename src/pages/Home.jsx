@@ -3,7 +3,6 @@ import '../Styles/Home.css';
 import { FaSearch, FaCalendarAlt, FaPuzzlePiece, FaLock, FaHeart, FaRobot } from 'react-icons/fa';
 import axisImg from '../assets/imagens/axis-sorridente.png';
 import depoimentoImg from '../assets/imagens/depoimento.png';
-import ChatAxis from '../components/ChatAxis';
 
 
 const Home = () => {
@@ -144,7 +143,6 @@ const Home = () => {
           Iniciar agora
         </button>
       </section>
-      <ChatAxis />
     </main>
   );
 };

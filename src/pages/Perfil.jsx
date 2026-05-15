@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaArrowLeft, FaCheckCircle, FaCircle, FaCamera, FaUser, FaMapMarkerAlt, FaClipboard } from 'react-icons/fa';
 import '../Styles/Perfil.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 import defaultProfilePic from '../assets/imagens/default-profile.png'; 
@@ -8,12 +8,12 @@ import defaultProfilePic from '../assets/imagens/default-profile.png';
 export default function Perfil() {
   const navigate = useNavigate();
 
-  const [userName, setUserName] = useState('O que deseja fazer?');
+  const [currentStep, setCurrentStep] = useState(0);
+  const [userName, setUserName] = useState('Bem-vindo');
 
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [birthDate, setBirthDate] = useState('');
-  // Usando a variável importada corretamente
   const [profilePicture, setProfilePicture] = useState(defaultProfilePic);
 
   const [street, setStreet] = useState('');
@@ -35,8 +35,83 @@ export default function Perfil() {
   const [professionalRegistration, setProfessionalRegistration] = useState('');
   const [bio, setBio] = useState('');
 
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const steps = [
+    { id: 0, title: 'Dados Pessoais', icon: FaUser },
+    { id: 1, title: 'Endereço', icon: FaMapMarkerAlt },
+    { id: 2, title: 'Tipo de Conta', icon: FaClipboard },
+    { id: 3, title: 'Informações Adicionais', icon: FaClipboard },
+  ];
+
   useEffect(() => {
-  }, []);
+    validateCurrentStep();
+  }, [currentStep, fullName, phone, birthDate, street, number, zipCode, neighborhood, city, state, accountType]);
+
+  const validateCurrentStep = () => {
+    let newErrors = {};
+
+    if (currentStep === 0) {
+      if (!fullName.trim()) newErrors.fullName = 'Nome completo é obrigatório';
+      if (!phone.trim()) newErrors.phone = 'Telefone é obrigatório';
+      if (!birthDate) newErrors.birthDate = 'Data de nascimento é obrigatória';
+    } else if (currentStep === 1) {
+      if (!street.trim()) newErrors.street = 'Rua é obrigatória';
+      if (!number.trim()) newErrors.number = 'Número é obrigatório';
+      if (!zipCode.trim()) newErrors.zipCode = 'CEP é obrigatório';
+      if (!neighborhood.trim()) newErrors.neighborhood = 'Bairro é obrigatório';
+      if (!city.trim()) newErrors.city = 'Cidade é obrigatória';
+      if (!state.trim()) newErrors.state = 'Estado é obrigatório';
+    } else if (currentStep === 3) {
+      if (accountType === 'user') {
+        if (!neurodivergenceType.trim()) newErrors.neurodivergenceType = 'Tipo de neurodivergência é obrigatório';
+        if (!sensoryPreferences.trim()) newErrors.sensoryPreferences = 'Preferências sensoriais são obrigatórias';
+        if (!learningStyle.trim()) newErrors.learningStyle = 'Estilo de aprendizado é obrigatório';
+        if (!userInterests.trim()) newErrors.userInterests = 'Interesses são obrigatórios';
+        if (!userGoals.trim()) newErrors.userGoals = 'Objetivos são obrigatórios';
+      } else if (accountType === 'professional') {
+        if (!specialty.trim()) newErrors.specialty = 'Especialidade é obrigatória';
+        if (!professionalRegistration.trim()) newErrors.professionalRegistration = 'Registro profissional é obrigatório';
+        if (!bio.trim()) newErrors.bio = 'Biografia é obrigatória';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const canProceedToNextStep = () => {
+    if (currentStep === 0) {
+      return fullName.trim() && phone.trim() && birthDate;
+    } else if (currentStep === 1) {
+      return street.trim() && number.trim() && zipCode.trim() && neighborhood.trim() && city.trim() && state.trim();
+    } else if (currentStep === 2) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleNextStep = () => {
+    if (canProceedToNextStep()) {
+      setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
+  const handleStepClick = (stepId) => {
+    if (stepId < currentStep || canProceedToNextStep()) {
+      setCurrentStep(stepId);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -88,14 +163,33 @@ export default function Perfil() {
     }
   };
 
+  const isStepCompleted = (stepId) => {
+    if (stepId === 0) {
+      return fullName.trim() && phone.trim() && birthDate;
+    } else if (stepId === 1) {
+      return street.trim() && number.trim() && zipCode.trim() && neighborhood.trim() && city.trim() && state.trim();
+    } else if (stepId === 2) {
+      return true;
+    } else if (stepId === 3) {
+      if (accountType === 'user') {
+        return neurodivergenceType.trim() && sensoryPreferences.trim() && learningStyle.trim() && userInterests.trim() && userGoals.trim();
+      } else {
+        return specialty.trim() && professionalRegistration.trim() && bio.trim();
+      }
+    }
+    return false;
+  };
+
   return (
     <div className="perfil-container">
+      {/* HEADER */}
       <header className="perfil-header">
         <Link to="/dashboard-usuario" className="back-to-space-btn">
           <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
         </Link>
       </header>
 
+      {/* HERO SECTION */}
       <section className="perfil-hero-section">
         <div className="perfil-hero-content">
           <img src={logoTeaxis} alt="Logo TEAxis" className="perfil-hero-logo" />
@@ -104,164 +198,387 @@ export default function Perfil() {
         </div>
       </section>
 
+      {/* PROGRESS INDICATOR */}
+      <div className="perfil-progress-container">
+        <div className="progress-steps">
+          {steps.map((step, index) => (
+            <div key={step.id} className="progress-step-wrapper">
+              <button
+                className={`progress-step ${currentStep === step.id ? 'active' : ''} ${isStepCompleted(step.id) ? 'completed' : ''}`}
+                onClick={() => handleStepClick(step.id)}
+                disabled={step.id > currentStep && !canProceedToNextStep()}
+              >
+                {isStepCompleted(step.id) ? (
+                  <FaCheckCircle className="step-icon" />
+                ) : (
+                  <FaCircle className="step-icon" />
+                )}
+                <span className="step-label">{step.title}</span>
+              </button>
+              {index < steps.length - 1 && (
+                <div className={`progress-line ${isStepCompleted(step.id) ? 'completed' : ''}`}></div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="progress-percentage">
+          {Math.round(((currentStep + 1) / steps.length) * 100)}% completo
+        </div>
+      </div>
+
+      {/* FORM SECTION */}
       <section className="perfil-form-section">
         <form onSubmit={handleSubmit} className="perfil-form">
+          
+          {/* STEP 0: DADOS PESSOAIS */}
+          {currentStep === 0 && (
+            <div className="form-step-container fade-in">
+              <div className="step-header">
+                <h2>Dados Pessoais</h2>
+                <p>Comece compartilhando informações básicas sobre você</p>
+              </div>
 
-          <div className="form-section-group">
-            <h2>Dados Pessoais</h2>
-            <div className="form-fields-grid">
-                <label>Nome Completo</label>
-                <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
-
-                <label>Telefone</label>
-                <input type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-
-                <label>Data de Nascimento</label>
-                <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required />
-
-                <label>URL da Foto de Perfil</label>
-                <div className="profile-picture-input-wrapper">
-                  {/* Usando a variável importada corretamente */}
-                  <img src={profilePicture || defaultProfilePic} alt="Foto de Perfil" className="current-profile-pic" />
+              <div className="form-fields-grid">
+                <div className="form-group">
+                  <label>Nome Completo <span className="required">*</span></label>
                   <input
                     type="text"
-                    placeholder="Cole a URL da sua foto (ex: https://seusite.com/foto.jpg)"
-                    value={profilePicture === defaultProfilePic ? '' : profilePicture}
-                    onChange={(e) => setProfilePicture(e.target.value || defaultProfilePic)}
-                    className="url-input-field"
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    className={errors.fullName ? 'input-error' : ''}
+                    placeholder="Seu nome completo"
                   />
+                  {errors.fullName && <span className="error-message">{errors.fullName}</span>}
                 </div>
-            </div>
-          </div>
 
-          <div className="form-section-group">
-            <h2>Endereço</h2>
-            <div className="form-fields-grid">
-                <label>Rua</label>
-                <input type="text" value={street} onChange={(e) => setStreet(e.target.value)} required />
+                <div className="form-group">
+                  <label>Telefone <span className="required">*</span></label>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className={errors.phone ? 'input-error' : ''}
+                    placeholder="(XX) XXXXX-XXXX"
+                  />
+                  {errors.phone && <span className="error-message">{errors.phone}</span>}
+                </div>
 
-                <label>Número</label>
-                <input type="text" value={number} onChange={(e) => setNumber(e.target.value)} required />
+                <div className="form-group">
+                  <label>Data de Nascimento <span className="required">*</span></label>
+                  <input
+                    type="date"
+                    value={birthDate}
+                    onChange={(e) => setBirthDate(e.target.value)}
+                    className={errors.birthDate ? 'input-error' : ''}
+                  />
+                  {errors.birthDate && <span className="error-message">{errors.birthDate}</span>}
+                </div>
+              </div>
 
-                <label>CEP</label>
-                <input type="text" value={zipCode} onChange={(e) => setZipCode(e.target.value)} required />
-
-                <label>Bairro</label>
-                <input type="text" value={neighborhood} onChange={(e) => setNeighborhood(e.target.value)} required />
-
-                <label>Cidade</label>
-                <input type="text" value={city} onChange={(e) => setCity(e.target.value)} required />
-
-                <label>Estado (Sigla)</label>
-                <input type="text" value={state} onChange={(e) => setState(e.target.value)} maxLength="2" required />
-            </div>
-          </div>
-
-          <div className="form-section-group">
-            <h2>Você é?</h2>
-            <div className="account-type-selection">
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  value="user"
-                  checked={accountType === 'user'}
-                  onChange={() => setAccountType('user')}
-                />
-                Usuário
-              </label>
-              <label className="radio-label">
-                <input
-                  type="radio"
-                  value="professional"
-                  checked={accountType === 'professional'}
-                  onChange={() => setAccountType('professional')}
-                />
-                Profissional
-              </label>
-            </div>
-          </div>
-
-          {accountType === 'user' && (
-            <div className="form-section-group user-specific-fields">
-              <h2>Sobre sua Neurodivergência e Preferências</h2>
-              <label>Qual o tipo de sua neurodivergência? (ex: TEA, TDAH, Dislexia)</label>
-              <input
-                type="text"
-                value={neurodivergenceType}
-                onChange={(e) => setNeurodivergenceType(e.target.value)}
-                required
-              />
-
-              <label>Preferências Sensoriais (ex: prefiro ambientes calmos, sensibilidade à luz)</label>
-              <textarea
-                value={sensoryPreferences}
-                onChange={(e) => setSensoryPreferences(e.target.value)}
-                rows="3"
-                className="text-area-input"
-                required
-              ></textarea>
-
-              <label>Melhor forma de aprendizado (ex: visual, auditivo, prático)</label>
-              <textarea
-                value={learningStyle}
-                onChange={(e) => setLearningStyle(e.target.value)}
-                rows="3"
-                className="text-area-input"
-                required
-              ></textarea>
-
-              <label>Quais são seus interesses (ex: jogos, leitura, artes)?</label>
-              <textarea
-                value={userInterests}
-                onChange={(e) => setUserInterests(e.target.value)}
-                rows="3"
-                className="text-area-input"
-                required
-              ></textarea>
-
-              <label>Quais seus objetivos com o TEAxis?</label>
-              <textarea
-                value={userGoals}
-                onChange={(e) => setUserGoals(e.target.value)}
-                rows="3"
-                className="text-area-input"
-                required
-              ></textarea>
+              <div className="profile-picture-section">
+                <label>Foto de Perfil</label>
+                <div className="profile-picture-wrapper">
+                  <img src={profilePicture || defaultProfilePic} alt="Foto de Perfil" className="current-profile-pic" />
+                  <div className="profile-pic-input-area">
+                    <FaCamera className="camera-icon" />
+                    <input
+                      type="text"
+                      placeholder="Cole a URL da sua foto (ex: https://seusite.com/foto.jpg)"
+                      value={profilePicture === defaultProfilePic ? '' : profilePicture}
+                      onChange={(e) => setProfilePicture(e.target.value || defaultProfilePic)}
+                      className="url-input-field"
+                    />
+                    <p className="helper-text">Você pode usar uma URL pública da imagem</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
-          {accountType === 'professional' && (
-            <div className="form-section-group professional-specific-fields">
-              <h2>Dados do Profissional</h2>
-              <label>Sua Especialidade (ex: Psicólogo, Pedagogo)</label>
-              <input
-                type="text"
-                value={specialty}
-                onChange={(e) => setSpecialty(e.target.value)}
-                required
-              />
+          {/* STEP 1: ENDEREÇO */}
+          {currentStep === 1 && (
+            <div className="form-step-container fade-in">
+              <div className="step-header">
+                <h2>Seu Endereço</h2>
+                <p>Onde você mora? Isso nos ajuda a conectar com profissionais próximos a você</p>
+              </div>
 
-              <label>Número de Registro Profissional (ex: CRP, CREFITO)</label>
-              <input
-                type="text"
-                value={professionalRegistration}
-                onChange={(e) => setProfessionalRegistration(e.target.value)}
-                required
-              />
+              <div className="form-fields-grid">
+                <div className="form-group full-width">
+                  <label>Rua <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    value={street}
+                    onChange={(e) => setStreet(e.target.value)}
+                    className={errors.street ? 'input-error' : ''}
+                    placeholder="Nome da rua"
+                  />
+                  {errors.street && <span className="error-message">{errors.street}</span>}
+                </div>
 
-              <label>Pequena Biografia (máx. 200 caracteres)</label>
-              <textarea
-                value={bio}
-                onChange={(e) => setBio(e.target.value)}
-                maxLength="200"
-                rows="4"
-                className="text-area-input"
-                required
-              ></textarea>
+                <div className="form-group">
+                  <label>Número <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    value={number}
+                    onChange={(e) => setNumber(e.target.value)}
+                    className={errors.number ? 'input-error' : ''}
+                    placeholder="Número"
+                  />
+                  {errors.number && <span className="error-message">{errors.number}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label>CEP <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    value={zipCode}
+                    onChange={(e) => setZipCode(e.target.value)}
+                    className={errors.zipCode ? 'input-error' : ''}
+                    placeholder="XXXXX-XXX"
+                  />
+                  {errors.zipCode && <span className="error-message">{errors.zipCode}</span>}
+                </div>
+
+                <div className="form-group full-width">
+                  <label>Bairro <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    value={neighborhood}
+                    onChange={(e) => setNeighborhood(e.target.value)}
+                    className={errors.neighborhood ? 'input-error' : ''}
+                    placeholder="Nome do bairro"
+                  />
+                  {errors.neighborhood && <span className="error-message">{errors.neighborhood}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label>Cidade <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className={errors.city ? 'input-error' : ''}
+                    placeholder="Cidade"
+                  />
+                  {errors.city && <span className="error-message">{errors.city}</span>}
+                </div>
+
+                <div className="form-group">
+                  <label>Estado (Sigla) <span className="required">*</span></label>
+                  <input
+                    type="text"
+                    value={state}
+                    onChange={(e) => setState(e.target.value.toUpperCase())}
+                    maxLength="2"
+                    className={errors.state ? 'input-error' : ''}
+                    placeholder="SP"
+                  />
+                  {errors.state && <span className="error-message">{errors.state}</span>}
+                </div>
+              </div>
             </div>
           )}
 
-          <button type="submit" className="update-profile-button">Atualizar Perfil</button>
+          {/* STEP 2: TIPO DE CONTA */}
+          {currentStep === 2 && (
+            <div className="form-step-container fade-in">
+              <div className="step-header">
+                <h2>Qual é o seu Perfil?</h2>
+                <p>Escolha como você vai usar o TEAxis</p>
+              </div>
+
+              <div className="account-type-selection-container">
+                <label className={`account-type-card ${accountType === 'user' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    value="user"
+                    checked={accountType === 'user'}
+                    onChange={() => setAccountType('user')}
+                  />
+                  <div className="card-content">
+                    <h3>Sou um Usuário</h3>
+                    <p>Busco profissionais e apoio especializado para meu desenvolvimento</p>
+                  </div>
+                </label>
+
+                <label className={`account-type-card ${accountType === 'professional' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    value="professional"
+                    checked={accountType === 'professional'}
+                    onChange={() => setAccountType('professional')}
+                  />
+                  <div className="card-content">
+                    <h3>Sou um Profissional</h3>
+                    <p>Oferço atendimento especializado a pessoas neurodivergentes</p>
+                  </div>
+                </label>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 3: INFORMAÇÕES ADICIONAIS */}
+          {currentStep === 3 && (
+            <div className="form-step-container fade-in">
+              {accountType === 'user' ? (
+                <>
+                  <div className="step-header">
+                    <h2>Sobre você e suas Preferências</h2>
+                    <p>Essas informações nos ajudam a personalizar sua experiência</p>
+                  </div>
+
+                  <div className="form-fields-stack">
+                    <div className="form-group">
+                      <label>Qual o tipo de sua neurodivergência? <span className="required">*</span></label>
+                      <p className="field-hint">Ex: TEA, TDAH, Dislexia, Altas Habilidades, etc</p>
+                      <input
+                        type="text"
+                        value={neurodivergenceType}
+                        onChange={(e) => setNeurodivergenceType(e.target.value)}
+                        className={errors.neurodivergenceType ? 'input-error' : ''}
+                        placeholder="Digite sua neurodivergência"
+                      />
+                      {errors.neurodivergenceType && <span className="error-message">{errors.neurodivergenceType}</span>}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Preferências Sensoriais <span className="required">*</span></label>
+                      <p className="field-hint">Ex: prefiro ambientes calmos, sensibilidade à luz</p>
+                      <textarea
+                        value={sensoryPreferences}
+                        onChange={(e) => setSensoryPreferences(e.target.value)}
+                        rows="3"
+                        className={`text-area-input ${errors.sensoryPreferences ? 'input-error' : ''}`}
+                        placeholder="Descreva suas preferências sensoriais..."
+                      ></textarea>
+                      {errors.sensoryPreferences && <span className="error-message">{errors.sensoryPreferences}</span>}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Melhor forma de aprendizado <span className="required">*</span></label>
+                      <p className="field-hint">Ex: visual, auditivo, prático, combinado</p>
+                      <textarea
+                        value={learningStyle}
+                        onChange={(e) => setLearningStyle(e.target.value)}
+                        rows="3"
+                        className={`text-area-input ${errors.learningStyle ? 'input-error' : ''}`}
+                        placeholder="Descreva seu estilo de aprendizado..."
+                      ></textarea>
+                      {errors.learningStyle && <span className="error-message">{errors.learningStyle}</span>}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Quais são seus interesses? <span className="required">*</span></label>
+                      <p className="field-hint">Ex: jogos, leitura, artes, tecnologia, esportes</p>
+                      <textarea
+                        value={userInterests}
+                        onChange={(e) => setUserInterests(e.target.value)}
+                        rows="3"
+                        className={`text-area-input ${errors.userInterests ? 'input-error' : ''}`}
+                        placeholder="Compartilhe seus interesses..."
+                      ></textarea>
+                      {errors.userInterests && <span className="error-message">{errors.userInterests}</span>}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Quais seus objetivos com o TEAxis? <span className="required">*</span></label>
+                      <p className="field-hint">O que você espera alcançar através da plataforma?</p>
+                      <textarea
+                        value={userGoals}
+                        onChange={(e) => setUserGoals(e.target.value)}
+                        rows="3"
+                        className={`text-area-input ${errors.userGoals ? 'input-error' : ''}`}
+                        placeholder="Descreva seus objetivos..."
+                      ></textarea>
+                      {errors.userGoals && <span className="error-message">{errors.userGoals}</span>}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="step-header">
+                    <h2>Seus Dados Profissionais</h2>
+                    <p>Informações que os usuários verão sobre sua expertise</p>
+                  </div>
+
+                  <div className="form-fields-stack">
+                    <div className="form-group">
+                      <label>Sua Especialidade <span className="required">*</span></label>
+                      <p className="field-hint">Ex: Psicólogo, Pedagogo, Fonoaudiólogo, Psicopedagogo</p>
+                      <input
+                        type="text"
+                        value={specialty}
+                        onChange={(e) => setSpecialty(e.target.value)}
+                        className={errors.specialty ? 'input-error' : ''}
+                        placeholder="Digite sua especialidade"
+                      />
+                      {errors.specialty && <span className="error-message">{errors.specialty}</span>}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Número de Registro Profissional <span className="required">*</span></label>
+                      <p className="field-hint">Ex: CRP, CREFITO, Matrícula, etc</p>
+                      <input
+                        type="text"
+                        value={professionalRegistration}
+                        onChange={(e) => setProfessionalRegistration(e.target.value)}
+                        className={errors.professionalRegistration ? 'input-error' : ''}
+                        placeholder="Número de registro"
+                      />
+                      {errors.professionalRegistration && <span className="error-message">{errors.professionalRegistration}</span>}
+                    </div>
+
+                    <div className="form-group">
+                      <label>Pequena Biografia <span className="required">*</span></label>
+                      <p className="field-hint">Máximo 200 caracteres - fale sobre sua experiência</p>
+                      <textarea
+                        value={bio}
+                        onChange={(e) => setBio(e.target.value)}
+                        maxLength="200"
+                        rows="4"
+                        className={`text-area-input ${errors.bio ? 'input-error' : ''}`}
+                        placeholder="Conte um pouco sobre você..."
+                      ></textarea>
+                      <span className="char-count">{bio.length}/200</span>
+                      {errors.bio && <span className="error-message">{errors.bio}</span>}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          {/* NAVIGATION BUTTONS */}
+          <div className="form-navigation">
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={handlePrevStep}
+              disabled={currentStep === 0}
+            >
+              ← Voltar
+            </button>
+
+            {currentStep < steps.length - 1 ? (
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={handleNextStep}
+                disabled={!canProceedToNextStep()}
+              >
+                Próximo →
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="btn-primary btn-submit"
+                disabled={!validateCurrentStep() || isSubmitting}
+              >
+                {isSubmitting ? 'Enviando...' : 'Finalizar e Atualizar Perfil'}
+              </button>
+            )}
+          </div>
         </form>
       </section>
     </div>

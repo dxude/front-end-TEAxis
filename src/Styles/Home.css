@@ -41,7 +41,7 @@ body {
 .home-container {
   width: 100%;
   min-height: 100vh;
-  padding-top: 5rem; /* compensa navbar fixa */
+  padding-top: 70px; /* compensa navbar fixa */
   box-sizing: border-box;
 }
 
