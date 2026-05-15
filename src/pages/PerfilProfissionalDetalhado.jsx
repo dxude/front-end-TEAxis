@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaStar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaCertificate, FaToolbox, FaCalendarAlt, FaSearch, FaUserCircle, FaSignOutAlt, FaComments, FaBullseye } from 'react-icons/fa';
+import { 
+  FaStar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, 
+  FaCertificate, FaToolbox, FaCalendarAlt, FaSearch, 
+  FaUserCircle, FaSignOutAlt, FaComments, FaBullseye, FaArrowLeft 
+} from 'react-icons/fa';
 import '../Styles/PerfilProfissionalDetalhado.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png'; 
 
@@ -8,7 +12,7 @@ export default function PerfilProfissionalDetalhado() {
   const { id } = useParams(); 
   const navigate = useNavigate();
 
-  const [professional, setProfessional] = useState(null); // Inicia como null para indicar carregamento
+  const [professional, setProfessional] = useState(null); 
   const [userRating, setUserRating] = useState(0);
   const [userReviewText, setUserReviewText] = useState('');
 
@@ -21,7 +25,7 @@ export default function PerfilProfissionalDetalhado() {
         subEspecializacoes: ['TDAH', 'Ansiedade', 'Terapia Cognitivo-Comportamental'],
         avaliacaoMedia: 4.9,
         totalAvaliacoes: 78,
-        foto: 'https://randomuser.me/api/portraits/women/68.jpg', // URL de exemplo
+        foto: 'https://randomuser.me/api/portraits/women/68.jpg', 
         bio: 'Especialista em TDAH e ansiedade, com foco em adolescentes e adultos. Ajudo a desenvolver estratégias de enfrentamento e melhorar a qualidade de vida. Atendimento online e presencial em São Paulo.',
         contato: {
           telefone: '(11) 98765-4321',
@@ -76,7 +80,7 @@ export default function PerfilProfissionalDetalhado() {
       },
     ];
     setProfessional(simulatedProfessionals.find(p => p.id === parseInt(id)));
-  }, [id]); // Dependência 'id' para recarregar se o ID mudar
+  }, [id]); 
 
   const handleRatingChange = (newRating) => {
     setUserRating(newRating);
@@ -107,22 +111,12 @@ export default function PerfilProfissionalDetalhado() {
             <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
           </div>
           <nav className="header-nav">
-            <Link to="/buscar-profissionais" className="nav-link">
-              <FaSearch className="nav-icon" /> Buscar Profissionais
-            </Link>
-            <Link to="/meus-agendamentos" className="nav-link">
-              <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
-            </Link>
-            <Link to="/perfil" className="nav-link">
-              <FaUserCircle className="nav-icon" /> Meu Perfil
-            </Link>
-            <button onClick={handleLogout} className="nav-link logout-btn">
-              <FaSignOutAlt className="nav-icon" /> Sair
-            </button>
+            <Link to="/buscar-profissionais" className="nav-link"><FaSearch className="nav-icon" /> Buscar Profissionais</Link>
           </nav>
         </header>
         <main className="professional-detail-content loading-content">
-          <p>Carregando perfil do profissional...</p>
+          <div className="spinner"></div>
+          <p>Carregando perfil do especialista...</p>
         </main>
       </div>
     );
@@ -130,6 +124,7 @@ export default function PerfilProfissionalDetalhado() {
 
   return (
     <div className="perfil-profissional-container">
+      {/* Header Padronizado */}
       <header className="perfil-profissional-header">
         <div className="header-left">
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
@@ -151,113 +146,163 @@ export default function PerfilProfissionalDetalhado() {
       </header>
 
       <main className="professional-detail-content">
-        <section className="professional-overview-card">
-          <div className="overview-header">
-            <img src={professional.foto} alt={professional.nome} className="professional-detail-photo" />
-            <div className="overview-info">
-              <h1>{professional.nome}</h1>
-              <p className="main-specialization">{professional.especializacao}</p>
-              <div className="rating-full">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar key={i} className={i < Math.floor(professional.avaliacaoMedia) ? 'star-full filled' : 'star-full'} />
-                ))}
-                <span>({professional.avaliacaoMedia}) ({professional.totalAvaliacoes} avaliações)</span>
-              </div>
-              <p className="bio">{professional.bio}</p>
-              <div className="contact-info">
-                {professional.contato.telefone && <p><FaPhone /> {professional.contato.telefone}</p>}
-                {professional.contato.email && <p><FaEnvelope /> {professional.contato.email}</p>}
-                {professional.contato.site && <p><FaGlobe /> <a href={professional.contato.site} target="_blank" rel="noopener noreferrer">{professional.contato.site.replace('https://', '')}</a></p>}
-                <p><FaMapMarkerAlt /> {professional.localidades.join(', ')}</p>
-              </div>
-            </div>
-          </div>
-          <div className="overview-actions">
-            <button className="btn-primary" onClick={() => alert('Agendamento de consulta iniciado!')}>
-              <FaCalendarAlt /> Agendar Consulta
-            </button>
-            <button className="btn-secondary" onClick={() => navigate('/mensagens')}>
-              <FaComments /> Enviar Mensagem
-            </button>
-          </div>
-        </section>
+        {/* Link Voltar sutil */}
+        <button onClick={() => navigate(-1)} className="btn-back-navigation">
+          <FaArrowLeft /> Voltar para a busca
+        </button>
 
-        <section className="professional-details-section">
-          <h2>Mais Detalhes</h2>
-          <div className="details-grid">
-            <div className="details-card">
-              <h3><FaCertificate /> Certificações</h3>
-              <ul>
-                {professional.certificacoes.map((cert, index) => (
-                  <li key={index}>{cert}</li>
-                ))}
-              </ul>
+        <div className="profile-layout-grid">
+          
+          <aside className="profile-sidebar-card">
+            <div className="avatar-frame">
+              <img src={professional.foto} alt={professional.nome} className="sidebar-photo" />
             </div>
-            <div className="details-card">
-              <h3><FaToolbox /> Métodos e Abordagens</h3>
-              <ul>
-                {professional.metodos.map((metodo, index) => (
-                  <li key={index}>{metodo}</li>
-                ))}
-              </ul>
+            
+            <h1 className="sidebar-name">{professional.nome}</h1>
+            <p className="sidebar-specialization">{professional.especializacao}</p>
+            
+            <div className="sidebar-rating-badge">
+              <FaStar className="star-active" />
+              <span className="rating-score">{professional.avaliacaoMedia}</span>
+              <span className="rating-count">({professional.totalAvaliacoes} avaliações)</span>
             </div>
-            <div className="details-card">
-              <h3><FaBullseye /> Especializações Secundárias</h3>
-              <ul>
-                {professional.subEspecializacoes.map((sub, index) => (
-                  <li key={index}>{sub}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </section>
 
-        <section className="professional-evaluations-section">
-          <h2>Avaliações de Usuários</h2>
-          {professional.avaliacoes.length > 0 ? (
-            <div className="evaluations-list">
-              {professional.avaliacoes.map(avaliacao => (
-                <div key={avaliacao.id} className="evaluation-card">
-                  <div className="evaluation-header">
-                    <span className="evaluation-user">{avaliacao.usuario}</span>
-                    <div className="evaluation-stars">
+            <hr className="divider" />
+
+            <div className="sidebar-contact-list">
+              <h3>Informações de Contato</h3>
+              {professional.contato.telefone && (
+                <div className="contact-item"><FaPhone className="c-icon" /> <span>{professional.contato.telefone}</span></div>
+              )}
+              {professional.contato.email && (
+                <div className="contact-item"><FaEnvelope className="c-icon" /> <span>{professional.contato.email}</span></div>
+              )}
+              {professional.contato.site && (
+                <div className="contact-item">
+                  <FaGlobe className="c-icon" /> 
+                  <a href={professional.contato.site} target="_blank" rel="noopener noreferrer">
+                    {professional.contato.site.replace('https://', '')}
+                  </a>
+                </div>
+              )}
+              <div className="contact-item">
+                <FaMapMarkerAlt className="c-icon" /> 
+                <span>{professional.localidades.join(' • ')}</span>
+              </div>
+            </div>
+
+            <div className="sidebar-actions">
+              <button className="btn-action-primary" onClick={() => alert('Agendamento de consulta iniciado!')}>
+                <FaCalendarAlt /> Agendar Consulta
+              </button>
+              <button className="btn-action-secondary" onClick={() => navigate('/mensagens')}>
+                <FaComments /> Enviar Mensagem
+              </button>
+            </div>
+          </aside>
+
+          
+          <div className="profile-main-details">
+            
+        
+            <section className="details-block-card">
+              <h2>Sobre o Profissional</h2>
+              <p className="detailed-bio">{professional.bio}</p>
+            </section>
+
+            <section className="details-block-card">
+              <h2>Atuação e Competências</h2>
+              <div className="technical-info-grid">
+                
+                <div className="sub-info-card">
+                  <h3><FaCertificate className="card-title-icon" /> Certificações</h3>
+                  <ul>
+                    {professional.certificacoes.map((cert, index) => (
+                      <li key={index}>{cert}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="sub-info-card">
+                  <h3><FaToolbox className="card-title-icon" /> Métodos & Abordagens</h3>
+                  <div className="tags-flex-container">
+                    {professional.metodos.map((metodo, index) => (
+                      <span key={index} className="pill-tag-style">{metodo}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="sub-info-card">
+                  <h3><FaBullseye className="card-title-icon" /> Foco de Especialidade</h3>
+                  <div className="tags-flex-container">
+                    {professional.subEspecializacoes.map((sub, index) => (
+                      <span key={index} className="pill-tag-style secondary-color">{sub}</span>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            <section className="details-block-card generic-padding">
+              <h2>Avaliações de Pacientes</h2>
+              
+              {professional.avaliacoes.length > 0 ? (
+                <div className="reviews-stack-container">
+                  {professional.avaliacoes.map(avaliacao => (
+                    <div key={avaliacao.id} className="patient-review-tile">
+                      <div className="review-tile-top">
+                        <span className="patient-anonymous-name">{avaliacao.usuario}</span>
+                        <div className="tile-stars">
+                          {[...Array(5)].map((_, i) => (
+                            <FaStar key={i} className={i < avaliacao.nota ? 'star-tile filled' : 'star-tile'} />
+                          ))}
+                        </div>
+                      </div>
+                      <p className="patient-text-comment">"{avaliacao.comentario}"</p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="empty-state-text">Este profissional ainda não possui avaliações cadastradas.</p>
+              )}
+
+              {/* Formulário Embutido de Nova Review */}
+              <div className="interactive-review-box">
+                <h3>Como foi sua experiência com este especialista?</h3>
+                <form onSubmit={handleSubmitReview} className="form-inner-layout">
+                  <div className="star-picker-wrapper">
+                    <span className="label-rating">Sua nota:</span>
+                    <div className="stars-row">
                       {[...Array(5)].map((_, i) => (
-                        <FaStar key={i} className={i < avaliacao.nota ? 'star-full filled' : 'star-full'} />
+                        <FaStar
+                          key={i}
+                          className={i < userRating ? 'star-interactive picked' : 'star-interactive'}
+                          onClick={() => handleRatingChange(i + 1)}
+                        />
                       ))}
                     </div>
+                    <span className="rating-hint-text">
+                      {userRating > 0 ? `${userRating} de 5 estrelas` : 'Toque nas estrelas'}
+                    </span>
                   </div>
-                  <p className="evaluation-comment">{avaliacao.comentario}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p className="no-evaluations-message">Este profissional ainda não possui avaliações.</p>
-          )}
-
-          <div className="submit-evaluation-form">
-            <h3>Deixe sua Avaliação</h3>
-            <form onSubmit={handleSubmitReview}>
-              <div className="rating-input">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar
-                    key={i}
-                    className={i < userRating ? 'star-input filled' : 'star-input'}
-                    onClick={() => handleRatingChange(i + 1)}
-                  />
-                ))}
-                <span>{userRating > 0 ? `${userRating} Estrelas` : 'Clique para avaliar'}</span>
+                  
+                  <textarea
+                    placeholder="Deixe um depoimento construtivo sobre o atendimento recebido..."
+                    value={userReviewText}
+                    onChange={(e) => setUserReviewText(e.target.value)}
+                    rows="3"
+                    required
+                  ></textarea>
+                  
+                  <button type="submit" className="btn-submit-review">Publicar Avaliação</button>
+                </form>
               </div>
-              <textarea
-                placeholder="Escreva seu comentário..."
-                value={userReviewText}
-                onChange={(e) => setUserReviewText(e.target.value)}
-                rows="4"
-                required
-              ></textarea>
-              <button type="submit" className="btn-primary">Enviar Avaliação</button>
-            </form>
+
+            </section>
+
           </div>
-        </section>
+        </div>
       </main>
     </div>
   );
