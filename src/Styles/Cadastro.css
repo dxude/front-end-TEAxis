@@ -20,27 +20,28 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 8rem 2rem 2rem 2rem;
-    font-family: Arial, sans-serif;
+    padding: 8rem 1.5rem 2rem 1.5rem;
+    font-family: 'Inter', Arial, sans-serif;
     color: var(--color-text-base);
-    
-    /* Aplica o degradê de fundo TOTAL */
-    background: linear-gradient(180deg, 
-        var(--gradient-start-blue) 0%, 
-        var(--gradient-mid-lilac) 40%, 
-        var(--gradient-mid-yellow) 70%, 
-        var(--gradient-end-green) 100%
-    );
+    width: 100%;
+    box-sizing: border-box;
+    background: linear-gradient(180deg, #F5F7FF 0%, #FFFFFF 58%, #F7F2FF 100%);
 }
 
 .perfil-selector, .cadastro-form {
-    background-color: white;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    background-color: rgba(255, 255, 255, 0.97);
+    padding: 42px;
+    border-radius: 28px;
+    box-shadow: 0 30px 80px rgba(46, 56, 130, 0.12);
     max-width: 900px;
     width: 100%;
     text-align: center;
+}
+
+.cadastro-form {
+    text-align: left;
+    max-width: 760px;
+    margin: 0 auto;
 }
 
 /* ---------------------------------- */
@@ -135,13 +136,28 @@
     color: #888;
 }
 
-.input-group input {
+.input-group input,
+.input-group textarea {
     width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+    padding: 14px 16px;
+    border: 1px solid #D8D8E2;
+    border-radius: 14px;
     font-size: 1em;
     box-sizing: border-box;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    background: #FAFBFF;
+}
+
+.input-group textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+    border-color: #7B3FF2;
+    box-shadow: 0 0 0 4px rgba(123, 63, 242, 0.08);
+    outline: none;
 }
 
 /* Botões */
@@ -172,14 +188,168 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #fff;
+    background-color: #ffffff;
     color: var(--color-dark);
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(123, 63, 242, 0.16);
+    box-shadow: 0 12px 30px rgba(123, 63, 242, 0.08);
     width: 100%;
+    padding: 14px 25px;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+.btn-social:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 18px 36px rgba(123, 63, 242, 0.12);
 }
 .btn-social svg {
-    font-size: 1.2em;
+    font-size: 1.25em;
+    margin-right: 12px;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    align-items: flex-start;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.eyebrow {
+    display: inline-block;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--color-lilac-main);
+    font-size: 0.75rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.form-subtitle {
+    color: #5F6375;
+    max-width: 520px;
+    line-height: 1.7;
+}
+
+.form-stepper {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    min-width: 220px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.85rem 1rem;
+    border-radius: 18px;
+    background: #F5F3FF;
+    color: #5F6375;
+    min-width: 84px;
+}
+
+.step.active {
+    background: linear-gradient(135deg, #7B3FF2 0%, #5D3DD8 100%);
+    color: white;
+    box-shadow: 0 20px 40px rgba(123, 63, 242, 0.18);
+}
+
+.step span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: inherit;
+    font-weight: 700;
+    margin-bottom: 0.35rem;
+}
+
+.step p {
+    margin: 0;
+    font-size: 0.8rem;
+}
+
+.separator {
+    flex: 1;
+    height: 2px;
+    background: #E7E8F0;
+    border-radius: 99px;
+}
+
+.separator.active {
+    background: linear-gradient(90deg, #7B3FF2, #4F46E5);
+}
+
+.form-step {
+    margin-top: 0.5rem;
+}
+
+.hidden-step {
+    display: none;
+}
+
+.section-divider {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.5rem 0 1rem;
+    color: #5F6375;
+}
+
+.section-divider div {
+    flex: 1;
+    height: 1px;
+    background: #E7E8F0;
+}
+
+.section-divider span {
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.step-description {
+    color: #5F6375;
+    margin-bottom: 1.5rem;
+}
+
+.dados-adicionais {
+    background: #F9F6FF;
+    border-color: rgba(123, 63, 242, 0.24);
+}
+
+.form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    align-items: center;
+}
+
+.btn-back {
+    background: #F8F5FF;
+    color: #3D317A;
+    min-width: 150px;
+}
+
+.btn-back:hover {
+    background: #EDE7FF;
+}
+
+.btn-primary-green {
+    background: linear-gradient(135deg, #7B3FF2 0%, #4F46E5 100%);
+    color: white;
+    box-shadow: 0 18px 32px rgba(123, 63, 242, 0.18);
+}
+
+.btn-primary-green:hover {
+    background: linear-gradient(135deg, #6C2EE1 0%, #4237C1 100%);
 }
 
 /* Divisor "OU" */

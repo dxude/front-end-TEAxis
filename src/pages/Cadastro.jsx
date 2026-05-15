@@ -13,6 +13,7 @@ const SIMULATED_GOOGLE_LOGIN = true;
 const Cadastro = () => {
     const navigate = useNavigate();
     const [perfil, setPerfil] = useState(null);
+    const [currentStep, setCurrentStep] = useState(1);
     
     // Estados Comuns (Email/Senha/Nome)
     const [email, setEmail] = useState('');
@@ -49,10 +50,18 @@ const Cadastro = () => {
 
 
     const handleCadastroSubmit = async (e) => {
-        e.preventDefault(); 
+        e.preventDefault();
 
-        if (senha !== confirmarSenha) {
-            alert("As palavras-passes não coincidem.");
+        if (currentStep === 1) {
+            if (!nome || !email || !senha || !confirmarSenha) {
+                alert('Por favor preencha todos os campos iniciais.');
+                return;
+            }
+            if (senha !== confirmarSenha) {
+                alert('As palavras-passes não coincidem.');
+                return;
+            }
+            setCurrentStep(2);
             return;
         }
 
@@ -63,7 +72,7 @@ const Cadastro = () => {
             if (perfil === 'usuario') {
                 dadosParaAPI = {
                     nome, email, senha, tipo: perfil,
-                    dataNascimento: dadosUsuario.dataNascimento, 
+                    dataNascimento: dadosUsuario.dataNascimento,
                     tipoNeurodivergencia: dadosUsuario.tipoNeurodivergencia,
                     hobbies: dadosUsuario.hobbies.split(',').map(h => h.trim()).filter(h => h),
                     genero: dadosUsuario.genero, cidade: dadosUsuario.cidade, estado: dadosUsuario.estado,
@@ -77,7 +86,6 @@ const Cadastro = () => {
                     dataNascimento: dadosProfissional.dataNascimento,
                     cidade: dadosProfissional.cidade,
                     estado: dadosProfissional.estado,
-                    
                     certificacoes: dadosProfissional.certificacoes,
                     especializacoes: dadosProfissional.especializacoes,
                     metodosUtilizados: dadosProfissional.metodosUtilizados,
@@ -89,7 +97,7 @@ const Cadastro = () => {
 
             const apiResponse = await fetch(endpoint, {
                 method: 'POST',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(dadosParaAPI)
@@ -101,8 +109,8 @@ const Cadastro = () => {
             }
 
             // SUCESSO E REDIRECIONAMENTO
-            alert("✅ Registo realizado com sucesso! Faça login para continuar.");
-            navigate('/login'); 
+            alert('✅ Registo realizado com sucesso! Faça login para continuar.');
+            navigate('/login');
 
         } catch (error) {
             alert(error.message);
@@ -137,43 +145,27 @@ const Cadastro = () => {
         alert('Integração social removida — apenas modo simulado disponível.');
     };
 
-    const PerfilSelector = () => (
-        <div className="perfil-selector">
-            <h2 className="text-dark mb-8 text-2xl font-bold">Como quer usar o TEAxis?</h2>
-            
-            <div className="card-selection-wrapper">
-                <div 
-                    className="selection-card card-green"
-                    onClick={() => setPerfil('usuario')}
-                >
-                    <FaUser className="card-icon" />
-                    <h3>Sou Utilizador / Paciente</h3>
-                    <p>Quero encontrar profissionais que entendam as minhas necessidades.</p>
-                </div>
-
-                <div 
-                    className="selection-card card-lilac"
-                    onClick={() => setPerfil('profissional')}
-                >
-                    <FaBriefcase className="card-icon" />
-                    <h3>Sou Profissional</h3>
-                    <p>Quero oferecer apoio especializado e transformar vidas.</p>
-                </div>
-            </div>
-            
-            <p className="login-link mt-8 text-center">
-                Já tem conta? <a href="/login" className="text-lilac-main font-semibold">Faça o seu Login</a>
-            </p>
-        </div>
-    );
-
     const CadastroForm = ({ tipo }) => (
         <form className="cadastro-form" onSubmit={handleCadastroSubmit}>
-            <h2 className="text-dark mb-8 text-2xl font-bold">
-                Crie a sua conta como {tipo === 'usuario' ? 'Utilizador' : 'Profissional'}
-            </h2>
+            <div className="form-header">
+                <div>
+                    <span className="eyebrow">Cadastro TEAxis</span>
+                    <h2 className="text-dark mb-2">Crie a sua conta como {tipo === 'usuario' ? 'Utilizador' : 'Profissional'}</h2>
+                    <p className="form-subtitle">Primeiro confirme seus dados básicos e depois preencha os detalhes do seu perfil.</p>
+                </div>
+                <div className="form-stepper">
+                    <div className={`step ${currentStep >= 1 ? 'active' : ''}`}>
+                        <span>1</span>
+                        <p>Conta</p>
+                    </div>
+                    <div className={`separator ${currentStep > 1 ? 'active' : ''}`} />
+                    <div className={`step ${currentStep >= 2 ? 'active' : ''}`}>
+                        <span>2</span>
+                        <p>Detalhes</p>
+                    </div>
+                </div>
+            </div>
 
-            {/* Login Social (agora apenas simulado) */}
             <button type="button" className="btn btn-social btn-google mb-4" onClick={() => handleSimulatedGoogle()}>
                 <FaGoogle className="mr-2" /> Continuar com Google
             </button>
@@ -182,115 +174,117 @@ const Cadastro = () => {
                 <span>OU REGISTE COM EMAIL</span>
             </div>
 
-            {/* CAMPOS COMUNS */}
-            <div className="input-group">
-                <label htmlFor="nome"><FaUser /> Nome Completo:</label>
-                <input id="nome" type="text" placeholder="Insira o seu nome" required onChange={(e) => setNome(e.target.value)} />
-            </div>
-            <div className="input-group">
-                <label htmlFor="email"><FaEnvelope /> Email:</label>
-                <input id="email" type="email" placeholder="Insira o seu email" required onChange={(e) => setEmail(e.target.value)} />
-            </div>
-            <div className="input-group">
-                <label htmlFor="senha"><FaLock /> Palavra-passe:</label>
-                <input id="senha" type="password" placeholder="Crie a sua palavra-passe" required onChange={(e) => setSenha(e.target.value)} />
-            </div>
-            <div className="input-group">
-                <label htmlFor="confirmar">Confirme a Palavra-passe:</label>
-                <input id="confirmar" type="password" placeholder="Repita a palavra-passe" required onChange={(e) => setConfirmarSenha(e.target.value)} />
-            </div>
-            
-            {tipo === 'usuario' && (
-                <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg">
-                    <h3 className="text-lilac-main font-bold mb-4">Dados para o Perfil de Cuidado</h3>
-                    
-                    <div className="input-group">
-                        <label htmlFor="dataNascimento"><FaCalendarAlt /> Data de Nascimento:</label>
-                        <input id="dataNascimento" name="dataNascimento" type="date" required onChange={handleDadosUsuarioChange} />
-                    </div>
-
-                    <div className="input-group">
-                        <label htmlFor="genero"><FaVenusMars /> Género:</label>
-                        <input id="genero" name="genero" type="text" placeholder="Género" onChange={handleDadosUsuarioChange} />
-                    </div>
-                    
-                    <div className="input-group">
-                        <label htmlFor="tipoNeurodivergencia"><FaBrain /> Tipo de Neurodivergência:</label>
-                        <input id="tipoNeurodivergencia" name="tipoNeurodivergencia" type="text" placeholder="Ex: Autismo, TDAH, Dislexia" onChange={handleDadosUsuarioChange} />
-                    </div>
-
-                    <div className="input-group">
-                        <label htmlFor="cidade"><FaMapMarkerAlt /> Cidade/Distrito:</label>
-                        <input id="cidade" name="cidade" type="text" placeholder="Cidade" required onChange={handleDadosUsuarioChange} />
-                        <input id="estado" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required onChange={handleDadosUsuarioChange} className="mt-2" />
-                    </div>
-
-                    <div className="input-group">
-                        <label htmlFor="hobbies"><FaHeart /> Hobbies (separados por vírgula):</label>
-                        <input id="hobbies" name="hobbies" type="text" placeholder="Ex: Leitura, Desportos, Música" onChange={handleDadosUsuarioChange} />
-                    </div>
-                    
-                    <div className="input-group">
-                        <label htmlFor="modoComunicacao"><FaComments /> Modo de Comunicação:</label>
-                        <input id="modoComunicacao" name="modoComunicacao" type="text" placeholder="Ex: Oral, Escrita, Visual" onChange={handleDadosUsuarioChange} />
-                    </div>
-
-                    <div className="input-group">
-                        <label htmlFor="preferenciasSensoriais">Preferências Sensoriais:</label>
-                        <textarea id="preferenciasSensoriais" name="preferenciasSensoriais" placeholder="Sensibilidades a texturas, ruídos, luzes, etc." onChange={handleDadosUsuarioChange} rows="2" />
-                    </div>
-                    
-                    <div className="input-group">
-                        <label htmlFor="historicoEscolar"><FaSchool /> Histórico Escolar (Resumo):</label>
-                        <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Ex: Último ano cursado, principais dificuldades" onChange={handleDadosUsuarioChange} rows="2" />
-                    </div>
+            <div className={`form-step ${currentStep !== 1 ? 'hidden-step' : ''}`}>
+                <div className="input-group">
+                    <label htmlFor="nome"><FaUser /> Nome Completo:</label>
+                    <input id="nome" type="text" placeholder="Insira o seu nome" required value={nome} onChange={(e) => setNome(e.target.value)} />
                 </div>
-            )}
-            
-            {tipo === 'profissional' && (
-                 <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg">
-                    <h3 className="text-lilac-main font-bold mb-4">Dados de Registo e Atuação</h3>
-                    
-                    <div className="input-group">
-                        <label htmlFor="dataNascimentoProf"><FaCalendarAlt /> Data de Nascimento:</label>
-                        <input id="dataNascimentoProf" name="dataNascimento" type="date" required onChange={handleDadosProfissionalChange} />
-                    </div>
+                <div className="input-group">
+                    <label htmlFor="email"><FaEnvelope /> Email:</label>
+                    <input id="email" type="email" placeholder="Insira o seu email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                </div>
+                <div className="input-group">
+                    <label htmlFor="senha"><FaLock /> Palavra-passe:</label>
+                    <input id="senha" type="password" placeholder="Crie a sua palavra-passe" required value={senha} onChange={(e) => setSenha(e.target.value)} />
+                </div>
+                <div className="input-group">
+                    <label htmlFor="confirmar">Confirme a Palavra-passe:</label>
+                    <input id="confirmar" type="password" placeholder="Repita a palavra-passe" required value={confirmarSenha} onChange={(e) => setConfirmarSenha(e.target.value)} />
+                </div>
+            </div>
 
-                    <div className="input-group">
-                        <label htmlFor="certificacoes"><FaIdBadge /> Certificações (Registo Profissional):</label>
-                        <input id="certificacoes" name="certificacoes" type="text" required placeholder="Nº de Registo e Conselho (Ex: CRP 00/0000)" onChange={handleDadosProfissionalChange} />
+            {currentStep === 2 && (
+                <div className="form-step form-step-2">
+                    <div className="section-divider">
+                        <div />
+                        <span>Quase lá</span>
+                        <div />
                     </div>
+                    <p className="step-description">Agora complete os detalhes adicionais para que o TEAxis personalize sua experiência.</p>
 
-                    <div className="input-group">
-                        <label htmlFor="especializacoes"><FaGraduationCap /> Especializações:</label>
-                        <textarea id="especializacoes" name="especializacoes" type="text" required placeholder="Áreas de foco (separadas por vírgula)" onChange={handleDadosProfissionalChange} rows="2" />
-                    </div>
-                    
-                    <div className="input-group">
-                        <label htmlFor="metodosUtilizados"><FaGraduationCap /> Métodos/Abordagens Utilizadas:</label>
-                        <textarea id="metodosUtilizados" name="metodosUtilizados" placeholder="Ex: TCC, ABA, Psicodrama" onChange={handleDadosProfissionalChange} rows="2" />
-                    </div>
-
-                    <div className="input-group">
-                        <label htmlFor="disponibilidade"><FaClock /> Disponibilidade (Horário e Dias):</label>
-                        <input id="disponibilidade" name="disponibilidade" type="text" placeholder="Ex: Seg/Qua/Sex, 14h-18h" required onChange={handleDadosProfissionalChange} />
-                    </div>
-
-                    <div className="input-group">
-                        <label htmlFor="cidadeProf"><FaMapMarkerAlt /> Cidade/Distrito Base:</label>
-                        <input id="cidadeProf" name="cidade" type="text" placeholder="Cidade" required onChange={handleDadosProfissionalChange} />
-                        <input id="estadoProf" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required onChange={handleDadosProfissionalChange} className="mt-2" />
-                    </div>
+                    {tipo === 'usuario' ? (
+                        <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg">
+                            <h3 className="text-lilac-main font-bold mb-4">Dados para o Perfil de Cuidado</h3>
+                            <div className="input-group">
+                                <label htmlFor="dataNascimento"><FaCalendarAlt /> Data de Nascimento:</label>
+                                <input id="dataNascimento" name="dataNascimento" type="date" required onChange={handleDadosUsuarioChange} />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="genero"><FaVenusMars /> Género:</label>
+                                <input id="genero" name="genero" type="text" placeholder="Género" onChange={handleDadosUsuarioChange} />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="tipoNeurodivergencia"><FaBrain /> Tipo de Neurodivergência:</label>
+                                <input id="tipoNeurodivergencia" name="tipoNeurodivergencia" type="text" placeholder="Ex: Autismo, TDAH, Dislexia" onChange={handleDadosUsuarioChange} />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="cidade"><FaMapMarkerAlt /> Cidade/Distrito:</label>
+                                <input id="cidade" name="cidade" type="text" placeholder="Cidade" required onChange={handleDadosUsuarioChange} />
+                                <input id="estado" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required onChange={handleDadosUsuarioChange} className="mt-2" />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="hobbies"><FaHeart /> Hobbies (separados por vírgula):</label>
+                                <input id="hobbies" name="hobbies" type="text" placeholder="Ex: Leitura, Desportos, Música" onChange={handleDadosUsuarioChange} />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="modoComunicacao"><FaComments /> Modo de Comunicação:</label>
+                                <input id="modoComunicacao" name="modoComunicacao" type="text" placeholder="Ex: Oral, Escrita, Visual" onChange={handleDadosUsuarioChange} />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="preferenciasSensoriais">Preferências Sensoriais:</label>
+                                <textarea id="preferenciasSensoriais" name="preferenciasSensoriais" placeholder="Sensibilidades a texturas, ruídos, luzes, etc." onChange={handleDadosUsuarioChange} rows="2" />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="historicoEscolar"><FaSchool /> Histórico Escolar (Resumo):</label>
+                                <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Ex: Último ano cursado, principais dificuldades" onChange={handleDadosUsuarioChange} rows="2" />
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg">
+                            <h3 className="text-lilac-main font-bold mb-4">Dados de Registo e Atuação</h3>
+                            <div className="input-group">
+                                <label htmlFor="dataNascimentoProf"><FaCalendarAlt /> Data de Nascimento:</label>
+                                <input id="dataNascimentoProf" name="dataNascimento" type="date" required onChange={handleDadosProfissionalChange} />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="certificacoes"><FaIdBadge /> Certificações (Registo Profissional):</label>
+                                <input id="certificacoes" name="certificacoes" type="text" required placeholder="Nº de Registo e Conselho (Ex: CRP 00/0000)" onChange={handleDadosProfissionalChange} />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="especializacoes"><FaGraduationCap /> Especializações:</label>
+                                <textarea id="especializacoes" name="especializacoes" type="text" required placeholder="Áreas de foco (separadas por vírgula)" onChange={handleDadosProfissionalChange} rows="2" />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="metodosUtilizados"><FaGraduationCap /> Métodos/Abordagens Utilizadas:</label>
+                                <textarea id="metodosUtilizados" name="metodosUtilizados" placeholder="Ex: TCC, ABA, Psicodrama" onChange={handleDadosProfissionalChange} rows="2" />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="disponibilidade"><FaClock /> Disponibilidade (Horário e Dias):</label>
+                                <input id="disponibilidade" name="disponibilidade" type="text" placeholder="Ex: Seg/Qua/Sex, 14h-18h" required onChange={handleDadosProfissionalChange} />
+                            </div>
+                            <div className="input-group">
+                                <label htmlFor="cidadeProf"><FaMapMarkerAlt /> Cidade/Distrito Base:</label>
+                                <input id="cidadeProf" name="cidade" type="text" placeholder="Cidade" required onChange={handleDadosProfissionalChange} />
+                                <input id="estadoProf" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required onChange={handleDadosProfissionalChange} className="mt-2" />
+                            </div>
+                        </div>
+                    )}
                 </div>
             )}
 
-            {/* Botão CADASTRAR */}
-            <button type="submit" className="btn btn-primary-green btn-full mt-6">
-                REGISTAR E CONCLUIR
-            </button>
-            
+            <div className="form-actions">
+                {currentStep === 2 && (
+                    <button type="button" className="btn btn-secondary btn-back" onClick={() => setCurrentStep(1)}>
+                        Voltar
+                    </button>
+                )}
+                <button type="submit" className="btn btn-primary-green btn-full">
+                    {currentStep === 1 ? 'Continuar' : 'Registrar e concluir'}
+                </button>
+            </div>
+
             <p className="login-link mt-4 text-center">
-                <a href="#" onClick={() => setPerfil(null)} className="text-lilac-main font-semibold">
+                <a href="#" onClick={() => { setPerfil(null); setCurrentStep(1); }} className="text-lilac-main font-semibold">
                     &larr; Voltar à escolha de perfil
                 </a>
             </p>
