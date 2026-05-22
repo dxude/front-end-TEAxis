@@ -478,7 +478,7 @@
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
-  align-self: flex-start;
+  align-self: center;
   transition: background-color 0.2s;
 }
 

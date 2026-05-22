@@ -267,7 +267,6 @@ export default function PerfilProfissionalDetalhado() {
                 <p className="empty-state-text">Este profissional ainda não possui avaliações cadastradas.</p>
               )}
 
-              {/* Formulário Embutido de Nova Review */}
               <div className="interactive-review-box">
                 <h3>Como foi sua experiência com este especialista?</h3>
                 <form onSubmit={handleSubmitReview} className="form-inner-layout">
