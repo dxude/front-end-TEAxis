@@ -19,7 +19,7 @@ const Cadastro = () => {
   const [account, setAccount] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
 
   // Detalhes - usuário
-    const [detalhesUsuario, setDetalhesUsuario] = useState({ dataNascimento: '', tipoNeurodivergencia: '', hobbies: [], genero: '', cidade: '', estado: '', distrito: '', preferenciasSensoriais: [], modoComunicacao: [], historicoEscolar: '' });
+    const [detalhesUsuario, setDetalhesUsuario] = useState({ dataNascimento: '', tipoNeurodivergencia: [], hobbies: [], genero: '', cidade: '', estado: '', distrito: '', preferenciasSensoriais: [], modoComunicacao: [], historicoEscolar: '' });
 
     // UI helpers for enhanced controls
     const [dobDay, setDobDay] = useState('');
@@ -71,7 +71,8 @@ const Cadastro = () => {
     const DEFAULT_SUGGESTIONS = {
       hobbies: ['Leitura','Música','Esportes','Desenho','Jogos','Programação','Culinária','Dança'],
       modoComunicacao: ['Oral','Escrita','Visual','Aumentativa/Alternativa','Gestual','Simbólica'],
-      preferenciasSensoriais: ['Sensível a ruídos','Sensível a luz','Prefere silêncio','Texturas específicas','Conforto tátil']
+      preferenciasSensoriais: ['Sensível a ruídos','Sensível a luz','Prefere silêncio','Texturas específicas','Conforto tátil'],
+      neurodivergencias: ['Autismo','TDAH','Dislexia','Dispraxia','TEA','Transtorno do Processamento Sensorial','Altas Habilidades']
     };
   // Detalhes - profissional
   const [detalhesProfissional, setDetalhesProfissional] = useState({ dataNascimento: '', certificacoes: '', especializacoes: '', metodosUtilizados: '', disponibilidade: '', cidade: '', estado: '' });
@@ -237,6 +238,10 @@ const Cadastro = () => {
                   BRAZIL_STATES={BRAZIL_STATES}
                   stateCities={stateCities}
                   handleStateChange={handleStateChange}
+                  cityQuery={cityQuery}
+                  setCityQuery={setCityQuery}
+                  citySuggestions={citySuggestions}
+                  setCitySuggestions={setCitySuggestions}
                   DEFAULT_SUGGESTIONS={DEFAULT_SUGGESTIONS}
                   addChip={addChip}
                   removeChip={removeChip}
@@ -279,7 +284,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, onSubmit, onSimulateGoogle, onBackToPerfil, dobDay, setDobDay, dobMonth, setDobMonth, dobYear, setDobYear, GENDER_OPTIONS, showGenderMenu, setShowGenderMenu, genderHoverText, setGenderHoverText, BRAZIL_STATES, stateCities, handleStateChange, DEFAULT_SUGGESTIONS, addChip, removeChip }) => {
+const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, onSubmit, onSimulateGoogle, onBackToPerfil, dobDay, setDobDay, dobMonth, setDobMonth, dobYear, setDobYear, GENDER_OPTIONS, showGenderMenu, setShowGenderMenu, genderHoverText, setGenderHoverText, BRAZIL_STATES, stateCities, handleStateChange, cityQuery, setCityQuery, citySuggestions, setCitySuggestions, DEFAULT_SUGGESTIONS, addChip, removeChip }) => {
     return (
         <form className="cadastro-form auth-card" onSubmit={onSubmit}>
             <div className="form-header">
@@ -369,28 +374,48 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                         <div className="input-group">
                           <label><FaVenusMars /> Gênero:</label>
                           <div className="gender-control">
-                            <button type="button" className="gender-toggle" onClick={()=>setShowGenderMenu(!showGenderMenu)}>
-                              {detalhesUsuario.genero || 'Selecione o gênero'}
+                            <button type="button" className={`gender-toggle ${detalhesUsuario.genero ? 'selected' : ''}`} onClick={()=>setShowGenderMenu(!showGenderMenu)}>
+                              <span>{detalhesUsuario.genero || 'Escolha ou adicione seu gênero'}</span>
                             </button>
                             {showGenderMenu && (
-                              <ul className="gender-menu">
-                                {GENDER_OPTIONS.map(opt => (
-                                  <li key={opt.key}
-                                    onMouseEnter={()=>setGenderHoverText(opt.desc)}
-                                    onMouseLeave={()=>setGenderHoverText('')}
-                                    onClick={()=>{ handleDetalhesUsuarioChange({ name: 'genero', value: opt.label }); setShowGenderMenu(false); }}
-                                  >{opt.label}</li>
-                                ))}
-                              </ul>
+                              <div className="gender-menu">
+                                <div className="gender-menu-grid">
+                                  {GENDER_OPTIONS.map(opt => (
+                                    <button key={opt.key}
+                                      type="button"
+                                      className={`gender-option ${detalhesUsuario.genero === opt.label ? 'active' : ''}`}
+                                      onMouseEnter={()=>setGenderHoverText(opt.desc)}
+                                      onMouseLeave={()=>setGenderHoverText('')}
+                                      onClick={()=>{ handleDetalhesUsuarioChange({ name: 'genero', value: opt.label }); setShowGenderMenu(false); }}
+                                    >
+                                      <strong>{opt.label}</strong>
+                                      <span>{opt.desc}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                                <div className="gender-custom-row">
+                                  <input type="text" placeholder="Adicione seu gênero personalizado e pressione Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.currentTarget.value.trim()){ handleDetalhesUsuarioChange({ name:'genero', value: e.currentTarget.value.trim() }); setShowGenderMenu(false); e.currentTarget.value=''; e.preventDefault(); } }} />
+                                </div>
+                              </div>
                             )}
-                            <div className="gender-tooltip">{genderHoverText}</div>
+                            <div className="gender-tooltip">{genderHoverText || 'Passe o mouse sobre uma opção para ver mais detalhes.'}</div>
                           </div>
                         </div>
 
                         {/* Neurodivergência */}
                         <div className="input-group">
                           <label><FaBrain /> Tipo de Neurodivergência:</label>
-                          <input id="tipoNeurodivergencia" name="tipoNeurodivergencia" type="text" placeholder="Ex: Autismo, TDAH, Dislexia" value={detalhesUsuario.tipoNeurodivergencia} onChange={handleDetalhesUsuarioChange} />
+                          <div className="chip-list">
+                            {(detalhesUsuario.tipoNeurodivergencia||[]).map(item => (
+                              <span className="chip" key={item}>{item} <button type="button" onClick={()=>removeChip('tipoNeurodivergencia',item)}>×</button></span>
+                            ))}
+                          </div>
+                          <div className="suggestions">
+                            {DEFAULT_SUGGESTIONS.neurodivergencias.map(opt => (
+                              <button type="button" key={opt} className="suggestion" onClick={()=>addChip('tipoNeurodivergencia',opt)}>{opt}</button>
+                            ))}
+                          </div>
+                          <input id="tipoNeurodivergencia" name="tipoNeurodivergencia" type="text" placeholder="Digite ou adicione sua neurodivergência e pressione Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.currentTarget.value.trim()){ addChip('tipoNeurodivergencia', e.currentTarget.value.trim()); e.currentTarget.value=''; e.preventDefault(); } }} />
                         </div>
 
                         {/* Estado -> Cidade -> Distrito */}
