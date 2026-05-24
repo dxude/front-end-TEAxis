@@ -452,40 +452,62 @@ body {
 }
 .gender-menu-grid {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
 }
 .gender-option {
     text-align: left;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
-    padding: 14px 16px;
-    border-radius: 18px;
+    gap: 10px;
+    padding: 18px 20px;
+    min-height: 118px;
+    border-radius: 22px;
     background: #F8F6FF;
     border: 1px solid transparent;
     cursor: pointer;
     transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
 }
+.gender-option-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+}
+.gender-icon {
+    display: grid;
+    place-items: center;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 16px;
+    background: rgba(123,63,242,0.12);
+    color: #5D3DD8;
+    font-size: 1.1rem;
+}
 .gender-option strong {
     display: block;
     color: #322d68;
+    font-size: 1rem;
+    white-space: normal;
+    word-break: break-word;
 }
 .gender-option span {
     color: #5b5f78;
     font-size: 0.9rem;
-    line-height: 1.4;
+    line-height: 1.5;
+    white-space: normal;
+    word-break: break-word;
 }
 .gender-option:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 16px 40px rgba(79,70,229,0.12);
-    border-color: rgba(123,63,242,0.24);
-    background: #f7f5ff;
+    transform: translateY(-3px);
+    box-shadow: 0 20px 45px rgba(79,70,229,0.16);
+    border-color: rgba(123,63,242,0.28);
+    background: #f6f4ff;
 }
 .gender-option.active {
-    border-color: rgba(123,63,242,0.7);
-    background: linear-gradient(135deg, rgba(123,63,242,0.14), rgba(79,70,229,0.08));
+    border-color: rgba(123,63,242,0.85);
+    background: linear-gradient(135deg, rgba(123,63,242,0.18), rgba(79,70,229,0.1));
 }
 .gender-custom-row {
     margin-top: 14px;
@@ -508,8 +530,14 @@ body {
     font-size: 0.95rem;
     padding: 12px 14px;
     border-radius: 16px;
-    background: linear-gradient(180deg, rgba(123,63,242,0.06), rgba(255,255,255,0.75));
-    box-shadow: 0 20px 40px rgba(18, 18, 40, 0.06);
+    background: linear-gradient(180deg, rgba(123,63,242,0.08), rgba(255,255,255,0.88));
+    box-shadow: 0 24px 50px rgba(18, 18, 40, 0.08);
+}
+
+@media (min-width: 1100px) {
+    .gender-menu-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
 }
 
 .chip-list { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
@@ -662,27 +690,6 @@ body {
     padding-right: 40px;
 }
 
-/* Gender control flair */
-.gender-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: linear-gradient(90deg, #FFFFFF, #FBF8FF);
-    border: 1px solid rgba(80, 38, 140, 0.08);
-}
-.gender-toggle::after{
-    content: '';
-    display:inline-block;
-    width:10px;height:10px;
-    border-right:2px solid rgba(59,53,110,0.9);
-    border-bottom:2px solid rgba(59,53,110,0.9);
-    transform: rotate(45deg);
-    margin-left:6px;
-    opacity:0.9;
-}
-.gender-menu { border-radius:14px; padding:6px; }
-.gender-menu li { padding:10px 12px; font-weight:600; }
-.gender-tooltip { font-size:0.88rem; color:#5B6272; padding:8px 10px; border-radius:10px; background:linear-gradient(180deg, rgba(123,63,242,0.04), rgba(255,255,255,0.5)); }
 
 /* Suggestions as vibrant pills */
 .suggestion {

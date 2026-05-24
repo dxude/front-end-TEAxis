@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../Styles/Cadastro.css';
 import '../Styles/Login.css'; // importa estilos do popup simulado
-import { FaArrowLeft, FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
+import { FaArrowLeft, FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaGenderless, FaTransgender, FaMale, FaFemale, FaQuestionCircle, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
 
 const API_REGISTRO_USUARIO = 'SUA_URL_DA_API/api/v1/usuarios/registro'; 
 const API_REGISTRO_PROFISSIONAL = 'SUA_URL_DA_API/api/v1/profissionais/registro'; 
@@ -61,11 +61,11 @@ const Cadastro = () => {
     ];
 
     const GENDER_OPTIONS = [
-      { key: 'cis', label: 'Cisgênero', desc: 'Pessoa cuja identidade de gênero corresponde ao sexo atribuído no nascimento.' },
-      { key: 'trans', label: 'Transgênero', desc: 'Pessoa cuja identidade de gênero difere do sexo atribuído no nascimento.' },
-      { key: 'nb', label: 'Não-binário', desc: 'Identidade fora das categorias exclusivamente masculino ou feminino.' },
-      { key: 'fluid', label: 'Gênero-fluido', desc: 'Identidade de gênero que pode variar ao longo do tempo.' },
-      { key: 'nao-dizer', label: 'Prefiro não dizer', desc: 'Prefere não informar sua identidade de gênero.' }
+      { key: 'cis', label: 'Cisgênero', desc: 'Pessoa cuja identidade de gênero corresponde ao sexo atribuído no nascimento.', icon: FaVenusMars },
+      { key: 'trans', label: 'Transgênero', desc: 'Pessoa cuja identidade de gênero difere do sexo atribuído no nascimento.', icon: FaTransgender },
+      { key: 'nb', label: 'Não-binário', desc: 'Identidade fora das categorias exclusivamente masculino ou feminino.', icon: FaGenderless },
+      { key: 'fluid', label: 'Gênero-fluido', desc: 'Identidade de gênero que pode variar ao longo do tempo.', icon: FaMale },
+      { key: 'nao-dizer', label: 'Prefiro não dizer', desc: 'Prefere não informar sua identidade de gênero.', icon: FaQuestionCircle }
     ];
 
     const DEFAULT_SUGGESTIONS = {
@@ -75,7 +75,7 @@ const Cadastro = () => {
       neurodivergencias: ['Autismo','TDAH','Dislexia','Dispraxia','TEA','Transtorno do Processamento Sensorial','Altas Habilidades']
     };
   // Detalhes - profissional
-  const [detalhesProfissional, setDetalhesProfissional] = useState({ dataNascimento: '', certificacoes: '', especializacoes: '', metodosUtilizados: '', disponibilidade: '', cidade: '', estado: '' });
+  const [detalhesProfissional, setDetalhesProfissional] = useState({ dataNascimento: '', certificacoes: '', especializacoes: '', metodosUtilizados: '', disponibilidade: '', cidade: '', estado: '', genero: '' });
 
   const [showSimPopup, setShowSimPopup] = useState(false);
   const [simPopupMessage, setSimPopupMessage] = useState('');
@@ -121,7 +121,13 @@ const Cadastro = () => {
     const removeChip = (key, value) => {
       setDetalhesUsuario((p) => ({ ...p, [key]: (p[key]||[]).filter(v => v !== value) }));
     };
-  const handleDetalhesProfissionalChange = (e) => setDetalhesProfissional({ ...detalhesProfissional, [e.target.name]: e.target.value });
+  const handleDetalhesProfissionalChange = (e) => {
+    if (e && e.target && e.target.name) {
+      setDetalhesProfissional({ ...detalhesProfissional, [e.target.name]: e.target.value });
+    } else if (e && e.name) {
+      setDetalhesProfissional({ ...detalhesProfissional, [e.name]: e.value });
+    }
+  };
 
   const handleSimulatedGoogle = () => {
     setSimPopupMessage('Modo Google simulado - redirecionando...');
@@ -388,7 +394,10 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                                       onMouseLeave={()=>setGenderHoverText('')}
                                       onClick={()=>{ handleDetalhesUsuarioChange({ name: 'genero', value: opt.label }); setShowGenderMenu(false); }}
                                     >
-                                      <strong>{opt.label}</strong>
+                                      <span className="gender-option-meta">
+                                        <span className="gender-icon"><opt.icon /></span>
+                                        <strong>{opt.label}</strong>
+                                      </span>
                                       <span>{opt.desc}</span>
                                     </button>
                                   ))}
@@ -506,6 +515,39 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                             <div className="input-group">
                                 <label htmlFor="dataNascimentoProf"><FaCalendarAlt /> Data de Nascimento:</label>
                                 <input id="dataNascimentoProf" name="dataNascimento" type="date" required value={detalhesProfissional.dataNascimento} onChange={handleDetalhesProfissionalChange} />
+                            </div>
+                            <div className="input-group">
+                              <label><FaVenusMars /> Gênero:</label>
+                              <div className="gender-control">
+                                <button type="button" className={`gender-toggle ${detalhesProfissional.genero ? 'selected' : ''}`} onClick={()=>setShowGenderMenu(!showGenderMenu)}>
+                                  <span>{detalhesProfissional.genero || 'Escolha ou adicione seu gênero'}</span>
+                                </button>
+                                {showGenderMenu && (
+                                  <div className="gender-menu">
+                                    <div className="gender-menu-grid">
+                                      {GENDER_OPTIONS.map(opt => (
+                                        <button key={opt.key}
+                                          type="button"
+                                          className={`gender-option ${detalhesProfissional.genero === opt.label ? 'active' : ''}`}
+                                          onMouseEnter={()=>setGenderHoverText(opt.desc)}
+                                          onMouseLeave={()=>setGenderHoverText('')}
+                                          onClick={()=>{ handleDetalhesProfissionalChange({ name: 'genero', value: opt.label }); setShowGenderMenu(false); }}
+                                        >
+                                          <span className="gender-option-meta">
+                                            <span className="gender-icon"><opt.icon /></span>
+                                            <strong>{opt.label}</strong>
+                                          </span>
+                                          <span>{opt.desc}</span>
+                                        </button>
+                                      ))}
+                                    </div>
+                                    <div className="gender-custom-row">
+                                      <input type="text" placeholder="Adicione seu gênero personalizado e pressione Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.currentTarget.value.trim()){ handleDetalhesProfissionalChange({ name:'genero', value: e.currentTarget.value.trim() }); setShowGenderMenu(false); e.currentTarget.value=''; e.preventDefault(); } }} />
+                                    </div>
+                                  </div>
+                                )}
+                                <div className="gender-tooltip">{genderHoverText || 'Passe o mouse sobre uma opção para ver mais detalhes.'}</div>
+                              </div>
                             </div>
                             <div className="input-group">
                                 <label htmlFor="certificacoes"><FaIdBadge /> Certificações (Registo Profissional):</label>
