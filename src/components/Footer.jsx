@@ -15,16 +15,16 @@ const Footer = () => {
             TEAxis é uma plataforma inovadora que conecta indivíduos neurodiversos com profissionais especializados, oferecendo apoio, desenvolvimento e comunidade.
           </p>
           <div className="footer-social">
-            <a href="#facebook" aria-label="Facebook" className="social-icon">
+            <a href="https://www.facebook.com/TEAxis" aria-label="Facebook" className="social-icon" target="_blank" rel="noopener noreferrer">
               <FaFacebook />
             </a>
-            <a href="#instagram" aria-label="Instagram" className="social-icon">
+            <a href="https://www.instagram.com/TEAxis" aria-label="Instagram" className="social-icon" target="_blank" rel="noopener noreferrer">
               <FaInstagram />
             </a>
-            <a href="#linkedin" aria-label="LinkedIn" className="social-icon">
+            <a href="https://www.linkedin.com/company/teaxis" aria-label="LinkedIn" className="social-icon" target="_blank" rel="noopener noreferrer">
               <FaLinkedin />
             </a>
-            <a href="#twitter" aria-label="Twitter" className="social-icon">
+            <a href="https://twitter.com/TEAxis" aria-label="Twitter" className="social-icon" target="_blank" rel="noopener noreferrer">
               <FaTwitter />
             </a>
           </div>
@@ -69,7 +69,7 @@ const Footer = () => {
             </div>
             <div className="contact-item">
               <FaMapMarkerAlt className="contact-icon" />
-              <span>São Paulo, SP - Brasil</span>
+              <span>Recife, PE - Pernambuco</span>
             </div>
           </div>
         </div>

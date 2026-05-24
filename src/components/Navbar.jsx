@@ -41,23 +41,28 @@ export default function Navbar() {
   const renderAuthLinks = () => {
     if (!isAuthed) {
       return (
-        <details className="nav-dropdown">
-          <summary className="nav-item">Entrar</summary>
-          <div className="dropdown-menu">
-            <Link to="/login" className="dropdown-link" onClick={closeMobileMenu}>
-              Entrar
-            </Link>
-            <Link to="/login?type=usuario" className="dropdown-link" onClick={closeMobileMenu}>
-              Entrar como Usuário
-            </Link>
-            <Link to="/login?type=responsavel" className="dropdown-link" onClick={closeMobileMenu}>
-              Entrar como Responsável
-            </Link>
-            <Link to="/login?type=profissional" className="dropdown-link" onClick={closeMobileMenu}>
-              Entrar como Profissional
-            </Link>
-          </div>
-        </details>
+        <>
+          <Link to="/area-responsavel?preview=responsavel" className="nav-item" onClick={closeMobileMenu}>
+            Área do Responsável (Preview)
+          </Link>
+          <details className="nav-dropdown">
+            <summary className="nav-item">Entrar</summary>
+            <div className="dropdown-menu">
+              <Link to="/login" className="dropdown-link" onClick={closeMobileMenu}>
+                Entrar
+              </Link>
+              <Link to="/login?type=usuario" className="dropdown-link" onClick={closeMobileMenu}>
+                Entrar como Usuário
+              </Link>
+              <Link to="/login?type=responsavel" className="dropdown-link" onClick={closeMobileMenu}>
+                Entrar como Responsável
+              </Link>
+              <Link to="/login?type=profissional" className="dropdown-link" onClick={closeMobileMenu}>
+                Entrar como Profissional
+              </Link>
+            </div>
+          </details>
+        </>
       );
     }
 

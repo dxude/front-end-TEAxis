@@ -307,8 +307,9 @@
 .home-container,
 .content-wrapper,
 .cadastro-page-container,
-.login-page-container {
-  padding-top: 70px;
+.login-page-container,
+.guardian-dashboard {
+  padding-top: 100px;
 }
 
 /* === AJUSTE DO CONTEÚDO PRINCIPAL === */

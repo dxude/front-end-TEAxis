@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { createChildProfile, updateChildProfile } from '../firebase';
 import ConsentModal from './ConsentModal';
 
-const ChildProfileForm = ({ guardianId, onSaved, child }) => {
+const ChildProfileForm = ({ guardianId, onSaved, child, previewMode = false }) => {
   const [form, setForm] = useState({ name: '', dob: '', sex: '', conditions: '', allergies: '', notes: '' });
   const [showConsent, setShowConsent] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -46,7 +46,13 @@ const ChildProfileForm = ({ guardianId, onSaved, child }) => {
       };
 
       let res;
-      if (child && child.id) {
+      if (previewMode) {
+        await new Promise((resolve) => setTimeout(resolve, 400));
+        res = {
+          id: child?.id || `preview-child-${Date.now()}`,
+          ...payload
+        };
+      } else if (child && child.id) {
         res = await updateChildProfile(guardianId, child.id, payload);
       } else {
         res = await createChildProfile(guardianId, payload);

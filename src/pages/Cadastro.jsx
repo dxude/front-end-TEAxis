@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../Styles/Cadastro.css';
 import '../Styles/Login.css'; // importa estilos do popup simulado
-import { FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
+import { FaArrowLeft, FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
 
 const API_REGISTRO_USUARIO = 'SUA_URL_DA_API/api/v1/usuarios/registro'; 
 const API_REGISTRO_PROFISSIONAL = 'SUA_URL_DA_API/api/v1/profissionais/registro'; 
@@ -65,46 +65,90 @@ const Cadastro = () => {
       detalhesProfissional: perfil === 'profissional' ? detalhesProfissional : null
     };
 
-        console.log('Dados para registo:', payload);
-        alert('Cadastro (cliente) executado com sucesso (demo).');
-        navigate('/login');
-    };
+    console.log('Dados para registo:', payload);
+    alert('Cadastro (cliente) executado com sucesso (demo).');
+    navigate('/login');
+  };
 
-        // Renderiza o seletor ou o formulário, dependendo do estado
-    return (
-        <div className="cadastro-page-container">
-            {perfil ? (
-                <CadastroForm
-                    tipo={perfil}
-                    currentStep={currentStep}
-                    setCurrentStep={setCurrentStep}
-                    account={account}
-                    handleAccountChange={handleAccountChange}
-                    detalhesUsuario={detalhesUsuario}
-                    handleDetalhesUsuarioChange={handleDetalhesUsuarioChange}
-                    detalhesProfissional={detalhesProfissional}
-                    handleDetalhesProfissionalChange={handleDetalhesProfissionalChange}
-                    onSubmit={handleCadastroSubmit}
-                    onSimulateGoogle={handleSimulatedGoogle}
-                />
-            ) : (
-                <PerfilSelector setPerfil={setPerfil} />
-            )}
+  const handleBackToPerfil = () => {
+    setPerfil(null);
+    setCurrentStep(1);
+  };
 
-            {showSimPopup && (
-                <div className="sim-popup" role="dialog" aria-live="polite">
-                    <div style={{ width: '100%', textAlign: 'center', fontWeight: 600, color: '#202124' }}>
-                        {simPopupMessage}
-                    </div>
-                </div>
-            )}
+  return (
+    <div className="cadastro-page-container">
+      <div className="auth-page-shell">
+        <aside className="auth-side-panel">
+          <span className="eyebrow">Criação de conta</span>
+          <h1>Cadastre-se com confiança e clareza</h1>
+          <p>Complete um fluxo guiado e inclusivo para se conectar a profissionais, familiares e serviços com segurança.</p>
+
+          <div className="auth-feature-list">
+            <div className="auth-feature-item">
+              <FaHeart className="feature-icon" />
+              <div>
+                <strong>Cadastro em etapas</strong>
+                <p>Formulário simplificado para todo mundo.</p>
+              </div>
+            </div>
+            <div className="auth-feature-item">
+              <FaLock className="feature-icon" />
+              <div>
+                <strong>Dados protegidos</strong>
+                <p>Privacidade e segurança em todo o processo.</p>
+              </div>
+            </div>
+            <div className="auth-feature-item">
+              <FaComments className="feature-icon" />
+              <div>
+                <strong>Comunicação fácil</strong>
+                <p>Perfil pronto para conversas e acompanhamentos.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="auth-panel-footer">
+            <p>Já tem conta?</p>
+            <Link to="/login" className="text-link">Faça login</Link>
+          </div>
+        </aside>
+
+        <main className="auth-page-content">
+          {perfil ? (
+            <CadastroForm
+              tipo={perfil}
+              currentStep={currentStep}
+              setCurrentStep={setCurrentStep}
+              account={account}
+              handleAccountChange={handleAccountChange}
+              detalhesUsuario={detalhesUsuario}
+              handleDetalhesUsuarioChange={handleDetalhesUsuarioChange}
+              detalhesProfissional={detalhesProfissional}
+              handleDetalhesProfissionalChange={handleDetalhesProfissionalChange}
+              onSubmit={handleCadastroSubmit}
+              onSimulateGoogle={handleSimulatedGoogle}
+              onBackToPerfil={handleBackToPerfil}
+            />
+          ) : (
+            <PerfilSelector setPerfil={setPerfil} />
+          )}
+        </main>
+      </div>
+
+      {showSimPopup && (
+        <div className="sim-popup" role="dialog" aria-live="polite">
+          <div style={{ width: '100%', textAlign: 'center', fontWeight: 600, color: '#202124' }}>
+            {simPopupMessage}
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
 };
 
-const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, onSubmit, onSimulateGoogle }) => {
+const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, onSubmit, onSimulateGoogle, onBackToPerfil }) => {
     return (
-        <form className="cadastro-form" onSubmit={onSubmit}>
+        <form className="cadastro-form auth-card" onSubmit={onSubmit}>
             <div className="form-header">
                 <div>
                     <span className="eyebrow">Cadastro TEAxis</span>
@@ -245,11 +289,11 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                 </button>
             </div>
 
-            <p className="login-link mt-4 text-center">
-                <a href="#" onClick={() => { /* voltar à seleção */ window.location.reload(); }} className="text-lilac-main font-semibold">
-                    &larr; Voltar à escolha de perfil
-                </a>
-            </p>
+            <div className="back-action-row">
+                <button type="button" className="btn btn-back-profile" onClick={onBackToPerfil}>
+                    <FaArrowLeft /> Voltar à escolha de perfil
+                </button>
+            </div>
         </form>
     );
 };

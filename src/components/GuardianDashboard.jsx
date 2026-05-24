@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import ChildProfileForm from './ChildProfileForm';
 import { getChildrenProfiles, listenChildrenProfiles, deleteChildProfile, auth } from '../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 
 const GuardianDashboard = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const previewMode = searchParams.get('preview') === 'responsavel';
   const [currentUser, setCurrentUser] = useState(null);
   const guardianId = currentUser?.uid || null;
   const [children, setChildren] = useState([]);
@@ -14,6 +16,15 @@ const GuardianDashboard = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (previewMode) {
+      setCurrentUser({
+        uid: 'preview-guardian-id',
+        displayName: 'Responsável Preview',
+        email: 'responsavel.preview@teaxis.test'
+      });
+      return;
+    }
+
     const unsub = onAuthStateChanged(auth, (user) => {
       if (!user) {
         // não autenticado — redirecionar para login
@@ -24,9 +35,44 @@ const GuardianDashboard = () => {
     });
 
     return () => unsub();
-  }, [navigate]);
+  }, [navigate, previewMode]);
 
   useEffect(() => {
+    if (previewMode) {
+      setChildren([
+        {
+          id: 'preview-child-1',
+          name: 'Mariana Silva',
+          dob: '2013-06-15',
+          sex: 'Feminino',
+          conditions: ['TDAH'],
+          allergies: ['Amendoim'],
+          notes: 'Prefere atividades curtas e visuais.',
+          consent: {
+            givenBy: 'preview-guardian-id',
+            givenAt: new Date().toISOString(),
+            termsVersion: 'v1'
+          }
+        },
+        {
+          id: 'preview-child-2',
+          name: 'Gustavo Pereira',
+          dob: '2011-09-20',
+          sex: 'Masculino',
+          conditions: ['Autismo'],
+          allergies: [],
+          notes: 'Gosta de jogos de tabuleiro e rotinas estruturadas.',
+          consent: {
+            givenBy: 'preview-guardian-id',
+            givenAt: new Date().toISOString(),
+            termsVersion: 'v1'
+          }
+        }
+      ]);
+      setLoading(false);
+      return;
+    }
+
     let unsub;
     if (!guardianId) return;
     setLoading(true);
@@ -46,10 +92,20 @@ const GuardianDashboard = () => {
     return () => {
       if (unsub) unsub();
     };
-  }, [guardianId]);
+  }, [guardianId, previewMode]);
 
   const handleSaved = (child) => {
-    // onSnapshot atualizará a lista; apenas fechar e limpar seleção
+    if (previewMode) {
+      setChildren((prev) => {
+        const existingIndex = prev.findIndex((item) => item.id === child.id);
+        if (existingIndex >= 0) {
+          const next = [...prev];
+          next[existingIndex] = child;
+          return next;
+        }
+        return [...prev, child];
+      });
+    }
     setShowForm(false);
     setSelectedChild(null);
   };
@@ -72,13 +128,16 @@ const GuardianDashboard = () => {
   return (
     <div className="guardian-dashboard p-4">
       <h2>Área do Responsável</h2>
+      {previewMode && (
+        <p style={{ color: '#7b3ff2', fontWeight: 600 }}>Modo preview ativo — você está vendo a área do responsável sem autenticação real.</p>
+      )}
       <p>Responsável: {currentUser?.displayName || currentUser?.email || 'Usuário'}</p>
 
       <div className="actions mt-4">
         <button className="btn btn-primary" onClick={() => setShowForm(true)}>Adicionar Perfil de Menor</button>
       </div>
 
-      {showForm && <ChildProfileForm guardianId={guardianId} child={selectedChild} onSaved={handleSaved} />}
+      {showForm && <ChildProfileForm guardianId={guardianId} child={selectedChild} onSaved={handleSaved} previewMode={previewMode} />}
 
       <div className="children-list mt-6">
         <h3>Perfis adicionados</h3>

@@ -30,6 +30,7 @@ function App() {
   const location = useLocation();
 
   const esconderNavbarRotas = [
+    '/',
     '/perfil',
     '/dashboard-usuario',
     '/dashboard-profissional',

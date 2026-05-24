@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
 import "../Styles/Login.css";
-import { FaGoogle, FaEnvelope, FaLock } from "react-icons/fa";
+import { FaGoogle, FaEnvelope, FaLock, FaHeart } from "react-icons/fa";
 import { signInWithGoogle } from "../firebase";
 
 const API_LOGIN_EMAIL = "https://back-end-plataforma-teaxis.onrender.com/api/v1/auth/login";
@@ -96,68 +96,97 @@ const Login = () => {
   };
 
   return (
-    <div className="cadastro-page-container">
-      <div className="login-form-card">
-        <h2>Bem-vindo(a) de volta! 👋</h2>
-        {loginType && (
-          <p style={{ marginTop: '0.5rem', color: '#4a5568' }}>
-            Entrar como {loginType === 'responsavel' ? 'Responsável' : loginType === 'profissional' ? 'Profissional' : 'Usuário'}.
+    <div className="cadastro-page-container login-page-container">
+      <div className="auth-page-shell">
+        <aside className="auth-side-panel">
+          <span className="eyebrow">Acesso Seguro</span>
+          <h1>Volte para o TEAxis</h1>
+          <p>Entre com rapidez e continue acompanhando suas sessões, seus profissionais e suas mensagens.</p>
+
+          <div className="auth-feature-list">
+            <div className="auth-feature-item">
+              <FaHeart className="feature-icon" />
+              <div>
+                <strong>Segurança</strong>
+                <p>Dados protegidos e login confiável.</p>
+              </div>
+            </div>
+            <div className="auth-feature-item">
+              <FaLock className="feature-icon" />
+              <div>
+                <strong>Privacidade</strong>
+                <p>Autenticação pensada para famílias e profissionais.</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="auth-panel-footer">
+            <p className="panel-footer-label">Ainda não é membro?</p>
+            <Link to="/cadastro" className="text-link">Crie sua conta</Link>
+          </div>
+        </aside>
+
+        <div className="login-form-card auth-card">
+          <h2>Bem-vindo(a) de volta! 👋</h2>
+          {loginType && (
+            <p className="login-type-text">
+              Entrar como {loginType === 'responsavel' ? 'Responsável' : loginType === 'profissional' ? 'Profissional' : 'Usuário'}.
+            </p>
+          )}
+
+          <div className="social-login-wrapper">
+            <button
+              type="button"
+              className="btn btn-social mb-4"
+              onClick={handleGoogleLogin}
+              disabled={loadingGoogle}
+            >
+              <FaGoogle /> {loadingGoogle ? "Entrando..." : "Continuar com o Google"}
+            </button>
+          </div>
+
+          <div className="divider">OU ENTRE COM EMAIL</div>
+
+          <form onSubmit={handleLoginEmail}>
+            <div className="input-group">
+              <label>
+                <FaEnvelope /> Email:
+              </label>
+              <input
+                type="email"
+                placeholder="Seu email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="input-group">
+              <label>
+                <FaLock /> Senha:
+              </label>
+              <input
+                type="password"
+                placeholder="Sua senha"
+                required
+                value={senha}
+                onChange={(e) => setSenha(e.target.value)}
+              />
+            </div>
+
+            <div className="captcha-wrapper">
+              <ReCAPTCHA sitekey="6Lfu2QssAAAAAO7L1Os1H12CYVrIxj0LH1Ck6c6E" onChange={handleCaptcha} />
+            </div>
+
+            <button type="submit" className="btn btn-primary-green btn-login-action" disabled={loadingEmail}>
+              {loadingEmail ? 'Entrando...' : 'ENTRAR'}
+            </button>
+          </form>
+
+          <p className="login-link mt-4 text-center">
+            Não tem conta? <Link to="/cadastro">Crie sua conta aqui!</Link>
           </p>
-        )}
-
-        <div style={{ textAlign: "center", marginBottom: "1rem" }}>
-          <button
-            type="button"
-            className="btn btn-social mb-4"
-            onClick={handleGoogleLogin}
-            disabled={loadingGoogle}
-            style={{ marginTop: "0.5rem" }}
-          >
-            <FaGoogle /> {loadingGoogle ? "Entrando..." : "Continuar com o Google"}
-          </button>
         </div>
-
-        <div className="divider">OU ENTRE COM EMAIL</div>
-
-        <form onSubmit={handleLoginEmail}>
-          <div className="input-group">
-            <label>
-              <FaEnvelope /> Email:
-            </label>
-            <input
-              type="email"
-              placeholder="Seu email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-
-          <div className="input-group">
-            <label>
-              <FaLock /> Senha:
-            </label>
-            <input
-              type="password"
-              placeholder="Sua senha"
-              required
-              value={senha}
-              onChange={(e) => setSenha(e.target.value)}
-            />
-          </div>
-
-          <div className="captcha-wrapper">
-            <ReCAPTCHA sitekey="6Lfu2QssAAAAAO7L1Os1H12CYVrIxj0LH1Ck6c6E" onChange={handleCaptcha} />
-          </div>
-
-          <button type="submit" className="btn btn-primary-green btn-full" disabled={loadingEmail}>
-            {loadingEmail ? 'Entrando...' : 'ENTRAR'}
-          </button>
-        </form>
-
-        <p className="login-link mt-4 text-center">
-          Não tem conta? <a href="/cadastro">Crie sua conta aqui!</a>
-        </p>
       </div>
     </div>
   );

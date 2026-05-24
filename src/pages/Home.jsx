@@ -1,11 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import '../Styles/Home.css';
-import { FaSearch, FaCalendarAlt, FaPuzzlePiece, FaLock, FaHeart, FaRobot } from 'react-icons/fa';
+import { FaSearch, FaCalendarAlt, FaPuzzlePiece, FaLock, FaHeart, FaRobot, FaUsers, FaCommentDots } from 'react-icons/fa';
 import axisImg from '../assets/imagens/axis-sorridente.png';
+import logoImg from '../assets/imagens/fundoLogo.png';
 import depoimentoImg from '../assets/imagens/depoimento.png';
 
-
 const Home = () => {
+  const [showTopbar, setShowTopbar] = useState(true);
+  const lastScrollY = useRef(0);
+
   const handleCadastro = () => {
     window.location.href = '/cadastro';
   };
@@ -20,7 +24,26 @@ const Home = () => {
     section?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // efeito de fade-in ao rolar a página
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      const delta = currentScroll - lastScrollY.current;
+
+      if (currentScroll <= 0) {
+        setShowTopbar(true);
+      } else if (delta > 15) {
+        setShowTopbar(false);
+      } else if (delta < -15) {
+        setShowTopbar(true);
+      }
+
+      lastScrollY.current = currentScroll;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   useEffect(() => {
     const elements = document.querySelectorAll('.fade-in');
     const observer = new IntersectionObserver(
@@ -40,108 +63,168 @@ const Home = () => {
 
   return (
     <main className="home-container">
-      {/* HERO */}
-      <section className="hero fade-in">
-        <div className="hero-text">
-          <h1>Conectamos você a profissionais que entendem o seu jeito de aprender e crescer.</h1>
-          <p>O Axis te guia na busca pelo especialista ideal para o seu desenvolvimento.</p>
-          <div className="hero-buttons">
-            <button className="btn btn-primary" onClick={scrollToBottom}>
-              Encontre Seu Especialista
-            </button>
-            <button className="btn btn-secondary" onClick={scrollToComoFunciona}>
-              Saiba mais sobre o TEAxis
-            </button>
+      <header className={`home-topbar ${showTopbar ? 'visible' : 'hidden'}`}>
+        <div className="home-topbar-inner">
+          <div className="home-brand">
+            <img src={logoImg} alt="Logo TEAxis" className="home-logo" />
+          </div>
+          <nav className="home-topbar-links">
+            <button type="button" onClick={scrollToComoFunciona}>Como funciona</button>
+            <button type="button" onClick={scrollToBottom}>Começar</button>
+            <Link to="/cadastro">Criar conta</Link>
+          </nav>
+          <div className="home-topbar-actions">
+            <Link to="/login" className="btn btn-topbar-login">Entrar</Link>
           </div>
         </div>
-        <div className="hero-image">
-          <img src={axisImg} alt="Axis sorridente" className="axis-flutuando" />
+      </header>
+
+      <section className="home-hero fade-in">
+        <div className="hero-copy">
+          <span className="hero-eyebrow">Apoio especializado e acolhedor</span>
+          <h1>Conecte-se a profissionais que entendem você e sua família.</h1>
+          <p>
+            TEAxis aproxima responsáveis, jovens e profissionais neurodivergentes de uma jornada de cuidado com segurança, empatia e acompanhamento contínuo.
+          </p>
+          <div className="hero-buttons">
+            <button className="btn btn-primary" onClick={handleCadastro}>Criar conta gratuita</button>
+            <button className="btn btn-secondary" onClick={scrollToComoFunciona}>Ver como funciona</button>
+          </div>
+
+          <div className="hero-highlights">
+            <div className="highlight-card">
+              <FaUsers className="highlight-icon" />
+              <div>
+                <strong>Para famílias e menores</strong>
+                <span>Perfil de responsável com controle e consentimento.</span>
+              </div>
+            </div>
+            <div className="highlight-card">
+              <FaLock className="highlight-icon" />
+              <div>
+                <strong>Proteção de dados</strong>
+                <span>Privacidade e LGPD em cada etapa do processo.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="hero-visual">
+          <div className="hero-card">
+            <div className="hero-card-tag">O seu ponto de partida</div>
+            <h2>Gestão de perfis, agendamentos e conexões com profissionais.</h2>
+            <p>Uma experiência acolhedora para responsáveis, maiores de 18 e profissionais especializados.</p>
+            <button className="btn btn-primary-sm" onClick={scrollToBottom}>Quero conhecer</button>
+          </div>
+          <div className="hero-image-wrapper">
+            <img src={axisImg} alt="Axis sorridente" className="axis-flutuando" />
+          </div>
         </div>
       </section>
 
-      {/* COMO FUNCIONA */}
+      <section className="home-features fade-in">
+        <div className="feature-card">
+          <FaSearch className="feature-icon" />
+          <h3>Descoberta inteligente</h3>
+          <p>Encontre profissionais com experiência real em neurodiversidade.</p>
+        </div>
+        <div className="feature-card">
+          <FaCalendarAlt className="feature-icon" />
+          <h3>Agendamento rápido</h3>
+          <p>Marque atendimentos com facilidade e mantenha o controle.</p>
+        </div>
+        <div className="feature-card">
+          <FaCommentDots className="feature-icon" />
+          <h3>Comunicação acolhedora</h3>
+          <p>Mensagens e acompanhamento pensados para pessoas e familiares.</p>
+        </div>
+      </section>
+
       <section className="como-funciona fade-in">
-        <h2>Como Funciona</h2>
+        <div className="como-funciona-header">
+          <span>01</span>
+          <h2>Como o TEAxis ajuda você</h2>
+        </div>
         <div className="funciona-cards">
-          <div className="card">
+          <div className="card card-large">
             <div className="card-icon-wrapper bg-lilac">
               <FaRobot className="card-icon" />
             </div>
-            <p>Converse com o Axis para entender suas necessidades.</p>
+            <h3>Inteligência para recomendar</h3>
+            <p>Conte seu caso e veja profissionais sugeridos com base nas suas necessidades.</p>
           </div>
-          <div className="card">
+          <div className="card card-large">
             <div className="card-icon-wrapper bg-green">
               <FaSearch className="card-icon" />
             </div>
-            <p>Receba recomendações de profissionais especializados.</p>
+            <h3>Busca personalizada</h3>
+            <p>Encontre especialistas por área, idade e forma de atendimento.</p>
           </div>
-          <div className="card">
+          <div className="card card-large">
             <div className="card-icon-wrapper bg-blue">
               <FaCalendarAlt className="card-icon" />
             </div>
-            <p>Agende consultas com facilidade e segurança.</p>
+            <h3>Agenda organizada</h3>
+            <p>Visualize e controle seus agendamentos direto na plataforma.</p>
           </div>
         </div>
       </section>
 
-      {/* DEPOIMENTO + SEGURANÇA */}
-      <section className="depoimento-e-seguranca-container fade-in">
-        <div className="depoimento-coluna">
-          <div className="depoimento-card">
-            <img src={depoimentoImg} alt="Lucas, 14 anos" className="depoimento-avatar" />
-            <p className="depoimento-texto">
-              “O TEAxis me ajudou a encontrar um terapeuta incrível que entende minhas dificuldades na escola. 
-              Hoje consigo ter um melhor foco em cada matéria.”
-            </p>
-            <footer className="depoimento-autor">Lucas, 14 anos</footer>
+      <section className="home-stories fade-in">
+        <div className="story-card">
+          <img src={depoimentoImg} alt="Menino feliz usando TEAxis" className="testimonial-image" />
+          <div className="story-card-header">
+            <span>História real</span>
+            <strong>“O TEAxis mudou a forma como encontramos apoio em família.”</strong>
           </div>
+          <p>
+            “Cadastrar meu filho e conectar com um profissional empático foi muito mais simples. A plataforma trouxe calma e organização para nossa rotina.”
+          </p>
+          <footer>— Mariana, mãe do Lucas</footer>
         </div>
-
-        <div className="seguranca-coluna">
-          <h2>Segurança e Acolhimento</h2>
-          <ul className="seguranca-lista">
-            <li><FaLock className="icone-seguranca color-green" /> Segurança de dados garantida</li>
-            <li><FaHeart className="icone-seguranca color-lilac" /> Espaço de respeito e empatia</li>
-            <li><FaPuzzlePiece className="icone-seguranca color-blue" /> Tecnologia inclusiva e acessível</li>
+        <div className="trust-card">
+          <h3>Construído para confiança</h3>
+          <ul>
+            <li><FaHeart className="trust-icon" /> Acolhimento em cada etapa</li>
+            <li><FaLock className="trust-icon" /> Privacidade com LGPD</li>
+            <li><FaPuzzlePiece className="trust-icon" /> Experiência inclusiva</li>
           </ul>
         </div>
       </section>
 
-      {/* SOBRE */}
-      <section className="sobre-section fade-in">
-        <h2>Apoiando Toda a Comunidade Neurodiversa.</h2>
-        <p>
-          O TEAxis é o ponto de encontro seguro para indivíduos neurodivergentes, suas famílias e a rede de profissionais que os apoiam.
-        </p>
-        <p>
-          <strong>Indivíduos Neurodivergentes:</strong> Encontre apoio especializado, focado no seu desenvolvimento único e bem-estar emocional.<br />
-          <strong>Familiares e Cuidadores:</strong> Acompanhe o progresso, receba orientação e participe ativamente da jornada de desenvolvimento.<br />
-          <strong>Profissionais Especializados:</strong> Divulgue sua expertise, gerencie atendimentos e amplie seu impacto na comunidade.
-        </p>
-      </section>
-
-      {/* BENEFÍCIOS */}
       <section className="beneficios-section fade-in">
-        <h2>Benefícios do TEAxis</h2>
-        <ul>
-          <li>✅ Comunicação facilitada entre responsáveis e profissionais especializados;</li>
-          <li>📊 Relatórios e acompanhamento de evolução em tempo real;</li>
-          <li>💬 Atendimento humanizado, empático e focado no desenvolvimento individual;</li>
-          <li>🔒 Segurança total dos dados e privacidade garantida;</li>
-          <li>💡 Interface acessível e inclusiva, feita para todos os públicos.</li>
-        </ul>
+        <h2>O que você encontra no TEAxis</h2>
+        <div className="beneficios-grid">
+          <div className="beneficio-card">
+            <strong>Conexão humana</strong>
+            <p>Profissionais empáticos que entendem as necessidades individuais.</p>
+          </div>
+          <div className="beneficio-card">
+            <strong>Transparência</strong>
+            <p>Controle de perfis, consentimentos e histórico de atendimento.</p>
+          </div>
+          <div className="beneficio-card">
+            <strong>Inclusão</strong>
+            <p>Interface acessível para jovens, responsáveis e profissionais.</p>
+          </div>
+          <div className="beneficio-card">
+            <strong>Apoio familiar</strong>
+            <p>Espaço para responsáveis gerenciarem perfis de menores em segurança.</p>
+          </div>
+        </div>
       </section>
 
-      {/* CTA FINAL */}
       <section className="cta-section fade-in">
-        <h2>Pronto para Iniciar sua Jornada de Apoio?</h2>
-        <p>
-          Dê o primeiro passo com o Axis e descubra especialistas que entendem o seu jeito de ser. 
-          Você merece um espaço seguro de escuta, acolhimento e desenvolvimento.
-        </p>
-        <button className="btn btn-cta" onClick={handleCadastro}>
-          Iniciar agora
-        </button>
+        <div className="cta-grid">
+          <div>
+            <h2>Comece agora com o Axis</h2>
+            <p>Uma plataforma pensada para neurodivergentes, famílias e profissionais que desejam apoio seguro e acolhedor.</p>
+          </div>
+          <div className="cta-actions">
+            <button className="btn btn-primary" onClick={handleCadastro}>Criar conta gratuita</button>
+            <Link to="/login" className="btn btn-secondary cta-login">Entrar</Link>
+          </div>
+        </div>
       </section>
     </main>
   );
