@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; 
-import '../Styles/Cadastro.css'; 
+import { useNavigate } from 'react-router-dom';
+import '../Styles/Cadastro.css';
 import '../Styles/Login.css'; // importa estilos do popup simulado
 import { FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
 
@@ -11,146 +11,104 @@ const API_LOGIN_SOCIAL = 'SUA_URL_DA_API/api/v1/auth/google';
 const SIMULATED_GOOGLE_LOGIN = true;
 
 const Cadastro = () => {
-    const navigate = useNavigate();
-    const [perfil, setPerfil] = useState(null);
-    const [currentStep, setCurrentStep] = useState(1);
-    
-    // Estados Comuns (Email/Senha/Nome)
-    const [email, setEmail] = useState('');
-    const [senha, setSenha] = useState('');
-    const [confirmarSenha, setConfirmarSenha] = useState('');
-    const [nome, setNome] = useState('');
+  const navigate = useNavigate();
+  const [perfil, setPerfil] = useState(null);
+  const [currentStep, setCurrentStep] = useState(1);
 
-    // Estado para Dados do UTILIZADOR (DTO 1: DadosCadastroUsuario)
-    const [dadosUsuario, setDadosUsuario] = useState({
-        dataNascimento: '', tipoNeurodivergencia: '', hobbies: '', genero: '',
-        cidade: '', estado: '', preferenciasSensoriais: '', modoComunicacao: '',
-        historicoEscolar: ''
-    });
+  // Conta
+  const [account, setAccount] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
 
-    // Estado para Dados do PROFISSIONAL (DTO 2: CadastroProfissionalDTO)
-    const [dadosProfissional, setDadosProfissional] = useState({
-        dataNascimento: '',
-        certificacoes: '',
-        especializacoes: '',
-        metodosUtilizados: '',
-        disponibilidade: '',
-        cidade: '',
-        estado: '',
-    });
+  // Detalhes - usuário
+  const [detalhesUsuario, setDetalhesUsuario] = useState({ dataNascimento: '', tipoNeurodivergencia: '', hobbies: '', genero: '', cidade: '', estado: '', preferenciasSensoriais: '', modoComunicacao: '', historicoEscolar: '' });
 
-    // Funções de atualização
-    const handleDadosUsuarioChange = (e) => {
-        setDadosUsuario({ ...dadosUsuario, [e.target.name]: e.target.value });
+  // Detalhes - profissional
+  const [detalhesProfissional, setDetalhesProfissional] = useState({ dataNascimento: '', certificacoes: '', especializacoes: '', metodosUtilizados: '', disponibilidade: '', cidade: '', estado: '' });
+
+  const [showSimPopup, setShowSimPopup] = useState(false);
+  const [simPopupMessage, setSimPopupMessage] = useState('');
+
+  const handleAccountChange = (e) => setAccount({ ...account, [e.target.name]: e.target.value });
+  const handleDetalhesUsuarioChange = (e) => setDetalhesUsuario({ ...detalhesUsuario, [e.target.name]: e.target.value });
+  const handleDetalhesProfissionalChange = (e) => setDetalhesProfissional({ ...detalhesProfissional, [e.target.name]: e.target.value });
+
+  const handleSimulatedGoogle = () => {
+    setSimPopupMessage('Modo Google simulado - redirecionando...');
+    setShowSimPopup(true);
+    setTimeout(() => {
+      setShowSimPopup(false);
+      navigate('/dashboard-usuario');
+    }, 1000);
+  };
+
+  const handleCadastroSubmit = (e) => {
+    e.preventDefault();
+
+    if (currentStep === 1) {
+      // valida campos de conta
+      if (!account.nome || !account.email || !account.senha || !account.confirmarSenha) {
+        alert('Por favor preencha todos os campos iniciais.');
+        return;
+      }
+      if (account.senha !== account.confirmarSenha) {
+        alert('As palavras-passe não coincidem.');
+        return;
+      }
+      setCurrentStep(2);
+      return;
+    }
+
+    // Aqui enviar os dados ao backend (ou Firebase) — por agora apenas log
+    const payload = {
+      account,
+      perfil,
+      detalhesUsuario: perfil === 'usuario' ? detalhesUsuario : null,
+      detalhesProfissional: perfil === 'profissional' ? detalhesProfissional : null
     };
 
-    const handleDadosProfissionalChange = (e) => {
-        setDadosProfissional({ ...dadosProfissional, [e.target.name]: e.target.value });
+        console.log('Dados para registo:', payload);
+        alert('Cadastro (cliente) executado com sucesso (demo).');
+        navigate('/login');
     };
 
+        // Renderiza o seletor ou o formulário, dependendo do estado
+    return (
+        <div className="cadastro-page-container">
+            {perfil ? (
+                <CadastroForm
+                    tipo={perfil}
+                    currentStep={currentStep}
+                    setCurrentStep={setCurrentStep}
+                    account={account}
+                    handleAccountChange={handleAccountChange}
+                    detalhesUsuario={detalhesUsuario}
+                    handleDetalhesUsuarioChange={handleDetalhesUsuarioChange}
+                    detalhesProfissional={detalhesProfissional}
+                    handleDetalhesProfissionalChange={handleDetalhesProfissionalChange}
+                    onSubmit={handleCadastroSubmit}
+                    onSimulateGoogle={handleSimulatedGoogle}
+                />
+            ) : (
+                <PerfilSelector setPerfil={setPerfil} />
+            )}
 
-    const handleCadastroSubmit = async (e) => {
-        e.preventDefault();
+            {showSimPopup && (
+                <div className="sim-popup" role="dialog" aria-live="polite">
+                    <div style={{ width: '100%', textAlign: 'center', fontWeight: 600, color: '#202124' }}>
+                        {simPopupMessage}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+};
 
-        if (currentStep === 1) {
-            if (!nome || !email || !senha || !confirmarSenha) {
-                alert('Por favor preencha todos os campos iniciais.');
-                return;
-            }
-            if (senha !== confirmarSenha) {
-                alert('As palavras-passes não coincidem.');
-                return;
-            }
-            setCurrentStep(2);
-            return;
-        }
-
-        const endpoint = perfil === 'usuario' ? API_REGISTRO_USUARIO : API_REGISTRO_PROFISSIONAL;
-        let dadosParaAPI = {};
-
-        try {
-            if (perfil === 'usuario') {
-                dadosParaAPI = {
-                    nome, email, senha, tipo: perfil,
-                    dataNascimento: dadosUsuario.dataNascimento,
-                    tipoNeurodivergencia: dadosUsuario.tipoNeurodivergencia,
-                    hobbies: dadosUsuario.hobbies.split(',').map(h => h.trim()).filter(h => h),
-                    genero: dadosUsuario.genero, cidade: dadosUsuario.cidade, estado: dadosUsuario.estado,
-                    preferenciasSensoriais: dadosUsuario.preferenciasSensoriais,
-                    modoComunicacao: dadosUsuario.modoComunicacao,
-                    historicoEscolar: dadosUsuario.historicoEscolar
-                };
-            } else if (perfil === 'profissional') {
-                dadosParaAPI = {
-                    nome, email, senha,
-                    dataNascimento: dadosProfissional.dataNascimento,
-                    cidade: dadosProfissional.cidade,
-                    estado: dadosProfissional.estado,
-                    certificacoes: dadosProfissional.certificacoes,
-                    especializacoes: dadosProfissional.especializacoes,
-                    metodosUtilizados: dadosProfissional.metodosUtilizados,
-                    disponibilidade: dadosProfissional.disponibilidade
-                };
-            }
-
-            console.log(`Enviando para ${endpoint}:`, dadosParaAPI);
-
-            const apiResponse = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(dadosParaAPI)
-            });
-
-            if (!apiResponse.ok) {
-                const errorData = await apiResponse.json();
-                throw new Error(errorData.message || `Erro ${apiResponse.status} ao registar o perfil. Status: ${apiResponse.statusText}`);
-            }
-
-            // SUCESSO E REDIRECIONAMENTO
-            alert('✅ Registo realizado com sucesso! Faça login para continuar.');
-            navigate('/login');
-
-        } catch (error) {
-            alert(error.message);
-        }
-    };
-    
-
-    // Estado e função para o popup simulado (mesmo comportamento do Login.jsx)
-    const [showSimPopup, setShowSimPopup] = useState(false);
-    const [simPopupMessage, setSimPopupMessage] = useState('');
-
-    const handleSimulatedGoogle = async () => {
-        if (!perfil) {
-            alert('Por favor, selecione primeiro se você é Utilizador ou Profissional.');
-            return;
-        }
-
-        if (SIMULATED_GOOGLE_LOGIN) {
-            const token = `simulated_token_${Date.now()}`;
-            localStorage.setItem('teaxis_auth_token', token);
-            localStorage.setItem('login_method', 'google_simulated');
-            localStorage.setItem('user_email', email || 'usuario.simulado@example.com');
-            setSimPopupMessage('✅ Login/Cadastro Simulado bem-sucedido! Redirecionando...');
-            setShowSimPopup(true);
-            setTimeout(() => {
-                setShowSimPopup(false);
-                navigate('/dashboard-usuario');
-            }, 1500);
-            return;
-        }
-
-        alert('Integração social removida — apenas modo simulado disponível.');
-    };
-
-    const CadastroForm = ({ tipo }) => (
-        <form className="cadastro-form" onSubmit={handleCadastroSubmit}>
+const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, onSubmit, onSimulateGoogle }) => {
+    return (
+        <form className="cadastro-form" onSubmit={onSubmit}>
             <div className="form-header">
                 <div>
                     <span className="eyebrow">Cadastro TEAxis</span>
-                    <h2 className="text-dark mb-2">Crie a sua conta como {tipo === 'usuario' ? 'Utilizador' : 'Profissional'}</h2>
+                    <h2 className="text-dark mb-2">Crie a sua conta como {tipo === 'usuario' ? 'Utilizador' : tipo === 'responsavel' ? 'Responsável' : 'Profissional'}</h2>
                     <p className="form-subtitle">Primeiro confirme seus dados básicos e depois preencha os detalhes do seu perfil.</p>
                 </div>
                 <div className="form-stepper">
@@ -166,32 +124,34 @@ const Cadastro = () => {
                 </div>
             </div>
 
-            <button type="button" className="btn btn-social btn-google mb-4" onClick={() => handleSimulatedGoogle()}>
+            <button type="button" className="btn btn-social btn-google mb-4" onClick={onSimulateGoogle}>
                 <FaGoogle className="mr-2" /> Continuar com Google
             </button>
-            
+
             <div className="divider mb-4">
                 <span>OU REGISTE COM EMAIL</span>
             </div>
 
-            <div className={`form-step ${currentStep !== 1 ? 'hidden-step' : ''}`}>
-                <div className="input-group">
-                    <label htmlFor="nome"><FaUser /> Nome Completo:</label>
-                    <input id="nome" type="text" placeholder="Insira o seu nome" required value={nome} onChange={(e) => setNome(e.target.value)} />
+            {currentStep === 1 && (
+                <div className="form-step">
+                    <div className="input-group">
+                        <label htmlFor="nome"><FaUser /> Nome Completo:</label>
+                        <input id="nome" name="nome" type="text" placeholder="Insira o seu nome" required value={account.nome} onChange={handleAccountChange} />
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="email"><FaEnvelope /> Email:</label>
+                        <input id="email" name="email" type="email" placeholder="Insira o seu email" required value={account.email} onChange={handleAccountChange} />
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="senha"><FaLock /> Palavra-passe:</label>
+                        <input id="senha" name="senha" type="password" placeholder="Crie a sua palavra-passe" required value={account.senha} onChange={handleAccountChange} />
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="confirmar"><FaLock /> Confirme a Palavra-passe:</label>
+                        <input id="confirmar" name="confirmarSenha" type="password" placeholder="Repita a palavra-passe" required value={account.confirmarSenha} onChange={handleAccountChange} />
+                    </div>
                 </div>
-                <div className="input-group">
-                    <label htmlFor="email"><FaEnvelope /> Email:</label>
-                    <input id="email" type="email" placeholder="Insira o seu email" required value={email} onChange={(e) => setEmail(e.target.value)} />
-                </div>
-                <div className="input-group">
-                    <label htmlFor="senha"><FaLock /> Palavra-passe:</label>
-                    <input id="senha" type="password" placeholder="Crie a sua palavra-passe" required value={senha} onChange={(e) => setSenha(e.target.value)} />
-                </div>
-                <div className="input-group">
-                    <label htmlFor="confirmar">Confirme a Palavra-passe:</label>
-                    <input id="confirmar" type="password" placeholder="Repita a palavra-passe" required value={confirmarSenha} onChange={(e) => setConfirmarSenha(e.target.value)} />
-                </div>
-            </div>
+            )}
 
             {currentStep === 2 && (
                 <div className="form-step form-step-2">
@@ -202,70 +162,72 @@ const Cadastro = () => {
                     </div>
                     <p className="step-description">Agora complete os detalhes adicionais para que o TEAxis personalize sua experiência.</p>
 
-                    {tipo === 'usuario' ? (
+                    {(tipo === 'usuario' || tipo === 'responsavel') && (
                         <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg">
                             <h3 className="text-lilac-main font-bold mb-4">Dados para o Perfil de Cuidado</h3>
                             <div className="input-group">
                                 <label htmlFor="dataNascimento"><FaCalendarAlt /> Data de Nascimento:</label>
-                                <input id="dataNascimento" name="dataNascimento" type="date" required onChange={handleDadosUsuarioChange} />
+                                <input id="dataNascimento" name="dataNascimento" type="date" required value={detalhesUsuario.dataNascimento} onChange={handleDetalhesUsuarioChange} />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="genero"><FaVenusMars /> Género:</label>
-                                <input id="genero" name="genero" type="text" placeholder="Género" onChange={handleDadosUsuarioChange} />
+                                <input id="genero" name="genero" type="text" placeholder="Género" value={detalhesUsuario.genero} onChange={handleDetalhesUsuarioChange} />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="tipoNeurodivergencia"><FaBrain /> Tipo de Neurodivergência:</label>
-                                <input id="tipoNeurodivergencia" name="tipoNeurodivergencia" type="text" placeholder="Ex: Autismo, TDAH, Dislexia" onChange={handleDadosUsuarioChange} />
+                                <input id="tipoNeurodivergencia" name="tipoNeurodivergencia" type="text" placeholder="Ex: Autismo, TDAH, Dislexia" value={detalhesUsuario.tipoNeurodivergencia} onChange={handleDetalhesUsuarioChange} />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="cidade"><FaMapMarkerAlt /> Cidade/Distrito:</label>
-                                <input id="cidade" name="cidade" type="text" placeholder="Cidade" required onChange={handleDadosUsuarioChange} />
-                                <input id="estado" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required onChange={handleDadosUsuarioChange} className="mt-2" />
+                                <input id="cidade" name="cidade" type="text" placeholder="Cidade" required value={detalhesUsuario.cidade} onChange={handleDetalhesUsuarioChange} />
+                                <input id="estado" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required value={detalhesUsuario.estado} onChange={handleDetalhesUsuarioChange} className="mt-2" />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="hobbies"><FaHeart /> Hobbies (separados por vírgula):</label>
-                                <input id="hobbies" name="hobbies" type="text" placeholder="Ex: Leitura, Desportos, Música" onChange={handleDadosUsuarioChange} />
+                                <input id="hobbies" name="hobbies" type="text" placeholder="Ex: Leitura, Desportos, Música" value={detalhesUsuario.hobbies} onChange={handleDetalhesUsuarioChange} />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="modoComunicacao"><FaComments /> Modo de Comunicação:</label>
-                                <input id="modoComunicacao" name="modoComunicacao" type="text" placeholder="Ex: Oral, Escrita, Visual" onChange={handleDadosUsuarioChange} />
+                                <input id="modoComunicacao" name="modoComunicacao" type="text" placeholder="Ex: Oral, Escrita, Visual" value={detalhesUsuario.modoComunicacao} onChange={handleDetalhesUsuarioChange} />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="preferenciasSensoriais">Preferências Sensoriais:</label>
-                                <textarea id="preferenciasSensoriais" name="preferenciasSensoriais" placeholder="Sensibilidades a texturas, ruídos, luzes, etc." onChange={handleDadosUsuarioChange} rows="2" />
+                                <textarea id="preferenciasSensoriais" name="preferenciasSensoriais" placeholder="Sensibilidades a texturas, ruídos, luzes, etc." value={detalhesUsuario.preferenciasSensoriais} onChange={handleDetalhesUsuarioChange} rows="2" />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="historicoEscolar"><FaSchool /> Histórico Escolar (Resumo):</label>
-                                <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Ex: Último ano cursado, principais dificuldades" onChange={handleDadosUsuarioChange} rows="2" />
+                                <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Ex: Último ano cursado, principais dificuldades" value={detalhesUsuario.historicoEscolar} onChange={handleDetalhesUsuarioChange} rows="2" />
                             </div>
                         </div>
-                    ) : (
+                    )}
+
+                    {tipo === 'profissional' && (
                         <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg">
                             <h3 className="text-lilac-main font-bold mb-4">Dados de Registo e Atuação</h3>
                             <div className="input-group">
                                 <label htmlFor="dataNascimentoProf"><FaCalendarAlt /> Data de Nascimento:</label>
-                                <input id="dataNascimentoProf" name="dataNascimento" type="date" required onChange={handleDadosProfissionalChange} />
+                                <input id="dataNascimentoProf" name="dataNascimento" type="date" required value={detalhesProfissional.dataNascimento} onChange={handleDetalhesProfissionalChange} />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="certificacoes"><FaIdBadge /> Certificações (Registo Profissional):</label>
-                                <input id="certificacoes" name="certificacoes" type="text" required placeholder="Nº de Registo e Conselho (Ex: CRP 00/0000)" onChange={handleDadosProfissionalChange} />
+                                <input id="certificacoes" name="certificacoes" type="text" required placeholder="Nº de Registo e Conselho (Ex: CRP 00/0000)" value={detalhesProfissional.certificacoes} onChange={handleDetalhesProfissionalChange} />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="especializacoes"><FaGraduationCap /> Especializações:</label>
-                                <textarea id="especializacoes" name="especializacoes" type="text" required placeholder="Áreas de foco (separadas por vírgula)" onChange={handleDadosProfissionalChange} rows="2" />
+                                <textarea id="especializacoes" name="especializacoes" type="text" required placeholder="Áreas de foco (separadas por vírgula)" value={detalhesProfissional.especializacoes} onChange={handleDetalhesProfissionalChange} rows="2" />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="metodosUtilizados"><FaGraduationCap /> Métodos/Abordagens Utilizadas:</label>
-                                <textarea id="metodosUtilizados" name="metodosUtilizados" placeholder="Ex: TCC, ABA, Psicodrama" onChange={handleDadosProfissionalChange} rows="2" />
+                                <textarea id="metodosUtilizados" name="metodosUtilizados" placeholder="Ex: TCC, ABA, Psicodrama" value={detalhesProfissional.metodosUtilizados} onChange={handleDetalhesProfissionalChange} rows="2" />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="disponibilidade"><FaClock /> Disponibilidade (Horário e Dias):</label>
-                                <input id="disponibilidade" name="disponibilidade" type="text" placeholder="Ex: Seg/Qua/Sex, 14h-18h" required onChange={handleDadosProfissionalChange} />
+                                <input id="disponibilidade" name="disponibilidade" type="text" placeholder="Ex: Seg/Qua/Sex, 14h-18h" required value={detalhesProfissional.disponibilidade} onChange={handleDetalhesProfissionalChange} />
                             </div>
                             <div className="input-group">
                                 <label htmlFor="cidadeProf"><FaMapMarkerAlt /> Cidade/Distrito Base:</label>
-                                <input id="cidadeProf" name="cidade" type="text" placeholder="Cidade" required onChange={handleDadosProfissionalChange} />
-                                <input id="estadoProf" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required onChange={handleDadosProfissionalChange} className="mt-2" />
+                                <input id="cidadeProf" name="cidade" type="text" placeholder="Cidade" required value={detalhesProfissional.cidade} onChange={handleDetalhesProfissionalChange} />
+                                <input id="estadoProf" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required value={detalhesProfissional.estado} onChange={handleDetalhesProfissionalChange} className="mt-2" />
                             </div>
                         </div>
                     )}
@@ -284,26 +246,11 @@ const Cadastro = () => {
             </div>
 
             <p className="login-link mt-4 text-center">
-                <a href="#" onClick={() => { setPerfil(null); setCurrentStep(1); }} className="text-lilac-main font-semibold">
+                <a href="#" onClick={() => { /* voltar à seleção */ window.location.reload(); }} className="text-lilac-main font-semibold">
                     &larr; Voltar à escolha de perfil
                 </a>
             </p>
         </form>
-    );
-    
-    // Renderiza o seletor ou o formulário, dependendo do estado
-    return (
-        <div className="cadastro-page-container">
-            {perfil ? <CadastroForm tipo={perfil} /> : <PerfilSelector setPerfil={setPerfil} />}
-
-            {showSimPopup && (
-                <div className="sim-popup" role="dialog" aria-live="polite">
-                    <div style={{ width: '100%', textAlign: 'center', fontWeight: 600, color: '#202124' }}>
-                        Redirecionando..
-                    </div>
-                </div>
-            )}
-        </div>
     );
 };
 
@@ -320,6 +267,14 @@ const PerfilSelector = ({ setPerfil }) => (
                 <FaUser className="card-icon" />
                 <h3>Sou Utilizador / Paciente</h3>
                 <p>Quero encontrar profissionais que entendam as minhas necessidades.</p>
+            </div>
+            <div 
+                className="selection-card card-blue"
+                onClick={() => setPerfil('responsavel')}
+            >
+                <FaIdBadge className="card-icon" />
+                <h3>Sou Responsável / Tutor</h3>
+                <p>Gerencio perfis de crianças/adolescentes e autorizo o tratamento de dados.</p>
             </div>
 
             <div 

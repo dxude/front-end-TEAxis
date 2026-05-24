@@ -121,6 +121,81 @@
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.nav-logout-button {
+  background: none;
+  border: none;
+  color: #4A5568;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.nav-logout-button:hover {
+  color: #7B3FF2;
+  background-color: rgba(123, 63, 242, 0.08);
+}
+
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown summary {
+  all: unset;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  border-radius: 6px;
+  color: #4A5568;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.nav-dropdown summary:hover {
+  color: #7B3FF2;
+  background-color: rgba(123, 63, 242, 0.08);
+}
+
+.nav-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: #ffffff;
+  border: 1px solid rgba(123, 63, 242, 0.15);
+  border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.08);
+  min-width: 220px;
+  z-index: 100;
+  padding: 0.35rem 0;
+}
+
+.nav-dropdown[open] .dropdown-menu {
+  display: block;
+}
+
+.dropdown-link {
+  display: block;
+  color: #4A5568;
+  text-decoration: none;
+  padding: 0.8rem 1rem;
+  font-weight: 600;
+  transition: background 0.2s ease;
+}
+
+.dropdown-link:hover {
+  background: rgba(123, 63, 242, 0.08);
+  color: #7B3FF2;
+}
+
 .nav-item-cadastro::before {
   display: none;
 }

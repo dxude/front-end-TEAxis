@@ -22,6 +22,7 @@ import RemarcarAgendamento from './pages/RemarcarAgendamento';
 import AvaliarProfissional from './pages/AvaliarProfissional';
 import SalaAgendamento from './pages/SalaAgendamento';
 import CancelarAgendamento from './pages/CancelarAgendamento';
+import GuardianDashboard from './components/GuardianDashboard';
 
 import './App.css';
 
@@ -69,6 +70,7 @@ function App() {
           <Route path="/jogos-educativos" element={<JogosEducativos />} />
           <Route path="/mensagens" element={<Mensagens />} />
           <Route path="/meu-progresso" element={<MeuProgresso />} />
+          <Route path="/area-responsavel" element={<GuardianDashboard />} />
           <Route path="*" element={<p>Página não encontrada</p>} />
         </Routes>
       </main>

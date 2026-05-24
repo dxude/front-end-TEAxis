@@ -150,7 +150,7 @@ export default function DashboardUsuario() {
           <div className="robot-panel">
             <div className="robot-copy">
               <p className="robot-tag">Chat</p>
-              <h2>O robô está aqui para te ajudar</h2>
+              <h2>O Axis está aqui para te ajudar</h2>
               <p>Ele pode sugerir profissionais, explicar sua jornada e responder dúvidas rápidas. Passe o mouse sobre o robô ou clique no botão para começar a conversar.</p>
               <div className="robot-links">
                 <Link to="/buscar-profissionais" className="btn-primary robot-action">Buscar Especialista</Link>
