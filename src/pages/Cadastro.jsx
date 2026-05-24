@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../Styles/Cadastro.css';
 import '../Styles/Login.css'; // importa estilos do popup simulado
@@ -19,8 +19,60 @@ const Cadastro = () => {
   const [account, setAccount] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
 
   // Detalhes - usuário
-  const [detalhesUsuario, setDetalhesUsuario] = useState({ dataNascimento: '', tipoNeurodivergencia: '', hobbies: '', genero: '', cidade: '', estado: '', preferenciasSensoriais: '', modoComunicacao: '', historicoEscolar: '' });
+    const [detalhesUsuario, setDetalhesUsuario] = useState({ dataNascimento: '', tipoNeurodivergencia: '', hobbies: [], genero: '', cidade: '', estado: '', distrito: '', preferenciasSensoriais: [], modoComunicacao: [], historicoEscolar: '' });
 
+    // UI helpers for enhanced controls
+    const [dobDay, setDobDay] = useState('');
+    const [dobMonth, setDobMonth] = useState('');
+    const [dobYear, setDobYear] = useState('');
+    const [genderHoverText, setGenderHoverText] = useState('');
+    const [showGenderMenu, setShowGenderMenu] = useState(false);
+    const [stateCities, setStateCities] = useState([]);
+    const [cityQuery, setCityQuery] = useState('');
+    const [citySuggestions, setCitySuggestions] = useState([]);
+    const BRAZIL_STATES = [
+      { code: 'AC', name: 'Acre', cities: ['Rio Branco','Cruzeiro do Sul'] },
+      { code: 'AL', name: 'Alagoas', cities: ['Maceió','Arapiraca'] },
+      { code: 'AP', name: 'Amapá', cities: ['Macapá','Santana'] },
+      { code: 'AM', name: 'Amazonas', cities: ['Manaus','Parintins','Itacoatiara'] },
+      { code: 'BA', name: 'Bahia', cities: ['Salvador','Feira de Santana','Vitória da Conquista'] },
+      { code: 'CE', name: 'Ceará', cities: ['Fortaleza','Sobral','Juazeiro do Norte'] },
+      { code: 'DF', name: 'Distrito Federal', cities: ['Brasília'] },
+      { code: 'ES', name: 'Espírito Santo', cities: ['Vitória','Vila Velha','Serra'] },
+      { code: 'GO', name: 'Goiás', cities: ['Goiânia','Anápolis','Luziânia'] },
+      { code: 'MA', name: 'Maranhão', cities: ['São Luís','Imperatriz'] },
+      { code: 'MT', name: 'Mato Grosso', cities: ['Cuiabá','Rondonópolis'] },
+      { code: 'MS', name: 'Mato Grosso do Sul', cities: ['Campo Grande','Dourados'] },
+      { code: 'MG', name: 'Minas Gerais', cities: ['Belo Horizonte','Uberlândia','Contagem','Juiz de Fora'] },
+      { code: 'PA', name: 'Pará', cities: ['Belém','Ananindeua','Santarém'] },
+      { code: 'PB', name: 'Paraíba', cities: ['João Pessoa','Campina Grande'] },
+      { code: 'PR', name: 'Paraná', cities: ['Curitiba','Londrina','Maringá'] },
+      { code: 'PE', name: 'Pernambuco', cities: ['Recife','Olinda','Jaboatão dos Guararapes','Caruaru'] },
+      { code: 'PI', name: 'Piauí', cities: ['Teresina','Parnamirim'] },
+      { code: 'RJ', name: 'Rio de Janeiro', cities: ['Rio de Janeiro','Niterói','Petrópolis','Duque de Caxias'] },
+      { code: 'RN', name: 'Rio Grande do Norte', cities: ['Natal','Mossoró'] },
+      { code: 'RS', name: 'Rio Grande do Sul', cities: ['Porto Alegre','Caxias do Sul','Pelotas'] },
+      { code: 'RO', name: 'Rondônia', cities: ['Porto Velho','Ji-Paraná'] },
+      { code: 'RR', name: 'Roraima', cities: ['Boa Vista'] },
+      { code: 'SC', name: 'Santa Catarina', cities: ['Florianópolis','Joinville','Blumenau'] },
+      { code: 'SP', name: 'São Paulo', cities: ['São Paulo','Campinas','Santos','São José dos Campos'] },
+      { code: 'SE', name: 'Sergipe', cities: ['Aracaju','Nossa Senhora do Socorro'] },
+      { code: 'TO', name: 'Tocantins', cities: ['Palmas','Araguaína'] }
+    ];
+
+    const GENDER_OPTIONS = [
+      { key: 'cis', label: 'Cisgênero', desc: 'Pessoa cuja identidade de gênero corresponde ao sexo atribuído no nascimento.' },
+      { key: 'trans', label: 'Transgênero', desc: 'Pessoa cuja identidade de gênero difere do sexo atribuído no nascimento.' },
+      { key: 'nb', label: 'Não-binário', desc: 'Identidade fora das categorias exclusivamente masculino ou feminino.' },
+      { key: 'fluid', label: 'Gênero-fluido', desc: 'Identidade de gênero que pode variar ao longo do tempo.' },
+      { key: 'nao-dizer', label: 'Prefiro não dizer', desc: 'Prefere não informar sua identidade de gênero.' }
+    ];
+
+    const DEFAULT_SUGGESTIONS = {
+      hobbies: ['Leitura','Música','Esportes','Desenho','Jogos','Programação','Culinária','Dança'],
+      modoComunicacao: ['Oral','Escrita','Visual','Aumentativa/Alternativa','Gestual','Simbólica'],
+      preferenciasSensoriais: ['Sensível a ruídos','Sensível a luz','Prefere silêncio','Texturas específicas','Conforto tátil']
+    };
   // Detalhes - profissional
   const [detalhesProfissional, setDetalhesProfissional] = useState({ dataNascimento: '', certificacoes: '', especializacoes: '', metodosUtilizados: '', disponibilidade: '', cidade: '', estado: '' });
 
@@ -28,7 +80,46 @@ const Cadastro = () => {
   const [simPopupMessage, setSimPopupMessage] = useState('');
 
   const handleAccountChange = (e) => setAccount({ ...account, [e.target.name]: e.target.value });
-  const handleDetalhesUsuarioChange = (e) => setDetalhesUsuario({ ...detalhesUsuario, [e.target.name]: e.target.value });
+  const handleDetalhesUsuarioChange = (e) => {
+    // aceita evento do input ou objeto { name, value }
+    if (e && e.target && e.target.name) {
+      setDetalhesUsuario({ ...detalhesUsuario, [e.target.name]: e.target.value });
+    } else if (e && e.name) {
+      setDetalhesUsuario({ ...detalhesUsuario, [e.name]: e.value });
+    }
+  };
+
+    // Date of birth composed handling
+    useEffect(() => {
+      if (dobDay && dobMonth && dobYear) {
+        setDetalhesUsuario((prev) => ({ ...prev, dataNascimento: `${dobYear}-${String(dobMonth).padStart(2,'0')}-${String(dobDay).padStart(2,'0')}` }));
+      }
+    }, [dobDay, dobMonth, dobYear]);
+
+    const handleStateChange = (e) => {
+      const code = e.target.value;
+      setDetalhesUsuario((p) => ({ ...p, estado: code, cidade: '' }));
+      const found = BRAZIL_STATES.find(s => s.code === code);
+      setStateCities(found ? found.cities : []);
+    };
+
+    useEffect(() => {
+      if (!cityQuery) { setCitySuggestions([]); return; }
+      const q = cityQuery.trim().toLowerCase();
+      if (!q) { setCitySuggestions([]); return; }
+      // Prefer searching within selected state's cities, fallback to all cities
+      const source = (stateCities && stateCities.length>0) ? stateCities : BRAZIL_STATES.flatMap(s => s.cities || []);
+      const matches = source.filter(c => c.toLowerCase().startsWith(q)).slice(0, 50);
+      setCitySuggestions(matches);
+    }, [cityQuery, stateCities, BRAZIL_STATES]);
+
+    const addChip = (key, value) => {
+      setDetalhesUsuario((p) => ({ ...p, [key]: Array.from(new Set([...(p[key]||[]), value])) }));
+    };
+
+    const removeChip = (key, value) => {
+      setDetalhesUsuario((p) => ({ ...p, [key]: (p[key]||[]).filter(v => v !== value) }));
+    };
   const handleDetalhesProfissionalChange = (e) => setDetalhesProfissional({ ...detalhesProfissional, [e.target.name]: e.target.value });
 
   const handleSimulatedGoogle = () => {
@@ -77,6 +168,9 @@ const Cadastro = () => {
 
   return (
     <div className="cadastro-page-container">
+      <div className="debug-banner" style={{position:'fixed',right:12,top:12,background:'#fff',padding:'8px 12px',borderRadius:8,boxShadow:'0 6px 18px rgba(0,0,0,0.12)',zIndex:9999,fontSize:12}}>
+        step: {currentStep} | perfil: {perfil || 'null'}
+      </div>
       <div className="auth-page-shell">
         <aside className="auth-side-panel">
           <span className="eyebrow">Criação de conta</span>
@@ -115,6 +209,7 @@ const Cadastro = () => {
 
         <main className="auth-page-content">
           {perfil ? (
+            <ErrorBoundary>
             <CadastroForm
               tipo={perfil}
               currentStep={currentStep}
@@ -127,8 +222,26 @@ const Cadastro = () => {
               handleDetalhesProfissionalChange={handleDetalhesProfissionalChange}
               onSubmit={handleCadastroSubmit}
               onSimulateGoogle={handleSimulatedGoogle}
-              onBackToPerfil={handleBackToPerfil}
+                  onBackToPerfil={handleBackToPerfil}
+                  dobDay={dobDay}
+                  setDobDay={setDobDay}
+                  dobMonth={dobMonth}
+                  setDobMonth={setDobMonth}
+                  dobYear={dobYear}
+                  setDobYear={setDobYear}
+                  GENDER_OPTIONS={GENDER_OPTIONS}
+                  showGenderMenu={showGenderMenu}
+                  setShowGenderMenu={setShowGenderMenu}
+                  genderHoverText={genderHoverText}
+                  setGenderHoverText={setGenderHoverText}
+                  BRAZIL_STATES={BRAZIL_STATES}
+                  stateCities={stateCities}
+                  handleStateChange={handleStateChange}
+                  DEFAULT_SUGGESTIONS={DEFAULT_SUGGESTIONS}
+                  addChip={addChip}
+                  removeChip={removeChip}
             />
+            </ErrorBoundary>
           ) : (
             <PerfilSelector setPerfil={setPerfil} />
           )}
@@ -146,7 +259,27 @@ const Cadastro = () => {
   );
 };
 
-const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, onSubmit, onSimulateGoogle, onBackToPerfil }) => {
+class ErrorBoundary extends React.Component {
+  constructor(props) { super(props); this.state = { error: null, info: null }; }
+  componentDidCatch(error, info) { this.setState({ error, info }); }
+  render() {
+    if (this.state.error) {
+      return (
+        <div style={{padding:20,background:'#fff0f6',border:'1px solid #ffccd5',borderRadius:8}}>
+          <h3 style={{margin:0,color:'#7b1026'}}>Erro ao renderizar o formulário</h3>
+          <pre style={{whiteSpace:'pre-wrap',color:'#3b0b17'}}>{String(this.state.error && this.state.error.toString())}</pre>
+          <details style={{color:'#3b0b17'}}>
+            <summary>Stack</summary>
+            <pre style={{whiteSpace:'pre-wrap'}}>{this.state.info && this.state.info.componentStack}</pre>
+          </details>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, onSubmit, onSimulateGoogle, onBackToPerfil, dobDay, setDobDay, dobMonth, setDobMonth, dobYear, setDobYear, GENDER_OPTIONS, showGenderMenu, setShowGenderMenu, genderHoverText, setGenderHoverText, BRAZIL_STATES, stateCities, handleStateChange, DEFAULT_SUGGESTIONS, addChip, removeChip }) => {
     return (
         <form className="cadastro-form auth-card" onSubmit={onSubmit}>
             <div className="form-header">
@@ -207,42 +340,139 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                     <p className="step-description">Agora complete os detalhes adicionais para que o TEAxis personalize sua experiência.</p>
 
                     {(tipo === 'usuario' || tipo === 'responsavel') && (
-                        <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg">
-                            <h3 className="text-lilac-main font-bold mb-4">Dados para o Perfil de Cuidado</h3>
-                            <div className="input-group">
-                                <label htmlFor="dataNascimento"><FaCalendarAlt /> Data de Nascimento:</label>
-                                <input id="dataNascimento" name="dataNascimento" type="date" required value={detalhesUsuario.dataNascimento} onChange={handleDetalhesUsuarioChange} />
-                            </div>
-                            <div className="input-group">
-                                <label htmlFor="genero"><FaVenusMars /> Género:</label>
-                                <input id="genero" name="genero" type="text" placeholder="Género" value={detalhesUsuario.genero} onChange={handleDetalhesUsuarioChange} />
-                            </div>
-                            <div className="input-group">
-                                <label htmlFor="tipoNeurodivergencia"><FaBrain /> Tipo de Neurodivergência:</label>
-                                <input id="tipoNeurodivergencia" name="tipoNeurodivergencia" type="text" placeholder="Ex: Autismo, TDAH, Dislexia" value={detalhesUsuario.tipoNeurodivergencia} onChange={handleDetalhesUsuarioChange} />
-                            </div>
-                            <div className="input-group">
-                                <label htmlFor="cidade"><FaMapMarkerAlt /> Cidade/Distrito:</label>
-                                <input id="cidade" name="cidade" type="text" placeholder="Cidade" required value={detalhesUsuario.cidade} onChange={handleDetalhesUsuarioChange} />
-                                <input id="estado" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required value={detalhesUsuario.estado} onChange={handleDetalhesUsuarioChange} className="mt-2" />
-                            </div>
-                            <div className="input-group">
-                                <label htmlFor="hobbies"><FaHeart /> Hobbies (separados por vírgula):</label>
-                                <input id="hobbies" name="hobbies" type="text" placeholder="Ex: Leitura, Desportos, Música" value={detalhesUsuario.hobbies} onChange={handleDetalhesUsuarioChange} />
-                            </div>
-                            <div className="input-group">
-                                <label htmlFor="modoComunicacao"><FaComments /> Modo de Comunicação:</label>
-                                <input id="modoComunicacao" name="modoComunicacao" type="text" placeholder="Ex: Oral, Escrita, Visual" value={detalhesUsuario.modoComunicacao} onChange={handleDetalhesUsuarioChange} />
-                            </div>
-                            <div className="input-group">
-                                <label htmlFor="preferenciasSensoriais">Preferências Sensoriais:</label>
-                                <textarea id="preferenciasSensoriais" name="preferenciasSensoriais" placeholder="Sensibilidades a texturas, ruídos, luzes, etc." value={detalhesUsuario.preferenciasSensoriais} onChange={handleDetalhesUsuarioChange} rows="2" />
-                            </div>
-                            <div className="input-group">
-                                <label htmlFor="historicoEscolar"><FaSchool /> Histórico Escolar (Resumo):</label>
-                                <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Ex: Último ano cursado, principais dificuldades" value={detalhesUsuario.historicoEscolar} onChange={handleDetalhesUsuarioChange} rows="2" />
-                            </div>
+                      <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg details-panel">
+                        <h3 className="text-lilac-main font-bold mb-4">Dados para o Perfil de Cuidado</h3>
+
+                        {/* Data de Nascimento - selects modernos */}
+                        <div className="input-group">
+                          <label><FaCalendarAlt /> Data de Nascimento:</label>
+                          <div className="dob-selects">
+                            <select value={dobDay} onChange={(e)=>setDobDay(e.target.value)} aria-label="Dia">
+                              <option value="">Dia</option>
+                              {Array.from({length:31}).map((_,i)=> <option key={i+1} value={i+1}>{i+1}</option>)}
+                            </select>
+                            <select value={dobMonth} onChange={(e)=>setDobMonth(e.target.value)} aria-label="Mês">
+                              <option value="">Mês</option>
+                              {['01 - Jan','02 - Fev','03 - Mar','04 - Abr','05 - Mai','06 - Jun','07 - Jul','08 - Ago','09 - Set','10 - Out','11 - Nov','12 - Dez'].map((m,idx)=> <option key={idx} value={idx+1}>{m}</option>)}
+                            </select>
+                            <select value={dobYear} onChange={(e)=>setDobYear(e.target.value)} aria-label="Ano">
+                              <option value="">Ano</option>
+                              {Array.from({length:100}).map((_,i)=>{
+                                const year = new Date().getFullYear()-i;
+                                return <option key={year} value={year}>{year}</option>;
+                              })}
+                            </select>
+                          </div>
                         </div>
+
+                        {/* Gênero com menu e descrição */}
+                        <div className="input-group">
+                          <label><FaVenusMars /> Gênero:</label>
+                          <div className="gender-control">
+                            <button type="button" className="gender-toggle" onClick={()=>setShowGenderMenu(!showGenderMenu)}>
+                              {detalhesUsuario.genero || 'Selecione o gênero'}
+                            </button>
+                            {showGenderMenu && (
+                              <ul className="gender-menu">
+                                {GENDER_OPTIONS.map(opt => (
+                                  <li key={opt.key}
+                                    onMouseEnter={()=>setGenderHoverText(opt.desc)}
+                                    onMouseLeave={()=>setGenderHoverText('')}
+                                    onClick={()=>{ handleDetalhesUsuarioChange({ name: 'genero', value: opt.label }); setShowGenderMenu(false); }}
+                                  >{opt.label}</li>
+                                ))}
+                              </ul>
+                            )}
+                            <div className="gender-tooltip">{genderHoverText}</div>
+                          </div>
+                        </div>
+
+                        {/* Neurodivergência */}
+                        <div className="input-group">
+                          <label><FaBrain /> Tipo de Neurodivergência:</label>
+                          <input id="tipoNeurodivergencia" name="tipoNeurodivergencia" type="text" placeholder="Ex: Autismo, TDAH, Dislexia" value={detalhesUsuario.tipoNeurodivergencia} onChange={handleDetalhesUsuarioChange} />
+                        </div>
+
+                        {/* Estado -> Cidade -> Distrito */}
+                        <div className="input-group">
+                          <label><FaMapMarkerAlt /> Estado:</label>
+                          <select name="estado" value={detalhesUsuario.estado} onChange={(e)=>{ handleStateChange(e); }}>
+                            <option value="">Selecione o estado</option>
+                            {BRAZIL_STATES.map(s=> <option key={s.code} value={s.code}>{s.name}</option>)}
+                          </select>
+                          <label className="mt-2">Cidade:</label>
+                          <select name="cidade" value={detalhesUsuario.cidade} onChange={handleDetalhesUsuarioChange}>
+                            <option value="">Selecione a cidade</option>
+                            {stateCities.map(c => <option key={c} value={c}>{c}</option>)}
+                          </select>
+                          <div className="city-search">
+                            <input type="text" aria-label="Buscar cidade" placeholder="Ou digite sua cidade para buscar..." value={cityQuery} onChange={(e)=>setCityQuery(e.target.value)} />
+                            {citySuggestions.length > 0 && (
+                              <ul className="city-suggestions">
+                                {citySuggestions.map(c => (
+                                  <li key={c} onClick={() => { handleDetalhesUsuarioChange({ name: 'cidade', value: c }); setCityQuery(c); setCitySuggestions([]); }}>{c}</li>
+                                ))}
+                              </ul>
+                            )}
+                          </div>
+                          <label className="mt-2">Distrito (livre):</label>
+                          <input id="distrito" name="distrito" type="text" placeholder="Ex: Boa Viagem" value={detalhesUsuario.distrito} onChange={handleDetalhesUsuarioChange} />
+                        </div>
+
+                        {/* Hobbies - chips com sugestões */}
+                        <div className="input-group">
+                          <label><FaHeart /> Hobbies:</label>
+                          <div className="chip-list">
+                            {(detalhesUsuario.hobbies||[]).map(h => (
+                              <span className="chip" key={h}>{h} <button type="button" onClick={()=>removeChip('hobbies',h)}>×</button></span>
+                            ))}
+                          </div>
+                          <div className="suggestions">
+                            {DEFAULT_SUGGESTIONS.hobbies.map(s => (
+                              <button type="button" key={s} className="suggestion" onClick={()=>addChip('hobbies',s)}>{s}</button>
+                            ))}
+                          </div>
+                          <input placeholder="Adicionar hobby e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('hobbies', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
+                        </div>
+
+                        {/* Modo de Comunicação - chips */}
+                        <div className="input-group">
+                          <label><FaComments /> Modo de Comunicação:</label>
+                          <div className="chip-list">
+                            {(detalhesUsuario.modoComunicacao||[]).map(m => (
+                              <span className="chip" key={m}>{m} <button type="button" onClick={()=>removeChip('modoComunicacao',m)}>×</button></span>
+                            ))}
+                          </div>
+                          <div className="suggestions">
+                            {DEFAULT_SUGGESTIONS.modoComunicacao.map(s => (
+                              <button type="button" key={s} className="suggestion" onClick={()=>addChip('modoComunicacao',s)}>{s}</button>
+                            ))}
+                          </div>
+                          <input placeholder="Adicionar modo de comunicação e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('modoComunicacao', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
+                        </div>
+
+                        {/* Preferências sensoriais - chips + livre */}
+                        <div className="input-group">
+                          <label>Preferências Sensoriais:</label>
+                          <div className="chip-list">
+                            {(detalhesUsuario.preferenciasSensoriais||[]).map(p => (
+                              <span className="chip" key={p}>{p} <button type="button" onClick={()=>removeChip('preferenciasSensoriais',p)}>×</button></span>
+                            ))}
+                          </div>
+                          <div className="suggestions">
+                            {DEFAULT_SUGGESTIONS.preferenciasSensoriais.map(s => (
+                              <button type="button" key={s} className="suggestion" onClick={()=>addChip('preferenciasSensoriais',s)}>{s}</button>
+                            ))}
+                          </div>
+                          <input placeholder="Adicionar preferência e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('preferenciasSensoriais', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
+                        </div>
+
+                        {/* Histórico Escolar - instruções claras */}
+                        <div className="input-group">
+                          <label><FaSchool /> Histórico Escolar / Acadêmico:</label>
+                          <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Se for estudante, indique o ano/curso e principais dificuldades. Se não for, descreva suas principais dificuldades relacionadas ao aprendizado." value={detalhesUsuario.historicoEscolar} onChange={handleDetalhesUsuarioChange} rows="3" />
+                        </div>
+                      </div>
                     )}
 
                     {tipo === 'profissional' && (

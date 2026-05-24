@@ -399,6 +399,67 @@ body {
     margin-bottom: 1.5rem;
 }
 
+/* Controls adicionados para passo Detalhes */
+.dob-selects {
+    display: flex;
+    gap: 10px;
+}
+.dob-selects select {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #E0E0E8;
+    background: #fff;
+}
+
+.gender-control { position: relative; }
+.gender-toggle {
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid #E0E0E8;
+    background: #fff;
+    cursor: pointer;
+}
+.gender-toggle::after{
+    content: '';
+    display:inline-block;
+    width:8px;height:8px;
+    border-right:2px solid rgba(59,53,110,0.9);
+    border-bottom:2px solid rgba(59,53,110,0.9);
+    transform: rotate(45deg);
+    margin-left:6px;
+    opacity:0.9;
+}
+.gender-menu {
+    position: absolute;
+    left: 0;
+    top: 48px;
+    background: white;
+    border: 1px solid #E6E6F0;
+    border-radius: 12px;
+    box-shadow: 0 12px 30px rgba(17, 24, 39, 0.06);
+    width: 260px;
+    padding: 8px;
+    z-index: 30;
+}
+.gender-menu li {
+    padding: 8px 10px;
+    cursor: pointer;
+    border-radius: 8px;
+}
+.gender-menu li:hover { background: #F5F3FF; }
+.gender-control .gender-tooltip { position: absolute; left: calc(100% + 14px); top: 0; max-width: 320px; z-index: 60; }
+.gender-tooltip { margin-top: 0; color: #6B7280; font-size: 0.9rem; padding:8px 10px; border-radius:10px; background:linear-gradient(180deg, rgba(123,63,242,0.04), rgba(255,255,255,0.5)); box-shadow: 0 10px 30px rgba(23,18,70,0.06); }
+
+.chip-list { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:8px; }
+.chip { background: #F3F4F6; padding:6px 10px; border-radius:999px; display:inline-flex; gap:8px; align-items:center; }
+.chip button { background:transparent; border:none; font-weight:700; cursor:pointer; }
+.suggestions { display:flex; gap:8px; flex-wrap:wrap; margin:8px 0; }
+.suggestion { background:#fff; border:1px solid #E6E6F0; padding:6px 10px; border-radius:999px; cursor:pointer; }
+.suggestion:hover { background:#F5F3FF; }
+
+.details-panel .input-group input[type="text"], .details-panel .input-group textarea { background:#FBFDFF; }
+
+
 .dados-adicionais {
     background: #F9F6FF;
     border-color: rgba(123, 63, 242, 0.24);
@@ -491,4 +552,125 @@ body {
     .cadastro-page-container {
         padding-top: 10rem;
     }
+}
+
+/* ----------------------------- */
+/* Visual upgrade: moderno & interativo */
+/* ----------------------------- */
+
+/* Glassmorphism background for details */
+.details-panel {
+    background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(250,250,255,0.54));
+    backdrop-filter: blur(8px) saturate(120%);
+    border: 1px solid rgba(123,63,242,0.12);
+    box-shadow: 0 20px 50px rgba(88, 64, 160, 0.12);
+    padding: 1.6rem;
+    border-radius: 18px;
+    transition: transform 240ms cubic-bezier(.2,.9,.2,1), box-shadow 240ms;
+}
+.details-panel:hover { transform: translateY(-4px); box-shadow: 0 28px 68px rgba(88, 64, 160, 0.16); }
+
+/* Enhanced inputs */
+.details-panel .input-group input,
+.details-panel .input-group select,
+.details-panel .input-group textarea {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(16,24,40,0.06);
+    box-shadow: inset 0 -2px 6px rgba(12,18,30,0.02);
+    transition: transform 180ms ease, box-shadow 220ms ease, border-color 180ms ease;
+}
+.details-panel .input-group input:focus,
+.details-panel .input-group select:focus,
+.details-panel .input-group textarea:focus {
+    transform: translateY(-2px);
+    border-color: rgba(123,63,242,0.9);
+    box-shadow: 0 10px 30px rgba(123,63,242,0.09);
+    outline: none;
+}
+
+/* Stylish selects */
+.dob-selects select {
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: linear-gradient(45deg, transparent 50%, #7B3FF2 50%), linear-gradient(135deg, #7B3FF2 50%, transparent 50%);
+    background-position: calc(100% - 18px) calc(1em + 2px), calc(100% - 13px) calc(1em + 2px);
+    background-size: 6px 6px, 6px 6px;
+    background-repeat: no-repeat;
+    padding-right: 40px;
+}
+
+/* Gender control flair */
+.gender-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, #FFFFFF, #FBF8FF);
+    border: 1px solid rgba(80, 38, 140, 0.08);
+}
+.gender-toggle::after{
+    content: '';
+    display:inline-block;
+    width:10px;height:10px;
+    border-right:2px solid rgba(59,53,110,0.9);
+    border-bottom:2px solid rgba(59,53,110,0.9);
+    transform: rotate(45deg);
+    margin-left:6px;
+    opacity:0.9;
+}
+.gender-menu { border-radius:14px; padding:6px; }
+.gender-menu li { padding:10px 12px; font-weight:600; }
+.gender-tooltip { font-size:0.88rem; color:#5B6272; padding:8px 10px; border-radius:10px; background:linear-gradient(180deg, rgba(123,63,242,0.04), rgba(255,255,255,0.5)); }
+
+/* Suggestions as vibrant pills */
+.suggestion {
+    border: none;
+    background: linear-gradient(90deg, rgba(123,63,242,0.12), rgba(79,70,229,0.08));
+    color: #3b2b86;
+    padding:8px 12px;
+    font-weight:700;
+    transform-origin: center;
+    transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms;
+}
+.suggestion:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 30px rgba(79,70,229,0.12); }
+
+/* Chips with pop animation */
+.chip { background: linear-gradient(90deg,#fff,#F7F6FF); border:1px solid rgba(98,79,176,0.08); padding:8px 12px; border-radius:999px; box-shadow: 0 6px 18px rgba(18,18,40,0.04); animation: pop 220ms ease; }
+.chip button { font-size: 0.95rem; color:#7B3FF2; }
+@keyframes pop { 0% { transform: scale(.9); opacity:0 } 60%{ transform: scale(1.03); } 100%{ transform: scale(1); opacity:1 } }
+
+/* Accent for primary action */
+.btn-primary-green {
+    background: linear-gradient(90deg, #7B3FF2, #4F46E5);
+    box-shadow: 0 18px 40px rgba(79,70,229,0.18), inset 0 -6px 18px rgba(255,255,255,0.06);
+}
+
+/* Small responsive tweaks */
+@media (max-width: 900px) {
+    .auth-page-shell { grid-template-columns: 1fr; }
+    .details-panel { padding: 1rem; }
+    .form-header { flex-direction: column-reverse; gap: 1rem; }
+}
+
+/* City search suggestions */
+.city-search { position: relative; }
+.city-search input { margin-top: 8px; padding:10px 12px; border-radius:10px; }
+.city-suggestions {
+    position: absolute;
+    left: 0; right: 0; top: 44px;
+    max-height: 220px; overflow: auto;
+    background: white; border: 1px solid #eef0fa; border-radius:10px;
+    box-shadow: 0 14px 40px rgba(17, 24, 39, 0.06); z-index: 80;
+}
+.city-suggestions li { padding:8px 12px; cursor:pointer; }
+.city-suggestions li:hover { background:#F7F6FF; }
+
+/* Spacing tweaks */
+.input-group { margin-bottom: 18px; gap:8px; display:flex; flex-direction:column; }
+.input-group label { margin-bottom:6px; }
+
+@media (max-width: 900px) {
+    .gender-control .gender-tooltip { position: static; left: auto; top: auto; margin-top:8px; max-width:100%; }
+    .gender-menu { position: relative; width:100%; }
+    .gender-toggle { width:100%; justify-content:space-between; }
 }
