@@ -734,8 +734,69 @@ body {
 .city-suggestions li { padding:8px 12px; cursor:pointer; }
 .city-suggestions li:hover { background:#F7F6FF; }
 
+.availability-panel {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(180deg, rgba(255,255,255,0.92), rgba(245,243,255,0.95));
+    border: 1px solid rgba(123,63,242,0.16);
+    border-radius: 18px;
+}
+.availability-days {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 0.6rem;
+}
+.availability-day {
+    padding: 10px 8px;
+    border-radius: 14px;
+    border: 1px solid rgba(123,63,242,0.16);
+    background: #fff;
+    color: #4b4f72;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 160ms ease, transform 160ms ease, border-color 160ms ease;
+}
+.availability-day:hover {
+    transform: translateY(-1px);
+    border-color: rgba(123,63,242,0.28);
+}
+.availability-day.active {
+    border-color: rgba(123,63,242,0.9);
+    background: linear-gradient(135deg, rgba(123,63,242,0.18), rgba(79,70,229,0.12));
+    color: #362c7b;
+}
+.availability-range {
+    display: grid;
+    gap: 0.75rem;
+}
+.availability-range-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+}
+.availability-range-row label {
+    min-width: 120px;
+    font-size: 0.95rem;
+    color: #4f4f6b;
+}
+.availability-range-row input[type="range"] {
+    width: 100%;
+    accent-color: #7B3FF2;
+}
+.availability-summary {
+    padding: 0.85rem 1rem;
+    border-radius: 16px;
+    background: #F8F6FF;
+    border: 1px solid rgba(123,63,242,0.12);
+    color: #3f3a6d;
+    font-weight: 600;
+    text-align: center;
+}
+
 /* Spacing tweaks */
-.input-group { margin-bottom: 18px; gap:8px; display:flex; flex-direction:column; }
+.input-group { margin-bottom: 18px; gap:8px; flex-wrap:wrap; display:flex; flex-direction:column; }
 .input-group label { margin-bottom:6px; }
 
 @media (max-width: 900px) {
@@ -743,3 +804,4 @@ body {
     .gender-menu { position: relative; width:100%; }
     .gender-toggle { width:100%; justify-content:space-between; }
 }
+

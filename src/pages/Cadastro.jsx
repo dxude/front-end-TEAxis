@@ -10,6 +10,19 @@ const API_LOGIN_SOCIAL = 'SUA_URL_DA_API/api/v1/auth/google';
 
 const SIMULATED_GOOGLE_LOGIN = true;
 
+const DEFAULT_SUGGESTIONS_PROFISSIONAL = {
+  especializacoes: ['Terapia Ocupacional','Psicologia','Fonoaudiologia','Neuropsicologia','Pedagogia','Psiquiatria'],
+  metodosUtilizados: ['TCC','ABA','Psicodrama','Terapia Cognitivo-Comportamental','Terapia Familiar','Treinamento de Habilidades Sociais']
+};
+
+const DAYS_OF_WEEK = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+
+const formatDisponibilidade = (days, start, end) => {
+  if (!days || days.length === 0) return '';
+  const hours = `${String(start).padStart(2,'0')}:00 - ${String(end).padStart(2,'0')}:00`;
+  return `${days.join(', ')} • ${hours}`;
+};
+
 const Cadastro = () => {
   const navigate = useNavigate();
   const [perfil, setPerfil] = useState(null);
@@ -74,10 +87,23 @@ const Cadastro = () => {
       preferenciasSensoriais: ['Sensível a ruídos','Sensível a luz','Prefere silêncio','Texturas específicas','Conforto tátil'],
       neurodivergencias: ['Autismo','TDAH','Dislexia','Dispraxia','TEA','Transtorno do Processamento Sensorial','Altas Habilidades']
     };
+
   // Detalhes - profissional
-  const [detalhesProfissional, setDetalhesProfissional] = useState({ dataNascimento: '', certificacoes: '', especializacoes: '', metodosUtilizados: '', disponibilidade: '', cidade: '', estado: '', genero: '' });
+  const [detalhesProfissional, setDetalhesProfissional] = useState({ dataNascimento: '', certificacoes: '', especializacoes: [], metodosUtilizados: [], disponibilidade: '', cidade: '', estado: '', genero: '' });
+  const [disponibilidadeDays, setDisponibilidadeDays] = useState([]);
+  const [disponibilidadeStart, setDisponibilidadeStart] = useState(9);
+  const [disponibilidadeEnd, setDisponibilidadeEnd] = useState(17);
 
   const [showSimPopup, setShowSimPopup] = useState(false);
+  const addChipProf = (key, value) => {
+    setDetalhesProfissional((p) => ({ ...p, [key]: Array.from(new Set([...(p[key]||[]), value])) }));
+  };
+  const removeChipProf = (key, value) => {
+    setDetalhesProfissional((p) => ({ ...p, [key]: (p[key]||[]).filter(v => v !== value) }));
+  };
+  const toggleDisponibilidadeDay = (day) => {
+    setDisponibilidadeDays((prev) => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
+  };
   const [simPopupMessage, setSimPopupMessage] = useState('');
 
   const handleAccountChange = (e) => setAccount({ ...account, [e.target.name]: e.target.value });
@@ -128,6 +154,13 @@ const Cadastro = () => {
       setDetalhesProfissional({ ...detalhesProfissional, [e.name]: e.value });
     }
   };
+
+  useEffect(() => {
+    setDetalhesProfissional((prev) => ({
+      ...prev,
+      disponibilidade: formatDisponibilidade(disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd)
+    }));
+  }, [disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd]);
 
   const handleSimulatedGoogle = () => {
     setSimPopupMessage('Modo Google simulado - redirecionando...');
@@ -227,6 +260,13 @@ const Cadastro = () => {
               handleDetalhesUsuarioChange={handleDetalhesUsuarioChange}
               detalhesProfissional={detalhesProfissional}
               handleDetalhesProfissionalChange={handleDetalhesProfissionalChange}
+              disponibilidadeDays={disponibilidadeDays}
+              setDisponibilidadeDays={setDisponibilidadeDays}
+              disponibilidadeStart={disponibilidadeStart}
+              disponibilidadeEnd={disponibilidadeEnd}
+              setDisponibilidadeStart={setDisponibilidadeStart}
+              setDisponibilidadeEnd={setDisponibilidadeEnd}
+              toggleDisponibilidadeDay={toggleDisponibilidadeDay}
               onSubmit={handleCadastroSubmit}
               onSimulateGoogle={handleSimulatedGoogle}
                   onBackToPerfil={handleBackToPerfil}
@@ -290,7 +330,7 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, onSubmit, onSimulateGoogle, onBackToPerfil, dobDay, setDobDay, dobMonth, setDobMonth, dobYear, setDobYear, GENDER_OPTIONS, showGenderMenu, setShowGenderMenu, genderHoverText, setGenderHoverText, BRAZIL_STATES, stateCities, handleStateChange, cityQuery, setCityQuery, citySuggestions, setCitySuggestions, DEFAULT_SUGGESTIONS, addChip, removeChip }) => {
+const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, disponibilidadeDays, setDisponibilidadeDays, disponibilidadeStart, disponibilidadeEnd, setDisponibilidadeStart, setDisponibilidadeEnd, toggleDisponibilidadeDay, onSubmit, onSimulateGoogle, onBackToPerfil, dobDay, setDobDay, dobMonth, setDobMonth, dobYear, setDobYear, GENDER_OPTIONS, showGenderMenu, setShowGenderMenu, genderHoverText, setGenderHoverText, BRAZIL_STATES, stateCities, handleStateChange, cityQuery, setCityQuery, citySuggestions, setCitySuggestions, DEFAULT_SUGGESTIONS, addChip, removeChip }) => {
     return (
         <form className="cadastro-form auth-card" onSubmit={onSubmit}>
             <div className="form-header">
@@ -510,11 +550,11 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                     )}
 
                     {tipo === 'profissional' && (
-                        <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg">
+                        <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg details-panel">
                             <h3 className="text-lilac-main font-bold mb-4">Dados de Registo e Atuação</h3>
                             <div className="input-group">
                                 <label htmlFor="dataNascimentoProf"><FaCalendarAlt /> Data de Nascimento:</label>
-                                <input id="dataNascimentoProf" name="dataNascimento" type="date" required value={detalhesProfissional.dataNascimento} onChange={handleDetalhesProfissionalChange} />
+                                <input id="dataNascimentoProf" name="dataNascimento" type="date" value={detalhesProfissional.dataNascimento} onChange={handleDetalhesProfissionalChange} />
                             </div>
                             <div className="input-group">
                               <label><FaVenusMars /> Gênero:</label>
@@ -551,24 +591,68 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                             </div>
                             <div className="input-group">
                                 <label htmlFor="certificacoes"><FaIdBadge /> Certificações (Registo Profissional):</label>
-                                <input id="certificacoes" name="certificacoes" type="text" required placeholder="Nº de Registo e Conselho (Ex: CRP 00/0000)" value={detalhesProfissional.certificacoes} onChange={handleDetalhesProfissionalChange} />
+                                <input id="certificacoes" name="certificacoes" type="text" placeholder="Nº de Registo e Conselho (Ex: CRP 00/0000)" value={detalhesProfissional.certificacoes} onChange={handleDetalhesProfissionalChange} />
                             </div>
                             <div className="input-group">
-                                <label htmlFor="especializacoes"><FaGraduationCap /> Especializações:</label>
-                                <textarea id="especializacoes" name="especializacoes" type="text" required placeholder="Áreas de foco (separadas por vírgula)" value={detalhesProfissional.especializacoes} onChange={handleDetalhesProfissionalChange} rows="2" />
+                                <label htmlFor="especializacoesProf"><FaGraduationCap /> Especializações:</label>
+                                <div className="chip-list">
+                                  {(detalhesProfissional.especializacoes||[]).map(item => (
+                                    <span className="chip" key={item}>{item} <button type="button" onClick={()=>removeChipProf('especializacoes', item)}>×</button></span>
+                                  ))}
+                                </div>
+                                <div className="suggestions">
+                                  {DEFAULT_SUGGESTIONS_PROFISSIONAL.especializacoes.map(opt => (
+                                    <button type="button" key={opt} className="suggestion" onClick={()=>addChipProf('especializacoes', opt)}>{opt}</button>
+                                  ))}
+                                </div>
+                                <input id="especializacoesProf" type="text" placeholder="Adicionar especialização e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter'){ e.preventDefault(); if(e.currentTarget.value.trim()){ addChipProf('especializacoes', e.currentTarget.value.trim()); e.currentTarget.value=''; } } }} />
                             </div>
                             <div className="input-group">
-                                <label htmlFor="metodosUtilizados"><FaGraduationCap /> Métodos/Abordagens Utilizadas:</label>
-                                <textarea id="metodosUtilizados" name="metodosUtilizados" placeholder="Ex: TCC, ABA, Psicodrama" value={detalhesProfissional.metodosUtilizados} onChange={handleDetalhesProfissionalChange} rows="2" />
+                                <label htmlFor="metodosUtilizadosProf"><FaGraduationCap /> Métodos/Abordagens Utilizadas:</label>
+                                <div className="chip-list">
+                                  {(detalhesProfissional.metodosUtilizados||[]).map(item => (
+                                    <span className="chip" key={item}>{item} <button type="button" onClick={()=>removeChipProf('metodosUtilizados', item)}>×</button></span>
+                                  ))}
+                                </div>
+                                <div className="suggestions">
+                                  {DEFAULT_SUGGESTIONS_PROFISSIONAL.metodosUtilizados.map(opt => (
+                                    <button type="button" key={opt} className="suggestion" onClick={()=>addChipProf('metodosUtilizados', opt)}>{opt}</button>
+                                  ))}
+                                </div>
+                                <input id="metodosUtilizadosProf" type="text" placeholder="Adicionar método/abordagem e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter'){ e.preventDefault(); if(e.currentTarget.value.trim()){ addChipProf('metodosUtilizados', e.currentTarget.value.trim()); e.currentTarget.value=''; } } }} />
                             </div>
                             <div className="input-group">
-                                <label htmlFor="disponibilidade"><FaClock /> Disponibilidade (Horário e Dias):</label>
-                                <input id="disponibilidade" name="disponibilidade" type="text" placeholder="Ex: Seg/Qua/Sex, 14h-18h" required value={detalhesProfissional.disponibilidade} onChange={handleDetalhesProfissionalChange} />
+                                <label><FaClock /> Disponibilidade (Horário e Dias):</label>
+                                <div className="availability-panel">
+                                  <div className="availability-days">
+                                    {DAYS_OF_WEEK.map((day) => (
+                                      <button
+                                        key={day}
+                                        type="button"
+                                        className={`availability-day ${disponibilidadeDays.includes(day) ? 'active' : ''}`}
+                                        onClick={() => toggleDisponibilidadeDay(day)}
+                                      >
+                                        {day}
+                                      </button>
+                                    ))}
+                                  </div>
+                                  <div className="availability-range">
+                                    <div className="availability-range-row">
+                                      <label>Início: {String(disponibilidadeStart).padStart(2,'0')}:00</label>
+                                      <input type="range" min="6" max="20" step="1" value={disponibilidadeStart} onChange={(e) => setDisponibilidadeStart(Number(e.target.value))} />
+                                    </div>
+                                    <div className="availability-range-row">
+                                      <label>Fim: {String(disponibilidadeEnd).padStart(2,'0')}:00</label>
+                                      <input type="range" min="7" max="22" step="1" value={disponibilidadeEnd} onChange={(e) => setDisponibilidadeEnd(Number(e.target.value))} />
+                                    </div>
+                                  </div>
+                                  <div className="availability-summary">{formatDisponibilidade(disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd) || 'Selecione dias e horário'}</div>
+                                </div>
                             </div>
                             <div className="input-group">
                                 <label htmlFor="cidadeProf"><FaMapMarkerAlt /> Cidade/Distrito Base:</label>
-                                <input id="cidadeProf" name="cidade" type="text" placeholder="Cidade" required value={detalhesProfissional.cidade} onChange={handleDetalhesProfissionalChange} />
-                                <input id="estadoProf" name="estado" type="text" placeholder="Distrito (Ex: Porto)" required value={detalhesProfissional.estado} onChange={handleDetalhesProfissionalChange} className="mt-2" />
+                                <input id="cidadeProf" name="cidade" type="text" placeholder="Cidade" value={detalhesProfissional.cidade} onChange={handleDetalhesProfissionalChange} />
+                                <input id="estadoProf" name="estado" type="text" placeholder="Distrito (Ex: Porto)" value={detalhesProfissional.estado} onChange={handleDetalhesProfissionalChange} className="mt-2" />
                             </div>
                         </div>
                     )}
