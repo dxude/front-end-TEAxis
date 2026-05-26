@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../Styles/ChatAxis.css";
 import logoTeaxis from "../assets/imagens/fundoLogo.png";
 
@@ -12,6 +13,7 @@ const quickReplies = [
 ];
 
 export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null, isIntegrated = false }) {
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -54,7 +56,11 @@ export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null
     }
 
     const data = await res.json();
-    const botMessage = { sender: "bot", text: data.reply };
+    const botMessage = {
+      sender: "bot",
+      text: data.reply,
+      action: data.action,
+    };
     setMessages((m) => [...m, botMessage]);
 
     // Se o chat estiver fechado, exibe notificação visual
@@ -111,6 +117,23 @@ export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
   }
 
+  function handleChatAction(action) {
+    if (!action) return;
+    if (action.type === "logout") {
+      setIsOpenState(false);
+      navigate(action.path || "/login");
+      return;
+    }
+    if (action.type === "navigate") {
+      setIsOpenState(false);
+      navigate(action.path);
+      return;
+    }
+    if (action.type === "external") {
+      window.open(action.url, "_blank");
+    }
+  }
+
   function sendQuick(text) {
     // criar uma mensagem e enviar logo
     const userMessage = { sender: "user", text };
@@ -131,7 +154,11 @@ export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null
         }
 
         const data = await res.json();
-        const botMessage = { sender: "bot", text: data.reply };
+        const botMessage = {
+          sender: "bot",
+          text: data.reply,
+          action: data.action,
+        };
         setMessages((m) => [...m, botMessage]);
 
         if (!isOpenState) setHasNewMessage(true);
@@ -184,7 +211,16 @@ export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null
         <div className="chat-axis-messages">
           {messages.map((msg, i) => (
             <div key={i} className={`chat-axis-msg ${msg.sender}`}>
-              {msg.text}
+              <div>{msg.text}</div>
+              {msg.action && msg.sender === "bot" && (
+                <button
+                  className="chat-action-button"
+                  type="button"
+                  onClick={() => handleChatAction(msg.action)}
+                >
+                  {msg.action.label || "Abrir link"}
+                </button>
+              )}
             </div>
           ))}
 

@@ -244,6 +244,26 @@
   color: #3a2c81;
 }
 
+.chat-action-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: none;
+  background: #6b4eff;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.18s ease, background 0.18s ease;
+}
+
+.chat-action-button:hover {
+  transform: translateY(-1px);
+  background: #5723d3;
+}
+
 /* input area */
 .chat-axis-input-area {
   display: flex;

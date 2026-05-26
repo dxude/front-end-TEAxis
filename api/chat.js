@@ -116,7 +116,48 @@ Responda de forma clara, amigável e com recomendações úteis.
           return pickRandom(responseVariants.greeting);
         }
 
-        // 2. Perguntas sobre TEAxis
+        // 2. Avaliação após consulta
+        if (/(avaliaç|avaliar|avaliou|esqueceu.*avaliar|não.*avaliou|não avaliou)/i.test(text)) {
+          return {
+            reply: "Você fez uma consulta recentemente, mas esqueceu de avaliar ela? Segue o link 🙂",
+            action: {
+              type: "navigate",
+              path: "/avaliar/1",
+              label: "Ir para avaliação"
+            }
+          };
+        }
+
+        // 3. Buscar especialistas
+        if (/(buscar.*especialista|procurar.*especialista|encontrar.*profissional|quero.*especialista|quero.*profissionais|buscar.*profissionais|procurar.*profissionais)/i.test(text)) {
+          return {
+            reply: "Quer encontrar um especialista agora? Vou te levar para a busca de profissionais para você começar a explorar as opções.",
+            action: {
+              type: "navigate",
+              path: "/buscar-profissionais",
+              label: "Buscar especialistas"
+            }
+          };
+        }
+
+        // 4. Deslogar do TEAxis
+        if (/(deslogar|logout|sair do teaxis|sair do sistema|quero sair|sair agora)/i.test(text)) {
+          return {
+            reply: "Quer sair do TEAxis? Só clicar aqui que eu te levo para a página de saída.",
+            action: {
+              type: "logout",
+              path: "/login",
+              label: "Sair"
+            }
+          };
+        }
+
+        // 5. Perguntas sobre o match inteligente
+        if (/(match|matching|inteligente|profissional.*(combina|se encaixa|ideal|perfeito)|combina.*com|se encaixa.*perfil|perfil.*profissional|estilo.*(profissional|atendimento))/i.test(text)) {
+          return "O match inteligente do TEAxis funciona como uma busca personalizada: o sistema considera informações do seu perfil, suas necessidades e o estilo de atendimento que você prefere, e então recomenda o profissional que mais se encaixa. Ele avalia qual especialista tem experiência com neurodivergência, quais especialidades combinam com sua situação, disponibilidade e também o tipo de abordagem que você prefere — por exemplo, mais acolhedora, prática ou focada em comportamento.\n\nAssim, você não precisa escolher no escuro: o TEAxis sugere alguém que tem maior chance de ser uma boa combinação para você. Depois, você pode ver o perfil desse profissional, ler a descrição e agendar a consulta se quiser. É uma busca inteligente para aproximar você do melhor profissional para o seu caso.";
+        }
+
+        // 6. Perguntas sobre TEAxis
         if (/(teaxis|como funciona|o que é|vantagens|agendamento|profissionais|plataforma|site)/i.test(text)) {
           const responses = [
             "O TEAxis é uma plataforma que conecta pessoas neurodivergentes como você a profissionais especializados! Você consegue buscar, agendar consultas e acompanhar sua evolução — tudo de forma segura e com respeito. Quer saber mais sobre algo específico?",
@@ -126,7 +167,7 @@ Responda de forma clara, amigável e com recomendações úteis.
           return pickRandom(responses);
         }
 
-        // 3. Agradecimentos
+        // 4. Agradecimentos
         if (/(obrigad|valeu|thanks|obg|muito bom|legal)/i.test(text)) {
           return pickRandom(responseVariants.thanks);
         }
@@ -247,8 +288,11 @@ Responda de forma clara, amigável e com recomendações úteis.
         return pickRandom(genericResponses);
       };
 
-      const reply = generateLocalReply(message, history);
-      return res.status(200).json({ reply });
+      const answer = generateLocalReply(message, history);
+      if (typeof answer === "string") {
+        return res.status(200).json({ reply: answer });
+      }
+      return res.status(200).json(answer);
     }
 
     // Chamada para o Gemini Pro (Google AI) - se GEMINI_API_KEY estiver definida

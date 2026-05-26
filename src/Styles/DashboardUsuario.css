@@ -702,7 +702,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: conic-gradient(#20C997 calc(var(--progress) * 1%), #E5E7EB 0%);
+        background: conic-gradient(#20C997 var(--progress), #E5E7EB 0%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -823,6 +823,8 @@
 .robot-section {
     margin-bottom: 3rem;
     box-sizing: border-box;
+        position: relative;
+        z-index: 1;
 }
 
 .robot-panel {
@@ -834,6 +836,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+        position: relative;
+        z-index: 2;
     gap: 2rem;
     overflow: hidden;
     box-sizing: border-box;
