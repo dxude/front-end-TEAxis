@@ -117,14 +117,64 @@ export default function DashboardUsuario() {
       </aside>
 
       <main className="main-content">
-        <header className="main-content-header">
-          <div className="header-content">
-            <h1>Meu Espaço</h1>
-            <p className="header-subtitle">Seu centro de apoio e desenvolvimento</p>
+        <section className="dashboard-hero fade-in">
+          <div className="hero-copy">
+            <span className="hero-eyebrow">Painel do Usuário</span>
+            <h1>{userName}, seu centro de apoio está pronto.</h1>
+            <p>Organize seus agendamentos, acompanhe trilhas e encontre apoio com um visual leve e intuitivo.</p>
+            <div className="hero-buttons">
+              <Link to="/buscar-profissionais" className="btn btn-primary">Encontrar Especialista</Link>
+              <Link to="/minhas-trilhas" className="btn btn-secondary">Explorar Trilhas</Link>
+            </div>
+            <div className="hero-highlights">
+              <div className="highlight-card">
+                <FaCalendarAlt className="highlight-icon" />
+                <div>
+                  <strong>Agenda simplificada</strong>
+                  <span>Controle seus próximos atendimentos com clareza.</span>
+                </div>
+              </div>
+              <div className="highlight-card">
+                <FaChartLine className="highlight-icon" />
+                <div>
+                  <strong>Progresso visível</strong>
+                  <span>Veja metas e trilhas em um painel prático.</span>
+                </div>
+              </div>
+            </div>
           </div>
-        </header>
 
-        {/* Seção de Boas-vindas e Próximos Passos */}
+          <div className="hero-visual">
+            <div className="hero-card">
+              <div className="hero-card-tag">Seu Espaço</div>
+              <h2>Desenvolvimento com acolhimento e praticidade.</h2>
+              <p>Acesse rapidamente agendamentos, mensagens e recomendações em um ambiente seguro.</p>
+              <Link to="/mensagens" className="btn btn-primary-sm">Ver Mensagens</Link>
+            </div>
+            <div className="hero-image-wrapper">
+              <img src={axisImg} alt="Axis sorridente" className="axis-flutuando" />
+            </div>
+          </div>
+        </section>
+
+        <section className="dashboard-features fade-in">
+          <div className="feature-card">
+            <FaSearch className="feature-icon" />
+            <h3>Busca inteligente</h3>
+            <p>Encontre profissionais com experiência real em neurodiversidade.</p>
+          </div>
+          <div className="feature-card">
+            <FaCalendarAlt className="feature-icon" />
+            <h3>Agenda rápida</h3>
+            <p>Gerencie seus atendimentos com poucos cliques.</p>
+          </div>
+          <div className="feature-card">
+            <FaComments className="feature-icon" />
+            <h3>Comunicação acolhedora</h3>
+            <p>Mensagens seguras e claras com profissionais.</p>
+          </div>
+        </section>
+
         <section className="welcome-section">
           <div className="welcome-card">
             <div className="welcome-content">
