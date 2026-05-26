@@ -197,7 +197,7 @@ export default function DashboardUsuario() {
         </section>
 
         <section className="robot-section">
-          <div className="robot-panel">
+          <div className={`robot-panel ${showChatInRobot ? 'with-chat' : ''}`}>
             <div className="robot-copy">
               <p className="robot-tag">Chat</p>
               <h2>O Axis está aqui para te ajudar</h2>
@@ -233,16 +233,16 @@ export default function DashboardUsuario() {
                 title="Clique no botão acima ou passe o mouse para abrir o chat"
               />
             </div>
+            {showChatInRobot && (
+              <div className="robot-chat-section">
+                <ChatAxis 
+                  isOpenExternal={showChatInRobot} 
+                  onCloseExternal={setShowChatInRobot}
+                  isIntegrated={true}
+                />
+              </div>
+            )}
           </div>
-          {showChatInRobot && (
-            <div className="robot-chat-section">
-              <ChatAxis 
-                isOpenExternal={showChatInRobot} 
-                onCloseExternal={setShowChatInRobot}
-                isIntegrated={true}
-              />
-            </div>
-          )}
         </section>
 
         {/* Seção de Status Atual */}

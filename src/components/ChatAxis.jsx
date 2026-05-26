@@ -1,5 +1,15 @@
 import { useState, useRef, useEffect } from "react";
 import "../Styles/ChatAxis.css";
+import logoTeaxis from "../assets/imagens/fundoLogo.png";
+
+const quickReplies = [
+  { label: "Estou ansioso", value: "Estou ansioso" },
+  { label: "Não consigo dormir", value: "Não consigo dormir" },
+  { label: "Ajuda com TDAH", value: "Quero ajuda com TDAH" },
+  { label: "Dificuldade de concentração", value: "Tenho dificuldade de concentração" },
+  { label: "Sensibilidade sensorial", value: "Tenho sensibilidade sensorial" },
+  { label: "Como funciona o TEAxis", value: "Como funciona o TEAxis?" },
+];
 
 export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null, isIntegrated = false }) {
   const [messages, setMessages] = useState([]);
@@ -61,8 +71,12 @@ export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null
 }
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, loading]);
+    if (!isOpenState) return;
+    const messagesContainer = bottomRef.current?.parentElement;
+    if (messagesContainer) {
+      messagesContainer.scrollTo({ top: messagesContainer.scrollHeight, behavior: "smooth" });
+    }
+  }, [messages, loading, isOpenState]);
 
   // Carrega histórico do localStorage ao montar
   useEffect(() => {
@@ -148,12 +162,15 @@ export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null
       <div className={`chat-axis-popup ${isOpenState ? "open" : "closed"} ${isIntegrated ? 'integrated' : ''}`}>
         <div className="chat-axis-header">
           <img
-            src="https://i.imgur.com/MO6rE2F.png"
-            alt="TEAxis"
+            src={logoTeaxis}
+            alt="Logo TEAxis"
             className="chat-axis-logo"
           />
-          <span>ChatAxis</span>
-          <div style={{display:'flex',gap:8,alignItems:'center'}}>
+          <div className="chat-axis-title-group">
+            <span className="chat-axis-brand">TEAxis</span>
+            <small className="chat-axis-subtitle">Pergunte sobre neurodivergência, sintomas e como a plataforma funciona.</small>
+          </div>
+          <div className="chat-axis-header-actions">
             <button className="chataxis-clear" onClick={clearHistory} title="Limpar histórico">Limpar</button>
             <button
               className="chat-axis-close"
@@ -181,9 +198,11 @@ export default function ChatAxis({ isOpenExternal = null, onCloseExternal = null
         </div>
 
         <div className="chat-axis-quick-replies">
-          <button onClick={() => sendQuick("Estou ansioso")}>Estou ansioso</button>
-          <button onClick={() => sendQuick("Não consigo dormir")}>Não consigo dormir</button>
-          <button onClick={() => sendQuick("Quero ajuda com TDAH")}>TDAH</button>
+          {quickReplies.map((reply) => (
+            <button key={reply.label} onClick={() => sendQuick(reply.value)}>
+              {reply.label}
+            </button>
+          ))}
         </div>
 
         <form className="chat-axis-input-area" onSubmit={sendMessage}>

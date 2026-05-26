@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import chatHandler from "./api/chat.js";
 
 export default defineConfig({
   plugins: [
@@ -15,11 +16,23 @@ export default defineConfig({
               body += chunk.toString();
             });
 
-            req.on("end", () => {
-              const { message } = JSON.parse(body);
-
-              res.setHeader("Content-Type", "application/json");
-              res.end(JSON.stringify({ reply: "Resposta mock do ChatAxis" }));
+            req.on("end", async () => {
+              try {
+                req.body = JSON.parse(body || "{}");
+                res.status = (code) => {
+                  res.statusCode = code;
+                  return res;
+                };
+                res.json = (data) => {
+                  res.setHeader("Content-Type", "application/json");
+                  res.end(JSON.stringify(data));
+                };
+                await chatHandler(req, res);
+              } catch (error) {
+                res.statusCode = 500;
+                res.setHeader("Content-Type", "application/json");
+                res.end(JSON.stringify({ error: error.message || "Erro interno" }));
+              }
             });
 
             return;
