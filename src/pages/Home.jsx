@@ -5,6 +5,7 @@ import { FaSearch, FaCalendarAlt, FaPuzzlePiece, FaLock, FaHeart, FaRobot, FaUse
 import axisImg from '../assets/imagens/axis-sorridente.png';
 import logoImg from '../assets/imagens/fundoLogo.png';
 import depoimentoImg from '../assets/imagens/depoimento.png';
+import video1 from '../assets/imagens/video1.mp4';
 
 const Home = () => {
   const [showTopbar, setShowTopbar] = useState(true);
@@ -193,23 +194,50 @@ const Home = () => {
       </section>
 
       <section className="beneficios-section fade-in">
-        <h2>O que você encontra no TEAxis</h2>
+        <div className="beneficios-header">
+          <div>
+            <h2>O que você encontra no TEAxis</h2>
+            <p className="beneficios-tagline">Conte com o Axis para auxiliar você nessa jornada tão importante.</p>
+          </div>
+          <div className="beneficios-badge">
+            <FaRobot className="beneficios-badge-icon" />
+            <span>Axis em ação</span>
+          </div>
+        </div>
+
         <div className="beneficios-grid">
-          <div className="beneficio-card">
-            <strong>Conexão humana</strong>
-            <p>Profissionais empáticos que entendem as necessidades individuais.</p>
+          <div className="beneficios-video-row">
+            <div className="video-card">
+              <div className="video-frame">
+                <video
+                  src={video1}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  className="beneficios-video"
+                />
+              </div>
+            </div>
           </div>
-          <div className="beneficio-card">
-            <strong>Transparência</strong>
-            <p>Controle de perfis, consentimentos e histórico de atendimento.</p>
-          </div>
-          <div className="beneficio-card">
-            <strong>Inclusão</strong>
-            <p>Interface acessível para jovens, responsáveis e profissionais.</p>
-          </div>
-          <div className="beneficio-card">
-            <strong>Apoio familiar</strong>
-            <p>Espaço para responsáveis gerenciarem perfis de menores em segurança.</p>
+
+          <div className="beneficios-card-grid">
+            <div className="beneficio-card">
+              <strong>Conexão humana</strong>
+              <p>Profissionais empáticos que entendem as necessidades individuais.</p>
+            </div>
+            <div className="beneficio-card">
+              <strong>Transparência</strong>
+              <p>Controle de perfis, consentimentos e histórico de atendimento.</p>
+            </div>
+            <div className="beneficio-card">
+              <strong>Inclusão</strong>
+              <p>Interface acessível para jovens, responsáveis e profissionais.</p>
+            </div>
+            <div className="beneficio-card">
+              <strong>Apoio familiar</strong>
+              <p>Espaço para responsáveis gerenciarem perfis de menores em segurança.</p>
+            </div>
           </div>
         </div>
       </section>

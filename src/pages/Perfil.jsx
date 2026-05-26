@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaCheckCircle, FaCircle, FaCamera, FaUser, FaMapMarkerAlt, FaClipboard } from 'react-icons/fa';
 import '../Styles/Perfil.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
-import defaultProfilePic from '../assets/imagens/default-profile.png'; 
 
 export default function Perfil() {
   const navigate = useNavigate();
@@ -14,7 +13,7 @@ export default function Perfil() {
   const [fullName, setFullName] = useState('');
   const [phone, setPhone] = useState('');
   const [birthDate, setBirthDate] = useState('');
-  const [profilePicture, setProfilePicture] = useState(defaultProfilePic);
+  const [profilePicture, setProfilePicture] = useState('');
 
   const [street, setStreet] = useState('');
   const [number, setNumber] = useState('');
@@ -125,7 +124,7 @@ export default function Perfil() {
       fullName,
       phone,
       birthDate,
-      profilePicture: profilePicture === defaultProfilePic ? null : profilePicture,
+      profilePicture: profilePicture || null,
       street,
       number,
       zipCode,
@@ -161,6 +160,18 @@ export default function Perfil() {
       alert('Perfil de Profissional atualizado com sucesso!');
       navigate('/dashboard-profissional');
     }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Arquivo muito grande. Máx 5MB.');
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => setProfilePicture(reader.result);
+    reader.readAsDataURL(file);
   };
 
   const isStepCompleted = (stepId) => {
@@ -275,20 +286,38 @@ export default function Perfil() {
                 </div>
               </div>
 
-              <div className="profile-picture-section">
+              <div className="profile-upload-section">
                 <label>Foto de Perfil</label>
-                <div className="profile-picture-wrapper">
-                  <img src={profilePicture || defaultProfilePic} alt="Foto de Perfil" className="current-profile-pic" />
-                  <div className="profile-pic-input-area">
-                    <FaCamera className="camera-icon" />
+                <div className="upload-grid">
+                  <div className={`avatar-preview ${profilePicture ? 'has-image' : 'empty'}`}>
+                    {profilePicture ? (
+                      <img src={profilePicture} alt="Foto de Perfil" className="current-profile-pic" />
+                    ) : (
+                      <div className="avatar-empty-state">Nenhuma imagem selecionada</div>
+                    )}
+                    {profilePicture && (
+                      <button type="button" className="remove-avatar-btn" onClick={() => setProfilePicture('')}>Remover</button>
+                    )}
+                  </div>
+
+                  <div className="upload-controls">
+                    <p className="helper-text">Envie uma foto (JPG/PNG). Máx 5MB. Você também pode colar uma URL.</p>
+
+                    <label className="upload-btn">
+                      <input type="file" accept="image/*" onChange={handleFileChange} className="file-input" />
+                      Enviar nova foto
+                    </label>
+
+                    <div className="or-text">ou</div>
+
                     <input
                       type="text"
                       placeholder="Cole a URL da sua foto (ex: https://seusite.com/foto.jpg)"
-                      value={profilePicture === defaultProfilePic ? '' : profilePicture}
-                      onChange={(e) => setProfilePicture(e.target.value || defaultProfilePic)}
+                      value={profilePicture}
+                      onChange={(e) => setProfilePicture(e.target.value)}
                       className="url-input-field"
                     />
-                    <p className="helper-text">Você pode usar uma URL pública da imagem</p>
+
                   </div>
                 </div>
               </div>
