@@ -1,451 +1,158 @@
+/* ==================== VARIÁVEIS E BASE (ESTÉTICA PREMIUM) ==================== */
+:root {
+  --bg-gradient: linear-gradient(135deg, #F3F0FF 0%, #E6F0FE 100%);
+  --primary: #7B3FF2;
+  --primary-hover: #5A0FC8;
+  --success: #20C997;
+  --text-dark: #1E293B;
+  --text-muted: #64748B;
+  --glass-bg: rgba(255, 255, 255, 0.65);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 25px 50px -12px rgba(123, 63, 242, 0.15);
+}
+
 .meu-progresso-container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    font-family: 'Arial', sans-serif;
-    background-color: #F9FAFB;
+  display: flex; flex-direction: column; min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: var(--bg-gradient); position: relative; overflow: hidden;
 }
 
-/* Header de Navegação Interna */
-.progresso-header {
-    background-color: #FFFFFF;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
+/* ==================== BACKGROUND SHAPES ==================== */
+.bg-shapes {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  z-index: 0; overflow: hidden; pointer-events: none;
+}
+.shape {
+  position: absolute; filter: blur(80px); opacity: 0.5; border-radius: 50%;
+  animation: float 20s infinite ease-in-out alternate;
+}
+.shape-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #D8B4FE; }
+.shape-2 { bottom: -20%; right: -10%; width: 60vw; height: 60vw; background: #BFDBFE; animation-delay: -5s; }
+
+@keyframes float {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(50px, 50px) rotate(10deg); }
 }
 
-.progresso-header .header-left {
-    display: flex;
-    align-items: center;
+/* ==================== NAVBAR GLASSMORPHISM ==================== */
+.progresso-header-glass {
+  position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); width: 90%; max-width: 1400px;
+  background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border); border-radius: 20px; padding: 0.8rem 1.5rem;
+  display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 
-.progresso-header .header-logo {
-    width: 100px;
-    height: auto;
+.header-left { display: flex; align-items: center; gap: 1.5rem; }
+.back-to-space-btn {
+  display: flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--primary);
+  font-weight: 600; font-size: 0.9rem; padding: 0.6rem 1.2rem; border-radius: 12px;
+  background: rgba(123, 63, 242, 0.05); transition: all 0.3s ease;
 }
+.back-to-space-btn:hover { background: var(--primary); color: white; transform: translateX(-3px); }
+.header-logo-small { height: 35px; width: auto; }
 
-.progresso-header .header-nav {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
+.header-nav-glass { display: flex; gap: 0.5rem; align-items: center; }
+.nav-link-glass {
+  display: flex; align-items: center; gap: 0.4rem; text-decoration: none; color: #475569;
+  font-weight: 600; font-size: 0.9rem; padding: 0.6rem 1rem; border-radius: 10px;
+  transition: all 0.3s ease; background: transparent; cursor: pointer; border: none;
 }
+.nav-link-glass:hover { background: rgba(123, 63, 242, 0.08); color: var(--primary); }
+.logout-btn { color: #EF4444; }
+.logout-btn:hover { background: #FEE2E2; color: #DC2626; }
 
-.progresso-header .nav-link {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: #4A5568;
-    font-weight: 500;
-    font-size: 0.95rem;
-    padding: 0.5rem 0.8rem;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.progresso-header .nav-link:hover {
-    background-color: #F0E6FF;
-    color: #7B3FF2;
-}
-
-.progresso-header .nav-link.active {
-    background-color: #7B3FF2;
-    color: white;
-    font-weight: bold;
-}
-
-.progresso-header .nav-icon {
-    margin-right: 0.5rem;
-    font-size: 1.1rem;
-    color: #7B3FF2;
-    transition: color 0.3s ease;
-}
-
-.progresso-header .nav-link.active .nav-icon {
-    color: white;
-}
-
-.progresso-header .logout-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: 'Arial', sans-serif;
-    padding: 0.5rem 0.8rem;
-    display: flex;
-    align-items: center;
-    color: #4A5568;
-    font-weight: 500;
-    font-size: 0.95rem;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-.progresso-header .logout-btn .nav-icon {
-    color: #dc3545;
-}
-
-.progresso-header .logout-btn:hover {
-    background-color: #ffe0e3;
-    color: #dc3545;
-}
-
-/* Conteúdo Principal da Página */
+/* ==================== CONTEÚDO PRINCIPAL ==================== */
 .progresso-main-content {
-    flex-grow: 1;
-    padding: 2rem;
-    padding-top: 8rem; /* Espaçamento para o header fixo */
-    max-width: 900px;
-    margin: 0 auto;
+  flex-grow: 1; padding: 2rem; padding-top: 8rem; max-width: 1100px;
+  width: 100%; margin: 0 auto; position: relative; z-index: 1; box-sizing: border-box;
 }
 
-.progresso-main-content h1 {
-    font-size: 2.2rem;
-    color: #343A40;
-    font-weight: 700;
-    text-align: center;
-    margin-bottom: 0.5rem;
+.progresso-hero-text { text-align: center; margin-bottom: 3rem; animation: fadeInDown 0.6s ease-out; }
+.progresso-hero-text h1 { font-size: 2.5rem; font-weight: 800; color: var(--text-dark); margin: 0 0 0.5rem 0; }
+.progresso-hero-text .subtitle { font-size: 1.1rem; color: var(--text-muted); }
+
+/* Grid de Progresso */
+.progresso-overview-grid {
+  display: grid; grid-template-columns: 1fr 1.5fr; gap: 2rem; margin-bottom: 2rem;
 }
 
-.progresso-main-content .subtitle {
-    font-size: 1rem;
-    color: #4A5568;
-    text-align: center;
-    margin-bottom: 2rem;
+/* Painéis de Vidro Reutilizáveis */
+.glass-panel-premium {
+  background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border); border-radius: 24px; padding: 2.5rem;
+  box-shadow: var(--glass-shadow); transition: transform 0.3s ease;
 }
+.glass-panel-premium:hover { transform: translateY(-3px); box-shadow: 0 30px 60px -12px rgba(123, 63, 242, 0.2); }
+.glass-panel-premium.full-width { margin-bottom: 2rem; }
+.glass-panel-premium h2 { font-size: 1.5rem; color: var(--text-dark); margin-top: 0; margin-bottom: 1.5rem; font-weight: 700; }
 
-/* Seções de Progresso (Visão Geral, Avaliações) */
-.progresso-overview-section, .progresso-section {
-    background-color: #FFFFFF;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    margin-bottom: 2rem;
-    display: grid; /* Para organizar cards internos */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-}
-
-.progresso-section h2 {
-    font-size: 1.5rem;
-    color: #074f9b;
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    text-align: center;
-    position: relative;
-    padding-bottom: 0.5rem;
-    grid-column: 1 / -1; /* Título ocupa toda a largura do grid */
-}
-
-.progresso-section h2::after {
-    content: '';
-    display: block;
-    width: 50px;
-    height: 3px;
-    background-color: #7B3FF2;
-    margin: 0.5rem auto 0 auto;
-    border-radius: 2px;
-}
-
-/* Card de Progresso Geral */
-.progresso-geral-card {
-    background-color: #F9FAFB;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.progresso-geral-card h2 {
-    font-size: 1.2rem;
-    color: #074f9b;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    text-align: center;
-    grid-column: auto; /* Anula o grid-column de .progresso-section h2 */
-    padding-bottom: 0;
-}
-.progresso-geral-card h2::after { /* Esconde a linha do título neste card */
-    display: none;
-}
-
-.progress-circle-container {
-    position: relative;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background-color: #e0e0e0; /* Fundo do círculo */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 1rem;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-}
-
+/* Gráfico Circular Elegante */
+.progresso-geral-card { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.progress-circle-container { margin: 1.5rem 0; position: relative; }
 .progress-circle {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 2.5rem;
-    font-weight: bold;
-    color: #343A40;
+  width: 180px; height: 180px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  background-color: rgba(255,255,255,0.4); box-shadow: inset 0 4px 10px rgba(0,0,0,0.05);
 }
-.progress-circle::before { /* Anel interno branco */
-    content: '';
-    position: absolute;
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    background-color: #FFFFFF;
+.progress-circle-inner {
+  width: 150px; height: 150px; background: #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
 }
+.progress-value { font-size: 2.8rem; font-weight: 800; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-.progress-value {
-    position: relative;
-    z-index: 2; /* Para ficar acima do anel branco */
+/* Barras de Progresso por Área */
+.areas-list { display: flex; flex-direction: column; gap: 1.2rem; }
+.area-item-glass {
+  background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.8); border-radius: 16px; padding: 1.2rem;
+  display: flex; align-items: center; gap: 1.2rem; transition: 0.3s;
 }
+.area-item-glass:hover { background: #FFFFFF; box-shadow: 0 8px 20px rgba(123,63,242,0.1); }
+.area-icon { font-size: 1.8rem; color: var(--primary); background: #F3F0FF; padding: 0.8rem; border-radius: 12px; }
+.area-info { flex-grow: 1; }
+.area-info-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+.area-info-top h3 { font-size: 1.05rem; font-weight: 600; color: var(--text-dark); margin: 0; }
+.area-info-top span { font-weight: 700; color: var(--primary); font-size: 0.9rem; }
+.progress-bar-container { background: rgba(0,0,0,0.05); height: 8px; border-radius: 4px; overflow: hidden; }
+.progress-bar-fill { background: linear-gradient(90deg, var(--primary), #D8B4FE); height: 100%; border-radius: 4px; transition: width 1s ease-out; }
 
-/* Card de Progresso por Área */
-.progresso-por-area-card {
-    background-color: #F9FAFB;
-    padding: 1.5rem;
-    border-radius: 12px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+/* Avaliações Grid */
+.avaliacoes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+.avaliacao-card-glass {
+  background: rgba(255,255,255,0.6); padding: 1.5rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.8);
 }
+.avaliacao-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.8rem; }
+.avaliacao-header h3 { font-size: 1.1rem; margin: 0; color: var(--text-dark); }
+.badge-tipo { background: #F3F0FF; color: var(--primary); padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.8rem; font-weight: 700; }
+.card-rating { display: flex; align-items: center; gap: 0.2rem; color: #E2E8F0; margin-bottom: 1rem; }
+.star-icon.filled { color: #F59E0B; }
+.rating-number { color: var(--text-muted); font-size: 0.9rem; font-weight: 600; margin-left: 0.5rem; }
+.avaliacao-data { font-size: 0.85rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; margin: 0; }
+.empty-state-glass { text-align: center; padding: 2rem; color: var(--text-muted); font-style: italic; }
 
-.progresso-por-area-card h2 {
-    font-size: 1.2rem;
-    color: #074f9b;
-    margin-bottom: 1rem;
-    font-weight: 600;
-    text-align: center;
-    grid-column: auto;
-    padding-bottom: 0;
+/* Ações e Links Rápidos */
+.text-center { text-align: center; }
+.links-descricao { margin-bottom: 2rem; color: var(--text-muted); font-size: 1.05rem; }
+.progresso-links-actions { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+.btn-action-premium {
+  display: inline-flex; align-items: center; gap: 0.6rem; padding: 1rem 2rem; border-radius: 12px;
+  font-weight: 600; text-decoration: none; transition: all 0.3s ease; border: none; font-size: 1.05rem;
 }
-.progresso-por-area-card h2::after {
-    display: none;
-}
+.btn-action-premium.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%); color: white; box-shadow: 0 4px 15px rgba(123, 63, 242, 0.3); }
+.btn-action-premium.primary:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(123, 63, 242, 0.4); }
+.btn-action-premium.secondary { background: white; color: var(--primary); border: 2px solid var(--primary); }
+.btn-action-premium.secondary:hover { background: #F3F0FF; transform: translateY(-3px); }
 
-.areas-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.area-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background-color: #FFFFFF;
-    padding: 0.8rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-.area-icon {
-    font-size: 1.5rem;
-    color: #7B3FF2; /* Roxo para ícones de área */
-    flex-shrink: 0;
+/* ==================== RESPONSIVO ==================== */
+@media (max-width: 900px) {
+  .progresso-header-glass { flex-direction: column; padding: 1rem; top: 0.5rem; width: 95%; border-radius: 16px; }
+  .header-nav-glass { flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 0.5rem; }
+  .progresso-main-content { padding-top: 11rem; }
+  .progresso-overview-grid { grid-template-columns: 1fr; }
+  .progresso-links-actions { flex-direction: column; }
+  .btn-action-premium { width: 100%; justify-content: center; }
 }
 
-.area-info {
-    flex-grow: 1;
-}
-
-.area-info h3 {
-    font-size: 0.95rem;
-    color: #343A40;
-    font-weight: 500;
-    margin-bottom: 0.3rem;
-}
-
-.area-info span {
-    font-size: 0.85rem;
-    color: #4A5568;
-    display: block;
-    text-align: right; /* Pontuação à direita */
-}
-
-.area-info .progress-bar-container {
-    background-color: #e0e0e0;
-    border-radius: 5px;
-    height: 6px;
-    overflow: hidden;
-}
-
-.area-info .progress-bar {
-    height: 100%;
-    border-radius: 5px;
-    background-color: #7B3FF2; /* Cor da barra de progresso por área */
-}
-
-
-/* Avaliações e Conquistas Recentes */
-.avaliacoes-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-}
-
-.avaliacao-card {
-    background-color: #F9FAFB;
-    padding: 1.2rem;
-    border-radius: 8px;
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.avaliacao-card h3 {
-    font-size: 1rem;
-    color: #343A40;
-    font-weight: 600;
-    margin-bottom: 0.4rem;
-}
-
-.avaliacao-card p {
-    font-size: 0.85rem;
-    color: #4A5568;
-    margin-bottom: 0.3rem;
-}
-
-.avaliacao-card .card-rating {
-    color: #FFD700;
-    font-size: 1rem;
-    margin-bottom: 0.5rem;
-}
-
-.avaliacao-card .card-rating .star-conquista {
-    margin: 0 1px;
-}
-
-.avaliacao-card .card-rating .star-conquista.filled {
-    color: #FFD700;
-}
-
-.avaliacao-card .avaliacao-data {
-    font-size: 0.8rem;
-    color: #6B7280;
-    text-align: right;
-}
-
-.no-progresso-message {
-    text-align: center;
-    font-size: 1rem;
-    color: #6B7280;
-    padding: 1rem;
-    background-color: #F9FAFB;
-    border-radius: 8px;
-}
-
-.no-progresso-message a {
-    color: #7B3FF2;
-    text-decoration: none;
-    font-weight: bold;
-}
-.no-progresso-message a:hover {
-    text-decoration: underline;
-}
-
-.progresso-links {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-top: 1.5rem;
-    flex-wrap: wrap;
-}
-
-/* Botões - Reutilizando estilos gerais de botão */
-.btn-primary, .btn-secondary {
-    padding: 0.9rem 1.8rem;
-    border: none;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 1rem;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    transition: background-color 0.3s ease, transform 0.1s ease;
-}
-
-.btn-primary {
-    background-color: #20C997;
-    color: white;
-}
-.btn-primary:hover {
-    background-color: #1BAA80;
-    transform: translateY(-1px);
-}
-
-.btn-secondary {
-    background-color: #F0E6FF;
-    color: #7B3FF2;
-}
-.btn-secondary:hover {
-    background-color: #E0D1F2;
-    color: #5A0FC8;
-    transform: translateY(-1px);
-}
-
-
-/* === AJUSTES RESPONSIVOS === */
-@media (max-width: 768px) {
-    .progresso-header {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 1rem;
-    }
-    .progresso-header .header-nav {
-        flex-wrap: wrap;
-        justify-content: center;
-        width: 100%;
-        margin-top: 0.5rem;
-    }
-    .progresso-header .nav-link, .progresso-header .logout-btn {
-        padding: 0.5rem;
-        font-size: 0.85rem;
-    }
-    .progresso-header .header-logo {
-        width: 80px;
-        margin-bottom: 0.5rem;
-    }
-
-    .progresso-main-content {
-        padding: 1.5rem;
-        padding-top: 10rem;
-    }
-
-    .progresso-overview-section, .progresso-section {
-        padding: 1.5rem;
-        grid-template-columns: 1fr;
-    }
-    .progresso-section h2 {
-        font-size: 1.3rem;
-    }
-
-    .progresso-links {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .progresso-links .btn-secondary {
-        width: 100%;
-        margin-top: 0.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .progresso-header .nav-link, .progresso-header .logout-btn {
-        font-size: 0.75rem;
-    }
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }

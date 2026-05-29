@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaChartLine, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaStar, FaBrain, FaPuzzlePiece, FaComments, FaBullseye, FaArrowLeft } from 'react-icons/fa';
+import { FaChartLine, FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaStar, FaBrain, FaPuzzlePiece, FaComments, FaBullseye, FaArrowLeft, FaBookOpen } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
-import '../Styles/MeuProgresso.css'; // Novo CSS
+import '../Styles/MeuProgresso.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 export default function MeuProgresso() {
@@ -34,56 +34,75 @@ export default function MeuProgresso() {
   return (
     <div className="meu-progresso-container">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
-      <header className="progresso-header">
+      
+      {/* HEADER DE VIDRO PREMIUM */}
+      <header className="progresso-header-glass">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">
             <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
           </Link>
-          <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
+          <img src={logoTeaxis} alt="Logo Plataforma" className="header-logo-small" />
         </div>
-        <nav className="header-nav">
-          <Link to="/buscar-profissionais" className="nav-link">
-            <FaSearch className="nav-icon" /> Buscar Profissionais
+        <nav className="header-nav-glass">
+          <Link to="/buscar-profissionais" className="nav-link-glass">
+            <FaSearch className="nav-icon" /> Buscar
           </Link>
-          <Link to="/meus-agendamentos" className="nav-link">
-            <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
+          <Link to="/meus-agendamentos" className="nav-link-glass">
+            <FaCalendarAlt className="nav-icon" /> Agendamentos
           </Link>
-          <Link to="/perfil" className="nav-link">
-            <FaUserCircle className="nav-icon" /> Meu Perfil
+          <Link to="/minhas-trilhas" className="nav-link-glass">
+            <FaBookOpen className="nav-icon" /> Trilhas
           </Link>
-          <button onClick={handleLogout} className="nav-link logout-btn">
+          <Link to="/perfil" className="nav-link-glass">
+            <FaUserCircle className="nav-icon" /> Perfil
+          </Link>
+          <button onClick={handleLogout} className="nav-link-glass logout-btn">
             <FaSignOutAlt className="nav-icon" /> Sair
           </button>
         </nav>
       </header>
 
-      <main className="progresso-main-content">
-        <h1>Meu Progresso Geral</h1>
-        <p className="subtitle">Acompanhe sua evolução e conquistas na plataforma.</p>
+      {/* BACKGROUND DECORATIVO */}
+      <div className="bg-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
 
-        <section className="progresso-overview-section">
-          <div className="progresso-geral-card">
-            <h2>Progresso Geral</h2>
+      <main className="progresso-main-content">
+        <div className="progresso-hero-text">
+          <h1>Meu Progresso Geral</h1>
+          <p className="subtitle">Acompanhe sua evolução, conquistas e desenvolvimento contínuo na plataforma.</p>
+        </div>
+
+        <section className="progresso-overview-grid">
+          {/* Card de Progresso Geral */}
+          <div className="glass-panel-premium progresso-geral-card">
+            <h2>Evolução Global</h2>
             <div className="progress-circle-container">
-              <div className="progress-circle" style={{ backgroundImage: `conic-gradient(#20C997 ${progressoGeral}%, #e0e0e0 ${progressoGeral}%)` }}>
-                <span className="progress-value">{progressoGeral}%</span>
+              <div className="progress-circle" style={{ backgroundImage: `conic-gradient(#7B3FF2 ${progressoGeral}%, transparent ${progressoGeral}%)` }}>
+                <div className="progress-circle-inner">
+                  <span className="progress-value">{progressoGeral}%</span>
+                </div>
               </div>
             </div>
-            <p>Seu progresso total nas atividades do TEAxis.</p>
+            <p>Seu avanço total somando trilhas, metas e interações.</p>
           </div>
 
-          <div className="progresso-por-area-card">
-            <h2>Progresso por Área</h2>
+          {/* Card de Progresso por Área */}
+          <div className="glass-panel-premium progresso-por-area-card">
+            <h2>Desempenho por Categoria</h2>
             <div className="areas-list">
               {progressoPorArea.map(item => (
-                <div key={item.id} className="area-item">
+                <div key={item.id} className="area-item-glass">
                   <div className="area-icon">{item.icone}</div>
                   <div className="area-info">
-                    <h3>{item.area}</h3>
-                    <div className="progress-bar-container">
-                      <div className="progress-bar" style={{ width: `${item.pontuacao}%`, backgroundColor: '#7B3FF2' }}></div>
+                    <div className="area-info-top">
+                      <h3>{item.area}</h3>
+                      <span>{item.pontuacao} pts</span>
                     </div>
-                    <span>{item.pontuacao} Pontos</span>
+                    <div className="progress-bar-container">
+                      <div className="progress-bar-fill" style={{ width: `${item.pontuacao}%` }}></div>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -91,35 +110,45 @@ export default function MeuProgresso() {
           </div>
         </section>
 
-        <section className="progresso-section">
-          <h2>Avaliações e Conquistas Recentes</h2>
+        {/* Avaliações e Conquistas */}
+        <section className="glass-panel-premium full-width">
+          <h2 className="section-title">Avaliações e Conquistas Recentes</h2>
           {avaliacoesRecentes.length > 0 ? (
-            <div className="avaliacoes-list">
+            <div className="avaliacoes-grid">
               {avaliacoesRecentes.map(item => (
-                <div key={item.id} className="avaliacao-card">
-                  <h3>{item.profissional}</h3>
-                  <p>Tipo: {item.tipo}</p>
+                <div key={item.id} className="avaliacao-card-glass">
+                  <div className="avaliacao-header">
+                    <h3>{item.profissional}</h3>
+                    <span className="badge-tipo">{item.tipo}</span>
+                  </div>
                   <div className="card-rating">
                     {[...Array(5)].map((_, i) => (
-                      <FaStar key={i} className={i < item.nota ? 'star-conquista filled' : 'star-conquista'} />
+                      <FaStar key={i} className={i < item.nota ? 'star-icon filled' : 'star-icon'} />
                     ))}
-                    <span>({item.nota})</span>
+                    <span className="rating-number">({item.nota}.0)</span>
                   </div>
-                  <p className="avaliacao-data">{item.data}</p>
+                  <p className="avaliacao-data"><FaCalendarAlt /> {item.data}</p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="no-progresso-message">Nenhuma avaliação ou conquista recente.</p>
+            <div className="empty-state-glass">
+              <p>Nenhuma avaliação ou conquista recente para exibir.</p>
+            </div>
           )}
         </section>
 
-        <section className="progresso-section">
-          <h2>Metas e Trilhas Concluídas</h2>
-          <p>Visite <Link to="/minhas-metas">Minhas Metas</Link> e <Link to="/minhas-trilhas">Minhas Trilhas</Link> para mais detalhes sobre seus objetivos e percursos.</p>
-          <div className="progresso-links">
-            <Link to="/minhas-metas" className="btn-secondary"><FaBullseye /> Minhas Metas</Link>
-            <Link to="/minhas-trilhas" className="btn-secondary"><FaBrain /> Minhas Trilhas</Link>
+        {/* Links Rápidos */}
+        <section className="glass-panel-premium full-width text-center">
+          <h2 className="section-title">Continue Evoluindo</h2>
+          <p className="links-descricao">Visite suas Metas e Trilhas para manter seu desenvolvimento ativo e alcançar novos marcos.</p>
+          <div className="progresso-links-actions">
+            <Link to="/minhas-metas" className="btn-action-premium primary">
+              <FaBullseye /> Acessar Minhas Metas
+            </Link>
+            <Link to="/minhas-trilhas" className="btn-action-premium secondary">
+              <FaBrain /> Continuar Trilhas
+            </Link>
           </div>
         </section>
       </main>

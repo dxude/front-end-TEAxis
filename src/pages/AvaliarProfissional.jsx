@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { FaStar } from 'react-icons/fa';
-import { useNavigate, useParams } from 'react-router-dom';
-import '../Styles/MeusAgendamentos.css';
+import { FaStar, FaSearch, FaCalendarAlt, FaBookOpen, FaBullseye, FaUserCircle, FaSignOutAlt, FaArrowLeft } from 'react-icons/fa';
+import { useNavigate, useParams, Link } from 'react-router-dom';
 import '../Styles/AvaliarProfissional.css';
+import logoPlataforma from '../assets/imagens/fundoLogo.png';
 
 const ratingLabels = {
   1: '1 - Ruim',
@@ -37,17 +37,54 @@ export default function AvaliarProfissional() {
     setError('');
     setMessage('Obrigado! Sua avaliação foi registrada com sucesso.');
 
-    // Simulação de envio de avaliação
+    // Simulação de envio
     console.log({ idProfissional, rating, comment });
   };
 
   return (
     <div className="avaliar-page-container">
+      
+      {/* NAVBAR DE VIDRO PREMIUM (IDÊNTICA A BUSCARESPECIALISTA) */}
+      <header className="avaliar-header-glass">
+        <div className="header-left">
+          <Link to="/dashboard-usuario" className="back-to-space-btn">
+            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+          </Link>
+          <img src={logoPlataforma} alt="Logo" className="header-logo-small" />
+        </div>
+        <nav className="header-nav-glass">
+          <Link to="/buscar-profissionais" className="nav-link-glass">
+            <FaSearch className="nav-icon" /> Buscar
+          </Link>
+          <Link to="/meus-agendamentos" className="nav-link-glass">
+            <FaCalendarAlt className="nav-icon" /> Agendamentos
+          </Link>
+          <Link to="/minhas-trilhas" className="nav-link-glass">
+            <FaBookOpen className="nav-icon" /> Trilhas
+          </Link>
+          <Link to="/minhas-metas" className="nav-link-glass">
+            <FaBullseye className="nav-icon" /> Metas
+          </Link>
+          <Link to="/perfil" className="nav-link-glass">
+            <FaUserCircle className="nav-icon" /> Perfil
+          </Link>
+          <button onClick={() => navigate('/login')} className="nav-link-glass logout-btn">
+            <FaSignOutAlt className="nav-icon" /> Sair
+          </button>
+        </nav>
+      </header>
+
+      {/* BACKGROUND DECORATIVO */}
+      <div className="bg-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
+
       <main className="avaliar-page-content">
-        <div className="avaliar-panel">
+        <div className="avaliar-panel-premium">
           <div className="avaliar-hero">
             <h1>Avalie sua consulta</h1>
-            <p>Compartilhe sua experiência com o profissional #{idProfissional} para ajudar a melhorar o atendimento e orientar outros pacientes.</p>
+            <p>Sua opinião é fundamental. Compartilhe sua experiência com o profissional #{idProfissional} para ajudar a aprimorar o atendimento.</p>
             <div className="avaliar-summary">
               <span className="tag">Experiência real</span>
               <span className="tag">Feedback claro</span>
@@ -55,9 +92,9 @@ export default function AvaliarProfissional() {
           </div>
 
           <div className="avaliar-card">
-            <div>
-              <h2>Como foi a sua consulta?</h2>
-              <p>Use as estrelas para classificar o atendimento e escreva um comentário sincero sobre os pontos positivos e o que pode ser melhorado.</p>
+            <div className="avaliar-intro-text">
+              <h2>Como foi o atendimento?</h2>
+              <p>Classifique sua experiência e deixe um comentário sincero sobre os pontos positivos e o que pode ser melhorado.</p>
             </div>
 
             {message && <div className="success-banner">{message}</div>}
@@ -79,38 +116,36 @@ export default function AvaliarProfissional() {
                   </button>
                 ))}
                 <span className="rating-description">
-                  {rating > 0 ? ratingLabels[rating] : 'Selecione até 5 estrelas para avaliar a consulta.'}
+                  {rating > 0 ? ratingLabels[rating] : 'Selecione até 5 estrelas.'}
                 </span>
               </div>
 
               <div className="rating-guidance">
                 <p>O que cada estrela significa?</p>
                 <ul>
-                  <li>1 estrela: Atendimento ruim</li>
-                  <li>2 estrelas: Atendimento razoável</li>
-                  <li>3 estrelas: Atendimento satisfatório</li>
-                  <li>4 estrelas: Atendimento bom</li>
-                  <li>5 estrelas: Superou expectativas</li>
+                  <li><strong>1 a 2 estrelas:</strong> Atendimento deixou a desejar.</li>
+                  <li><strong>3 estrelas:</strong> Atendimento satisfatório.</li>
+                  <li><strong>4 a 5 estrelas:</strong> Bom a excelente, superou expectativas!</li>
                 </ul>
               </div>
             </div>
 
             <div className="comment-card">
-              <label htmlFor="comment">Comentário sobre a consulta</label>
+              <label htmlFor="comment">Seu comentário detalhado</label>
               <textarea
                 id="comment"
-                placeholder="Conte como foi o atendimento, se o profissional foi atencioso e se a sessão atendeu suas necessidades."
+                placeholder="Conte como foi o atendimento, se o profissional foi atencioso e se a sessão atendeu suas necessidades..."
                 value={comment}
                 onChange={(event) => setComment(event.target.value)}
               />
             </div>
 
             <div className="avaliar-actions">
-              <button className="btn-primary" type="button" onClick={handleSubmit}>
-                Enviar avaliação
-              </button>
               <button className="btn-secondary" type="button" onClick={() => navigate('/meus-agendamentos')}>
-                Voltar para Meus Agendamentos
+                Cancelar
+              </button>
+              <button className="btn-primary-modern" type="button" onClick={handleSubmit}>
+                Enviar Avaliação
               </button>
             </div>
           </div>
