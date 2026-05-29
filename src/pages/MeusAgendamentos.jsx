@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaUserCircle, FaSignOutAlt, FaSearch, FaTimesCircle, FaCheckCircle, FaInfoCircle, FaStar, FaArrowLeft } from 'react-icons/fa';
+import { FaCalendarAlt, FaUserCircle, FaSignOutAlt, FaSearch, FaTimesCircle, FaCheckCircle, FaInfoCircle, FaStar, FaArrowLeft, FaVideo } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/MeusAgendamentos.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
@@ -73,92 +73,125 @@ export default function MeusAgendamentos() {
   return (
     <div className="meus-agendamentos-container">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
-      <header className="agendamentos-header">
+      
+      {/* HEADER GLASSMORPHISM */}
+      <header className="agendamentos-header-glass">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">
             <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
           </Link>
-          <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
+          <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo-small" />
         </div>
-        <nav className="header-nav">
-          <Link to="/buscar-profissionais" className="nav-link">
-            <FaSearch className="nav-icon" /> Buscar Profissionais
+        <nav className="header-nav-glass">
+          <Link to="/buscar-profissionais" className="nav-link-glass">
+            <FaSearch className="nav-icon" /> Buscar
           </Link>
-          <Link to="/meus-agendamentos" className="nav-link active">
-            <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
+          <Link to="/meus-agendamentos" className="nav-link-glass active">
+            <FaCalendarAlt className="nav-icon" /> Agendamentos
           </Link>
-          <Link to="/perfil" className="nav-link">
-            <FaUserCircle className="nav-icon" /> Meu Perfil
+          <Link to="/perfil" className="nav-link-glass">
+            <FaUserCircle className="nav-icon" /> Perfil
           </Link>
-          <button onClick={handleLogout} className="nav-link logout-btn">
+          <button onClick={handleLogout} className="nav-link-glass logout-btn">
             <FaSignOutAlt className="nav-icon" /> Sair
           </button>
         </nav>
       </header>
 
-      <main className="agendamentos-main-content">
-        <h1>Meus Agendamentos</h1>
-        <p className="subtitle">Gerencie suas consultas futuras e revise as passadas.</p>
+      {/* BACKGROUND DECORATIVO */}
+      <div className="bg-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
 
-        <section className="agendamentos-section">
-          <h2>Próximos Agendamentos</h2>
+      <main className="agendamentos-main-content">
+        <div className="agendamentos-hero-text">
+          <h1>Meus Agendamentos</h1>
+          <p className="subtitle">Gerencie suas consultas futuras e revise o seu histórico.</p>
+        </div>
+
+        <section className="agendamentos-section-glass">
+          <div className="section-title-wrapper">
+            <h2>Próximos Agendamentos</h2>
+          </div>
+          
           {agendamentosFuturos.length > 0 ? (
             <div className="agendamentos-list">
               {agendamentosFuturos.map(ag => (
-                <div key={ag.id} className="agendamento-card">
+                <div key={ag.id} className="agendamento-card-premium">
                   <div className="card-info">
-                    <h3>{ag.profissional} ({ag.especializacao})</h3>
-                    <p><strong>Data:</strong> {ag.data} às {ag.hora}</p>
-                    <p className={`status ${ag.status.toLowerCase()}`}>{ag.status}</p>
+                    <div className="info-header">
+                      <h3>{ag.profissional}</h3>
+                      <span className="badge-especializacao">{ag.especializacao}</span>
+                    </div>
+                    <div className="info-details">
+                      <p className="date-time"><FaCalendarAlt /> {ag.data} às {ag.hora}</p>
+                      <span className="status-badge confirmado"><FaCheckCircle /> {ag.status}</span>
+                    </div>
                   </div>
                   <div className="card-actions">
-                    <button className="btn-join-room" onClick={() => handleJoinRoom(ag.id)}>
-                      <FaInfoCircle /> Entrar na Sala
+                    <button className="btn-action-primary" onClick={() => handleJoinRoom(ag.id)}>
+                      <FaVideo /> Entrar na Sala
                     </button>
-                    <button className="btn-secondary" onClick={() => handleReschedule(ag.id)}>
+                    <button className="btn-action-secondary" onClick={() => handleReschedule(ag.id)}>
                       <FaCalendarAlt /> Remarcar
                     </button>
-                    <button className="btn-danger" onClick={() => handleCancelamento(ag.id)}>
+                    <button className="btn-action-danger" onClick={() => handleCancelamento(ag.id)}>
                       <FaTimesCircle /> Cancelar
                     </button>
-                    <Link to={`/perfil-profissional/${ag.idProfissional}`} className="btn-view-prof">
-                      <FaUserCircle /> Ver Profissional
+                    <Link to={`/perfil-profissional/${ag.idProfissional}`} className="btn-action-outline">
+                      <FaUserCircle /> Ver Perfil
                     </Link>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="no-agendamentos-message">Você não tem agendamentos futuros. <Link to="/buscar-profissionais">Agende sua primeira consulta!</Link></p>
+            <div className="no-agendamentos-glass">
+              <p>Você não tem agendamentos futuros.</p>
+              <Link to="/buscar-profissionais" className="btn-moderno-primary">Encontrar um Profissional</Link>
+            </div>
           )}
         </section>
 
-        <section className="agendamentos-section">
-          <h2>Agendamentos Anteriores</h2>
+        <section className="agendamentos-section-glass">
+          <div className="section-title-wrapper">
+            <h2>Histórico de Consultas</h2>
+          </div>
+
           {agendamentosPassados.length > 0 ? (
             <div className="agendamentos-list">
               {agendamentosPassados.map(ag => (
-                <div key={ag.id} className="agendamento-card passado">
+                <div key={ag.id} className="agendamento-card-premium passado">
                   <div className="card-info">
-                    <h3>{ag.profissional} ({ag.especializacao})</h3>
-                    <p><strong>Data:</strong> {ag.data} às {ag.hora}</p>
-                    <p className={`status ${ag.status.toLowerCase()}`}>{ag.status}</p>
+                    <div className="info-header">
+                      <h3>{ag.profissional}</h3>
+                      <span className="badge-especializacao">{ag.especializacao}</span>
+                    </div>
+                    <div className="info-details">
+                      <p className="date-time"><FaCalendarAlt /> {ag.data} às {ag.hora}</p>
+                      <span className={`status-badge ${ag.status.toLowerCase()}`}>
+                        {ag.status === 'Concluído' ? <FaCheckCircle /> : <FaTimesCircle />} {ag.status}
+                      </span>
+                    </div>
                   </div>
                   <div className="card-actions">
                     {ag.status === 'Concluído' && (
-                      <button className="btn-primary" onClick={() => handleAvaliar(ag.idProfissional)}>
-                        <FaStar /> Avaliar
+                      <button className="btn-action-star" onClick={() => handleAvaliar(ag.idProfissional)}>
+                        <FaStar /> Avaliar Consulta
                       </button>
                     )}
-                     <Link to={`/perfil-profissional/${ag.idProfissional}`} className="btn-view-prof">
-                      <FaUserCircle /> Ver Profissional
+                    <Link to={`/perfil-profissional/${ag.idProfissional}`} className="btn-action-outline">
+                      <FaUserCircle /> Ver Perfil
                     </Link>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="no-agendamentos-message">Nenhum agendamento anterior para exibir.</p>
+            <div className="no-agendamentos-glass">
+              <p>Nenhum agendamento anterior para exibir.</p>
+            </div>
           )}
         </section>
       </main>

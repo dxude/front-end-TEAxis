@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaHome, FaBullseye, FaArrowLeft } from 'react-icons/fa';
+import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaArrowLeft, FaGraduationCap } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/BuscarProfissionais.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
@@ -37,7 +37,7 @@ export default function BuscarProfissionais() {
     {
       id: 2,
       nome: 'Dr. Lucas Ribeiro',
-      especializacao: 'Terapia Ocupacional (TEA, Desenvolvimento Infantil)',
+      especializacao: 'Terapia Ocupacional (TEA, Infantil)',
       avaliacao: 4.7,
       foto: 'https://randomuser.me/api/portraits/men/82.jpg',
       metodos: ['Integração Sensorial', 'ABA'],
@@ -48,7 +48,7 @@ export default function BuscarProfissionais() {
     {
       id: 3,
       nome: 'Dra. Mariana Santos',
-      especializacao: 'Psicopedagogia (Dislexia, Dificuldades de Aprendizagem)',
+      especializacao: 'Psicopedagogia (Dislexia)',
       avaliacao: 4.8,
       foto: 'https://randomuser.me/api/portraits/women/44.jpg',
       metodos: ['Avaliação Psicopedagógica', 'Intervenção Neurocognitiva'],
@@ -77,7 +77,6 @@ export default function BuscarProfissionais() {
       const matchesSearchTerm = searchTerm ? prof.nome.toLowerCase().includes(searchTerm.toLowerCase()) : true;
       const matchesEspecializacao = especializacao ? prof.especializacao.toLowerCase().includes(especializacao.toLowerCase()) : true;
       const matchesLocalizacao = localizacao ? prof.localidades.some(loc => loc.toLowerCase().includes(localizacao.toLowerCase())) : true;
-      // Disponibilidade exigiria mais lógica (data picker, horários), aqui é apenas um placeholder
       return matchesSearchTerm && matchesEspecializacao && matchesLocalizacao;
     });
     setProfissionais(filtered);
@@ -86,51 +85,64 @@ export default function BuscarProfissionais() {
   return (
     <div className="buscar-profissionais-container">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
-      {/* Top Bar de Navegação Interna */}
-      <header className="buscar-header">
+      
+      {/* HEADER DE VIDRO */}
+      <header className="buscar-header-glass">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">
             <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
           </Link>
-          <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
+          <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo-small" />
         </div>
-        <nav className="header-nav">
-          <Link to="/buscar-profissionais" className="nav-link active">
-            <FaSearch className="nav-icon" /> Buscar Profissionais
+        <nav className="header-nav-glass">
+          <Link to="/buscar-profissionais" className="nav-link-glass active">
+            <FaSearch className="nav-icon" /> Buscar
           </Link>
-          <Link to="/meus-agendamentos" className="nav-link">
-            <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
+          <Link to="/meus-agendamentos" className="nav-link-glass">
+            <FaCalendarAlt className="nav-icon" /> Agendamentos
           </Link>
-          <Link to="/perfil" className="nav-link">
-            <FaUserCircle className="nav-icon" /> Meu Perfil
+          <Link to="/perfil" className="nav-link-glass">
+            <FaUserCircle className="nav-icon" /> Perfil
           </Link>
-          <button onClick={handleLogout} className="nav-link logout-btn">
+          <button onClick={handleLogout} className="nav-link-glass logout-btn">
             <FaSignOutAlt className="nav-icon" /> Sair
           </button>
         </nav>
       </header>
 
-      <main className="search-main-content">
-        <h1>Encontre o Especialista Certo para Você</h1>
-        <p className="subtitle">Utilize a busca e os filtros para encontrar profissionais que entendam suas necessidades.</p>
+      {/* BACKGROUND DECORATIVO */}
+      <div className="bg-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
 
-        <form onSubmit={handleSearch} className="search-form">
-          <input
-            type="text"
-            placeholder="Pesquisar por nome do profissional..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
+      <main className="search-main-content">
+        <div className="search-hero-text">
+          <h1>Encontre o Especialista Certo</h1>
+          <p className="subtitle">Utilize a busca inteligente para encontrar profissionais que entendam a sua jornada.</p>
+        </div>
+
+        {/* FORMULÁRIO DE BUSCA GLASSMORPHISM */}
+        <form onSubmit={handleSearch} className="search-form-glass">
+          <div className="search-input-wrapper">
+            <FaSearch className="search-icon-inside" />
+            <input
+              type="text"
+              placeholder="Pesquisar por nome do profissional..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input-premium"
+            />
+          </div>
           <div className="filters-group">
-            <select value={especializacao} onChange={(e) => setEspecializacao(e.target.value)} className="filter-select">
-              <option value="">Especialização</option>
+            <select value={especializacao} onChange={(e) => setEspecializacao(e.target.value)} className="filter-select-premium">
+              <option value="">Todas as Especialidades</option>
               <option value="psicologia">Psicologia</option>
               <option value="terapia ocupacional">Terapia Ocupacional</option>
               <option value="psicopedagogia">Psicopedagogia</option>
               <option value="fonoaudiologia">Fonoaudiologia</option>
-              <option value="tdah">TDAH</option>
-              <option value="tea">TEA</option>
+              <option value="tdah">Foco em TDAH</option>
+              <option value="tea">Foco em TEA</option>
               <option value="ansiedade">Ansiedade</option>
               <option value="dislexia">Dislexia</option>
             </select>
@@ -139,47 +151,63 @@ export default function BuscarProfissionais() {
               placeholder="Localização (Cidade/Estado)"
               value={localizacao}
               onChange={(e) => setLocalizacao(e.target.value)}
-              className="filter-input"
+              className="filter-input-premium"
             />
-            <select value={disponibilidade} onChange={(e) => setDisponibilidade(e.target.value)} className="filter-select">
+            <select value={disponibilidade} onChange={(e) => setDisponibilidade(e.target.value)} className="filter-select-premium">
               <option value="">Disponibilidade</option>
               <option value="hoje">Hoje</option>
               <option value="esta semana">Esta Semana</option>
-              <option value="online">Online</option>
+              <option value="online">Atendimento Online</option>
             </select>
-            <button type="submit" className="search-button">
-              <FaSearch /> Buscar
+            <button type="submit" className="btn-moderno-primary search-btn-submit">
+              Buscar
             </button>
           </div>
         </form>
 
-        {/* Listagem de Profissionais */}
+        {/* LISTAGEM DE PROFISSIONAIS */}
         <section className="professional-listing">
           {profissionais.length > 0 ? (
             <div className="professional-grid">
               {profissionais.map(prof => (
-                <div key={prof.id} className="professional-card">
-                  <div className="card-header">
-                    <img src={prof.foto} alt={prof.nome} className="professional-photo" />
-                    <div className="professional-info">
-                      <h3>{prof.nome}</h3>
-                      <p className="specialization">{prof.especializacao}</p>
-                      <div className="rating">
-                        {[...Array(5)].map((_, i) => (
-                          <FaStar key={i} className={i < Math.floor(prof.avaliacao) ? 'star filled' : 'star'} />
-                        ))}
-                        <span>({prof.avaliacao})</span>
-                      </div>
+                <div key={prof.id} className="professional-card-premium">
+                  <div className="card-top">
+                    <img src={prof.foto} alt={prof.nome} className="professional-photo-premium" />
+                    <div className="rating-badge">
+                      <FaStar className="star-icon" /> {prof.avaliacao}
                     </div>
                   </div>
-                  <div className="card-actions">
-                    <button className="btn-view-profile" onClick={() => navigate(`/perfil-profissional/${prof.id}`)}>Ver Perfil</button>
+                  
+                  <div className="card-body">
+                    <h3>{prof.nome}</h3>
+                    <div className="specialty-tag">
+                      <FaGraduationCap /> {prof.especializacao}
+                    </div>
+                    
+                    <div className="locations-wrapper">
+                      {prof.localidades.map((loc, idx) => (
+                        <span key={idx} className="location-pill">
+                          <FaMapMarkerAlt /> {loc}
+                        </span>
+                      ))}
+                    </div>
+                    
+                    <p className="professional-bio-short">{prof.bio.substring(0, 100)}...</p>
+                  </div>
+
+                  <div className="card-footer">
+                    <button className="btn-view-profile-premium" onClick={() => navigate(`/perfil-profissional/${prof.id}`)}>
+                      Ver Perfil Completo
+                    </button>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="no-results-message">Nenhum profissional encontrado com os critérios de busca.</p>
+            <div className="no-results-glass">
+              <p>Nenhum profissional encontrado com os critérios selecionados.</p>
+              <button className="btn-secondary" onClick={() => { setSearchTerm(''); setEspecializacao(''); setLocalizacao(''); setDisponibilidade(''); setProfissionais(profissionais); }}>Limpar Filtros</button>
+            </div>
           )}
         </section>
       </main>
