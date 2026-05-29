@@ -43,25 +43,27 @@ export default function Navbar() {
       return (
         <>
           <Link to="/area-responsavel?preview=responsavel" className="nav-item" onClick={closeMobileMenu}>
-            Área do Responsável (Preview)
+            Área do Responsável
           </Link>
-          <details className="nav-dropdown">
-            <summary className="nav-item">Entrar</summary>
-            <div className="dropdown-menu">
-              <Link to="/login" className="dropdown-link" onClick={closeMobileMenu}>
-                Entrar
-              </Link>
-              <Link to="/login?type=usuario" className="dropdown-link" onClick={closeMobileMenu}>
-                Entrar como Usuário
-              </Link>
-              <Link to="/login?type=responsavel" className="dropdown-link" onClick={closeMobileMenu}>
-                Entrar como Responsável
-              </Link>
-              <Link to="/login?type=profissional" className="dropdown-link" onClick={closeMobileMenu}>
-                Entrar como Profissional
-              </Link>
-            </div>
-          </details>
+          <div className="nav-dropdown-wrapper">
+            <details className="nav-dropdown">
+              <summary className="nav-item">Entrar</summary>
+              <div className="dropdown-menu-glass">
+                <Link to="/login" className="dropdown-link" onClick={closeMobileMenu}>
+                  Entrar
+                </Link>
+                <Link to="/login?type=usuario" className="dropdown-link" onClick={closeMobileMenu}>
+                  Entrar como Usuário
+                </Link>
+                <Link to="/login?type=responsavel" className="dropdown-link" onClick={closeMobileMenu}>
+                  Entrar como Responsável
+                </Link>
+                <Link to="/login?type=profissional" className="dropdown-link" onClick={closeMobileMenu}>
+                  Entrar como Profissional
+                </Link>
+              </div>
+            </details>
+          </div>
         </>
       );
     }
@@ -105,11 +107,11 @@ export default function Navbar() {
   };
 
   return (
-    <header className="navbar">
+    <header className="navbar-glass">
       <div className="navbar-container">
         {/* LOGO */}
         <Link to="/" className="navbar-logo" onClick={closeMobileMenu}>
-          <img src={logo} alt="Logo TEAxis" className="logo-img" />
+          <img src={logo} alt="Logo" className="logo-img" />
           <span className="logo-text">TEAxis</span>
         </Link>
 
@@ -119,12 +121,12 @@ export default function Navbar() {
         </div>
 
         {/* NAVIGATION LINKS */}
-        <nav className={`navbar-links ${mobileMenuOpen ? 'active' : ''}`}>
+        <nav className={`navbar-links-glass ${mobileMenuOpen ? 'active' : ''}`}>
           <Link to="/" className="nav-item" onClick={closeMobileMenu}>
             Início
           </Link>
           {renderAuthLinks()}
-          <Link to="/cadastro" className="nav-item nav-item-cadastro" onClick={closeMobileMenu}>
+          <Link to="/cadastro" className="nav-item-cadastro" onClick={closeMobileMenu}>
             Criar conta
           </Link>
         </nav>

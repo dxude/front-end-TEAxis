@@ -64,18 +64,19 @@ const Home = () => {
 
   return (
     <main className="home-container">
-      <header className={`home-topbar ${showTopbar ? 'visible' : 'hidden'}`}>
+      <header className={`home-topbar-glass ${showTopbar ? 'visible' : 'hidden'}`}>
         <div className="home-topbar-inner">
           <div className="home-brand">
-            <img src={logoImg} alt="Logo TEAxis" className="home-logo" />
+            <img src={logoImg} alt="Logo TEAxis" className="logo-img-small" />
+            <span className="logo-text-glass">TEAxis</span>
           </div>
-          <nav className="home-topbar-links">
-            <button type="button" onClick={scrollToComoFunciona}>Como funciona</button>
-            <button type="button" onClick={scrollToBottom}>Começar</button>
-            <Link to="/cadastro">Criar conta</Link>
+          <nav className="home-topbar-links-glass">
+            <button type="button" className="nav-item-glass" onClick={scrollToComoFunciona}>Como funciona</button>
+            <button type="button" className="nav-item-glass" onClick={scrollToBottom}>Começar</button>
+            <Link to="/cadastro" className="nav-item-cadastro-glass">Criar conta</Link>
           </nav>
           <div className="home-topbar-actions">
-            <Link to="/login" className="btn btn-topbar-login">Entrar</Link>
+            <Link to="/login" className="nav-login-glass">Entrar</Link>
           </div>
         </div>
       </header>
@@ -114,7 +115,7 @@ const Home = () => {
           <div className="hero-card">
             <div className="hero-card-tag">O seu ponto de partida</div>
             <h2>Gestão de perfis, agendamentos e conexões com profissionais.</h2>
-            <p>Uma experiência acolhedora para responsáveis, maiores de 18 e profissionais especializados.</p>
+            <p>Uma experiência acolhedora para todos aqueles que desejam buscar um suporte especializado dentro de um único ambiente.</p>
             <button className="btn btn-primary-sm" onClick={scrollToBottom}>Quero conhecer</button>
           </div>
           <div className="hero-image-wrapper">

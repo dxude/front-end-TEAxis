@@ -1,4 +1,3 @@
-/* === CONFIGURAÇÕES GLOBAIS === */
 :root {
   --color-green-soft: #66BB6A;
   --color-lilac-main: #7F58AF;
@@ -761,4 +760,136 @@ body {
   .cta-section { padding: 3rem 4%; }
   .hero-buttons { flex-direction: column; align-items: stretch; }
   .btn { min-width: auto; width: 100%; }
+}
+
+/* ==================== HOME TOPBAR GLASSMORPHISM ==================== */
+.home-topbar-glass {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(123, 63, 242, 0.08);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.home-topbar-glass.hidden {
+  top: -100px; /* Esconde deslizando pra cima suavemente */
+  opacity: 0;
+}
+
+.home-topbar-glass.visible {
+  top: 1rem;
+  opacity: 1;
+}
+
+.home-topbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 1.5rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.home-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+}
+
+.logo-img-small {
+  height: 45px;
+  width: auto;
+  object-fit: contain;
+}
+
+.logo-text-glass {
+  font-size: 1.3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #7B3FF2 0%, #3B82F6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+}
+
+.home-topbar-links-glass {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-item-glass {
+  background: none;
+  border: none;
+  text-decoration: none;
+  color: #475569;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.nav-item-glass:hover {
+  color: #7B3FF2;
+  background-color: rgba(123, 63, 242, 0.08);
+}
+
+.nav-item-cadastro-glass {
+  background: linear-gradient(135deg, #7B3FF2 0%, #6A2FD9 100%);
+  color: white;
+  padding: 0.6rem 1.4rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(123, 63, 242, 0.3);
+  transition: all 0.3s ease;
+}
+
+.nav-item-cadastro-glass:hover {
+  background: linear-gradient(135deg, #6A2FD9 0%, #5B1FCC 100%);
+  box-shadow: 0 6px 18px rgba(123, 63, 242, 0.4);
+  transform: translateY(-2px);
+  color: white;
+}
+
+.home-topbar-actions .nav-login-glass {
+  text-decoration: none;
+  color: #7B3FF2;
+  font-weight: 700;
+  font-size: 0.95rem;
+  padding: 0.5rem 1.2rem;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  background: rgba(123, 63, 242, 0.05);
+}
+
+.home-topbar-actions .nav-login-glass:hover {
+  background: rgba(123, 63, 242, 0.15);
+}
+
+@media (max-width: 768px) {
+  .home-topbar-glass {
+    width: 95%;
+    top: 0.5rem;
+  }
+  
+  .home-topbar-links-glass {
+    display: none; 
+  }
+  
+  .logo-text-glass {
+    display: none;
+  }
 }
