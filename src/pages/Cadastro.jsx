@@ -208,9 +208,6 @@ const Cadastro = () => {
 
   return (
     <div className="cadastro-page-container">
-      <div className="debug-banner" style={{position:'fixed',right:12,top:12,background:'#fff',padding:'8px 12px',borderRadius:8,boxShadow:'0 6px 18px rgba(0,0,0,0.12)',zIndex:9999,fontSize:12}}>
-        step: {currentStep} | perfil: {perfil || 'null'}
-      </div>
       <div className="auth-page-shell">
         <aside className="auth-side-panel">
           <span className="eyebrow">Criação de conta</span>
