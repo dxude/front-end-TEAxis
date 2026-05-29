@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaHome, FaUser, FaCalendarAlt, FaBrain, FaPuzzlePiece, FaComments, FaSignOutAlt, FaSearch, FaChartLine, FaBullseye, FaArrowRight, FaCheckCircle, FaClock, FaStar, FaBars, FaTimes } from 'react-icons/fa';
+import { FaCalendarAlt, FaBrain, FaComments, FaSearch, FaChartLine, FaArrowRight, FaCheckCircle, FaClock, FaBars, FaPuzzlePiece } from 'react-icons/fa';
 import ChatAxis from '../components/ChatAxis';
 import LogoutModal from '../components/LogoutModal';
+import Sidebar from '../components/Sidebar';
 import '../Styles/DashboardUsuario.css';
-import logoTeaxis from '../assets/imagens/fundoLogo.png';
 import axisImg from '../assets/imagens/axis-sorridente.png';
 
 export default function DashboardUsuario() {
@@ -44,77 +44,14 @@ export default function DashboardUsuario() {
         <FaBars />
       </button>
 
-      {/* Overlay escurecido */}
-      <div 
-        className={`sidebar-overlay ${isSidebarOpen ? 'active' : ''}`} 
-        onClick={() => setIsSidebarOpen(false)}
-      ></div>
-
-      {/* Sidebar Drawer */}
-      <aside className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-        <button className="sidebar-close-btn" onClick={() => setIsSidebarOpen(false)}>
-          <FaTimes />
-        </button>
-
-        <div className="sidebar-header">
-          <img src={logoTeaxis} alt="Logo" className="sidebar-logo" />
-          <p className="user-welcome">Olá, {userName}!</p>
-        </div>
-        <nav className="sidebar-nav">
-          <ul>
-            <li>
-              <Link to="/dashboard-usuario" className={activeLink === 'home' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('home')}>
-                <FaHome className="nav-icon" /> Meu Espaço
-              </Link>
-            </li>
-            <li>
-              <Link to="/buscar-profissionais" className={activeLink === 'buscar' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('buscar')}>
-                <FaSearch className="nav-icon" /> Buscar Especialista
-              </Link>
-            </li>
-            <li>
-              <Link to="/meus-agendamentos" className={activeLink === 'agendamentos' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('agendamentos')}>
-                <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
-              </Link>
-            </li>
-            <li>
-              <Link to="/minhas-trilhas" className={activeLink === 'trilhas' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('trilhas')}>
-                <FaBrain className="nav-icon" /> Minhas Trilhas
-              </Link>
-            </li>
-            <li>
-              <Link to="/minhas-metas" className={activeLink === 'metas' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('metas')}>
-                <FaBullseye className="nav-icon" /> Minhas Metas
-              </Link>
-            </li>
-            <li>
-              <Link to="/jogos-educativos" className={activeLink === 'jogos' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('jogos')}>
-                <FaPuzzlePiece className="nav-icon" /> Jogos Educativos
-              </Link>
-            </li>
-            <li>
-              <Link to="/meu-progresso" className={activeLink === 'progresso' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('progresso')}>
-                <FaChartLine className="nav-icon" /> Meu Progresso
-              </Link>
-            </li>
-            <li>
-              <Link to="/mensagens" className={activeLink === 'mensagens' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('mensagens')}>
-                <FaComments className="nav-icon" /> Mensagens
-              </Link>
-            </li>
-            <li>
-              <Link to="/perfil" className={activeLink === 'perfil' ? 'nav-link active' : 'nav-link'} onClick={() => setActiveLink('perfil')}>
-                <FaUser className="nav-icon" /> Meu Perfil
-              </Link>
-            </li>
-            <li>
-              <button onClick={handleLogout} className="nav-link logout-btn">
-                <FaSignOutAlt className="nav-icon" /> Sair
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </aside>
+      <Sidebar 
+        userName={userName}
+        activeLink={activeLink}
+        setActiveLink={setActiveLink}
+        handleLogout={handleLogout}
+        isSidebarOpen={isSidebarOpen}
+        setIsSidebarOpen={setIsSidebarOpen}
+      />
 
       <main className="main-content">
         <section className="dashboard-hero fade-in">
@@ -175,7 +112,7 @@ export default function DashboardUsuario() {
           </div>
         </section>
 
-        <section className="welcome-section">
+        <section className="welcome-section fade-in">
           <div className="welcome-card">
             <div className="welcome-content">
               <h2>🎉 Bem-vindo ao seu espaço!</h2>
@@ -196,7 +133,7 @@ export default function DashboardUsuario() {
           </div>
         </section>
 
-        <section className="robot-section">
+        <section className="robot-section fade-in">
           <div className={`robot-panel ${showChatInRobot ? 'with-chat' : ''}`}>
             <div className="robot-copy">
               <p className="robot-tag">Chat</p>
@@ -246,7 +183,7 @@ export default function DashboardUsuario() {
         </section>
 
         {/* Seção de Status Atual */}
-        <section className="status-section">
+        <section className="status-section fade-in">
           <h2>📊 Seu Progresso Atual</h2>
           <div className="status-grid">
             <div className="status-card">
@@ -320,7 +257,7 @@ export default function DashboardUsuario() {
         </section>
 
         {/* Seção de Recursos Rápidos */}
-        <section className="quick-resources">
+        <section className="quick-resources fade-in">
           <h2>🚀 Recursos Rápidos</h2>
           <div className="resources-grid">
             <Link to="/jogos-educativos" className="resource-card">

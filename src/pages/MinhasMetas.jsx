@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaPlus, FaCheck, FaEdit, FaTrash, FaArrowLeft, FaCheckCircle, FaRegCircle } from 'react-icons/fa';
+import { FaPlus, FaCheck, FaEdit, FaTrash, FaArrowLeft, FaCheckCircle, FaRegCircle, FaSearch, FaCalendarAlt, FaUserCircle, FaSignOutAlt, FaBookOpen, FaBullseye } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/MinhasMetas.css';
 import logoPlataforma from '../assets/imagens/fundoLogo.png'; 
@@ -163,18 +163,33 @@ export default function MinhasMetas() {
     <div className="minhas-metas-container">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       
-      <header className="minhas-metas-header">
+      {/* NAVBAR DE VIDRO PREMIUM */}
+      <header className="minhas-metas-header-glass">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">
             <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
           </Link>
-          <img src={logoPlataforma} alt="Logo" className="header-logo" />
+          <img src={logoPlataforma} alt="Logo" className="header-logo-small" />
         </div>
-        <nav className="header-nav">
-            <Link to="/buscar-profissionais" className="nav-link">Buscar Profissionais</Link>
-            <Link to="/meus-agendamentos" className="nav-link">Meus Agendamentos</Link>
-            <Link to="/perfil" className="nav-link">Meu Perfil</Link>
-            <button onClick={() => setShowLogoutModal(true)} className="nav-link logout-btn">Sair</button>
+        <nav className="header-nav-glass">
+          <Link to="/buscar-profissionais" className="nav-link-glass">
+            <FaSearch className="nav-icon" /> Buscar
+          </Link>
+          <Link to="/meus-agendamentos" className="nav-link-glass">
+            <FaCalendarAlt className="nav-icon" /> Agendamentos
+          </Link>
+          <Link to="/minhas-trilhas" className="nav-link-glass">
+            <FaBookOpen className="nav-icon" /> Trilhas
+          </Link>
+          <Link to="/minhas-metas" className="nav-link-glass active">
+            <FaBullseye className="nav-icon" /> Metas
+          </Link>
+          <Link to="/perfil" className="nav-link-glass">
+            <FaUserCircle className="nav-icon" /> Perfil
+          </Link>
+          <button onClick={() => setShowLogoutModal(true)} className="nav-link-glass logout-btn">
+            <FaSignOutAlt className="nav-icon" /> Sair
+          </button>
         </nav>
       </header>
 
@@ -251,8 +266,6 @@ export default function MinhasMetas() {
                   
                   <div className="meta-card-body">
                     <h3 className="meta-titulo">{meta.descricao}</h3>
-
-                    {/* BLOCO DA BARRA DE PROGRESSO INDIVIDUAL FOI APAGADO DAQUI! */}
 
                     {meta.submetas.length > 0 && (
                       <ul className="submetas-list">
