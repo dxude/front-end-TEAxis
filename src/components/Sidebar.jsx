@@ -307,7 +307,7 @@ export default function Sidebar({
 
         <div className="sidebar-footer-premium">
           <button onClick={() => { handleLogout(); setIsSidebarOpen(false); }} className="logout-btn-premium">
-            <FaSignOutAlt /> Sair do Sistema
+            <FaSignOutAlt /> Sair do TEAxis
           </button>
         </div>
       </aside>
