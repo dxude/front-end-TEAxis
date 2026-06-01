@@ -5,11 +5,13 @@ import LogoutModal from '../components/LogoutModal';
 import '../Styles/PerfilProfissionalDetalhado.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 import { carregarAgendamentos, salvarAgendamentos } from '../utils/dataSync';
+import BookingModal from '../components/BookingModal';
 
 export default function PerfilProfissionalDetalhado() {
   const { id } = useParams(); 
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [bookingOpen, setBookingOpen] = useState(false);
 
   const [professional, setProfessional] = useState(null); // Inicia como null para indicar carregamento
   const [userRating, setUserRating] = useState(0);
@@ -98,6 +100,11 @@ export default function PerfilProfissionalDetalhado() {
   };
 
   const handleAgendarConsulta = () => {
+    // abrir modal de confirmação
+    setBookingOpen(true);
+  };
+
+  const handleConfirmBooking = () => {
     const userEmail = localStorage.getItem('user_email') || 'Usuário TEAxis';
     const agendaAtual = carregarAgendamentos();
     const novoId = agendaAtual.length > 0 ? Math.max(...agendaAtual.map(item => item.id)) + 1 : 1;
@@ -113,6 +120,7 @@ export default function PerfilProfissionalDetalhado() {
       status: 'Confirmado'
     };
     salvarAgendamentos([novaConsulta, ...agendaAtual]);
+    setBookingOpen(false);
     alert('Consulta agendada com sucesso! Verifique em Meus Agendamentos e no painel do profissional.');
     navigate('/meus-agendamentos');
   };
@@ -160,6 +168,7 @@ export default function PerfilProfissionalDetalhado() {
         <main className="professional-detail-content loading-content">
           <p>Carregando perfil do profissional...</p>
         </main>
+        <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} onConfirm={handleConfirmBooking} professional={professional} />
       </div>
     );
   }
@@ -298,6 +307,7 @@ export default function PerfilProfissionalDetalhado() {
           </div>
         </section>
       </main>
+      <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} onConfirm={handleConfirmBooking} professional={professional} />
     </div>
   );
 }

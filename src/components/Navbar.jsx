@@ -87,6 +87,21 @@ export default function Navbar() {
           <Link to="/dashboard-profissional" className="nav-item" onClick={closeMobileMenu}>
             Dashboard Profissional
           </Link>
+          <Link to="/minha-agenda" className="nav-item" onClick={closeMobileMenu}>
+            Minha Agenda
+          </Link>
+          <Link to="/meus-clientes" className="nav-item" onClick={closeMobileMenu}>
+            Meus Clientes
+          </Link>
+          <Link to="/relatorios" className="nav-item" onClick={closeMobileMenu}>
+            Relatórios
+          </Link>
+          <Link to="/mensagens" className="nav-item" onClick={closeMobileMenu}>
+            Mensagens
+          </Link>
+          <Link to="/perfil" className="nav-item" onClick={closeMobileMenu}>
+            Perfil
+          </Link>
           <button className="nav-item nav-logout-button" onClick={handleLogout}>
             Sair
           </button>
@@ -126,9 +141,11 @@ export default function Navbar() {
             Início
           </Link>
           {renderAuthLinks()}
-          <Link to="/cadastro" className="nav-item-cadastro" onClick={closeMobileMenu}>
-            Criar conta
-          </Link>
+          {!isAuthed && (
+            <Link to="/cadastro" className="nav-item-cadastro" onClick={closeMobileMenu}>
+              Criar conta
+            </Link>
+          )}
         </nav>
       </div>
     </header>

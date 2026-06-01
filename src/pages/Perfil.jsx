@@ -7,6 +7,8 @@ import logoTeaxis from '../assets/imagens/fundoLogo.png';
 export default function Perfil() {
   const navigate = useNavigate();
 
+  const [userRole, setUserRole] = useState('usuario');
+
   const [currentStep, setCurrentStep] = useState(0);
   const [userName, setUserName] = useState('Bem-vindo');
 
@@ -46,6 +48,13 @@ export default function Perfil() {
   ];
 
   useEffect(() => {
+    const storedRole = localStorage.getItem('teaxis_role') || 'usuario';
+    setUserRole(storedRole === 'profissional' ? 'profissional' : 'usuario');
+    setAccountType(storedRole === 'profissional' ? 'professional' : 'user');
+    const storedEmail = localStorage.getItem('user_email');
+    if (storedEmail) {
+      setUserName(storedEmail);
+    }
     // Valida apenas quando o passo muda, não em cada input
     validateCurrentStep();
   }, [currentStep]);
@@ -175,7 +184,7 @@ export default function Perfil() {
     <div className="perfil-container">
       {/* HEADER DE VIDRO */}
       <header className="perfil-header-glass">
-        <Link to="/dashboard-usuario" className="back-to-space-btn">
+        <Link to={userRole === 'profissional' ? '/dashboard-profissional' : '/dashboard-usuario'} className="back-to-space-btn">
           <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
         </Link>
         <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo-small" />

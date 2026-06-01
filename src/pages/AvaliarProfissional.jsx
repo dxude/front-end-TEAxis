@@ -37,14 +37,12 @@ export default function AvaliarProfissional() {
     setError('');
     setMessage('Obrigado! Sua avaliação foi registrada com sucesso.');
 
-    // Simulação de envio
     console.log({ idProfissional, rating, comment });
   };
 
   return (
     <div className="avaliar-page-container">
       
-      {/* NAVBAR DE VIDRO PREMIUM (IDÊNTICA A BUSCARESPECIALISTA) */}
       <header className="avaliar-header-glass">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">
@@ -74,7 +72,6 @@ export default function AvaliarProfissional() {
         </nav>
       </header>
 
-      {/* BACKGROUND DECORATIVO */}
       <div className="bg-shapes">
         <div className="shape shape-1"></div>
         <div className="shape shape-2"></div>

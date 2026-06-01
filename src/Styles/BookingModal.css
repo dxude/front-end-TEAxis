@@ -1,0 +1,55 @@
+.booking-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(6, 24, 44, 0.6);
+  z-index: 9999;
+  padding: 20px;
+}
+
+.booking-modal {
+  width: 100%;
+  max-width: 680px;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  color: #0b1220;
+  backdrop-filter: blur(8px) saturate(120%);
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+.booking-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.booking-logo { width: 44px; height: 44px; border-radius: 8px; }
+.booking-header h3 { margin: 0; font-size: 1.1rem; color: #eef2ff; }
+
+.booking-body { padding: 8px 0 16px; }
+.professional-row { display:flex; gap:12px; align-items:center; }
+.professional-photo { width:64px; height:64px; border-radius:10px; object-fit:cover; border:2px solid rgba(255,255,255,0.06); }
+.professional-name { display:block; font-size:1rem; color:#fff; }
+.professional-meta { font-size:0.9rem; color:#dbeafe; opacity:0.9 }
+
+.booking-info { display:flex; gap:12px; margin-top:14px; }
+.info-item { flex:1; background: rgba(255,255,255,0.03); padding:10px; border-radius:8px; }
+.info-item label { display:block; font-size:0.75rem; color:#c7d2fe; margin-bottom:6px; }
+.info-value { font-weight:600; color:#fff; }
+
+.booking-note { margin-top:12px; color:#c7d2fe; font-size:0.9rem; }
+
+.booking-actions { display:flex; justify-content:flex-end; gap:10px; margin-top:16px; }
+.btn { padding:10px 14px; border-radius:10px; border: none; cursor:pointer; font-weight:600; }
+.btn-primary { background: linear-gradient(90deg,#7c3aed,#2563eb); color:#fff; }
+.btn-secondary { background:rgba(255,255,255,0.06); color:#e6eefc; border:1px solid rgba(255,255,255,0.04); }
+
+@media (max-width:640px){
+  .booking-modal{ max-width: 92%; padding:16px; }
+  .booking-info { flex-direction:column; }
+  .professional-row img { width:56px; height:56px; }
+}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaPaperPlane, FaReply, FaTrash, FaInfoCircle, FaCheck, FaArrowLeft } from 'react-icons/fa';
+import { FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaPaperPlane, FaReply, FaTrash, FaInfoCircle, FaCheck, FaArrowLeft, FaUsers, FaChartLine } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/Mensagens.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
@@ -119,15 +119,31 @@ export default function Mensagens() {
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo-small" />
         </div>
         <nav className="header-nav-glass">
-          <Link to="/buscar-profissionais" className="nav-link-glass">
-            <FaSearch className="nav-icon" /> Buscar Profissionais
-          </Link>
-          <Link to="/meus-agendamentos" className="nav-link-glass">
-            <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
-          </Link>
-          <Link to="/perfil" className="nav-link-glass">
-            <FaUserCircle className="nav-icon" /> Meu Perfil
-          </Link>
+            {userRole === 'profissional' ? (
+              <>
+                <Link to="/minha-agenda" className="nav-link-glass">
+                  <FaCalendarAlt className="nav-icon" /> Minha Agenda
+                </Link>
+                <Link to="/meus-clientes" className="nav-link-glass">
+                  <FaUsers className="nav-icon" /> Meus Clientes
+                </Link>
+                <Link to="/relatorios" className="nav-link-glass">
+                  <FaChartLine className="nav-icon" /> Relatórios
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to="/buscar-profissionais" className="nav-link-glass">
+                  <FaSearch className="nav-icon" /> Buscar Profissionais
+                </Link>
+                <Link to="/meus-agendamentos" className="nav-link-glass">
+                  <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
+                </Link>
+                <Link to="/perfil" className="nav-link-glass">
+                  <FaUserCircle className="nav-icon" /> Meu Perfil
+                </Link>
+              </>
+            )}
           <button onClick={() => setShowLogoutModal(true)} className="nav-link-glass logout-btn">
             <FaSignOutAlt className="nav-icon" /> Sair
           </button>

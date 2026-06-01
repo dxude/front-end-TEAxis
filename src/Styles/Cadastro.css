@@ -1,4 +1,3 @@
-/* Paleta de Cores (Adaptada do Home.css) */
 :root {
     --color-green-soft: #66BB6A;
     --color-lilac-main: #7B3FF2;
@@ -19,9 +18,6 @@ body {
     background-repeat: no-repeat;
 }
 
-/* ---------------------------------- */
-/* LAYOUT GLOBAL DA PÁGINA DE CADASTRO */
-/* ---------------------------------- */
 .cadastro-page-container {
     min-height: 100vh;
     width: 100%;
@@ -124,9 +120,6 @@ body {
     margin: 0 auto;
 }
 
-/* ---------------------------------- */
-/* 1. SELEÇÃO DE PERFIL (CARDS) */
-/* ---------------------------------- */
 .perfil-selector h2 {
     color: var(--color-dark);
     font-size: 2em;
@@ -187,10 +180,6 @@ body {
     color: var(--color-lilac-main);
 }
 
-
-/* ---------------------------------- */
-/* 2. FORMULÁRIO DE CADASTRO */
-/* ---------------------------------- */
 .cadastro-form {
     text-align: left;
     max-width: 500px;
@@ -240,7 +229,6 @@ body {
     outline: none;
 }
 
-/* Botões */
 .btn {
     padding: 12px 25px;
     border: none;
@@ -644,11 +632,6 @@ body {
     }
 }
 
-/* ----------------------------- */
-/* Visual upgrade: moderno & interativo */
-/* ----------------------------- */
-
-/* Glassmorphism background for details */
 .details-panel {
     background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(250,250,255,0.54));
     backdrop-filter: blur(8px) saturate(120%);
@@ -660,7 +643,6 @@ body {
 }
 .details-panel:hover { transform: translateY(-4px); box-shadow: 0 28px 68px rgba(88, 64, 160, 0.16); }
 
-/* Enhanced inputs */
 .details-panel .input-group input,
 .details-panel .input-group select,
 .details-panel .input-group textarea {

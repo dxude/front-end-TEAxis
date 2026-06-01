@@ -26,6 +26,7 @@ import AvaliarProfissional from './pages/AvaliarProfissional';
 import SalaAgendamento from './pages/SalaAgendamento';
 import CancelarAgendamento from './pages/CancelarAgendamento';
 import GuardianDashboard from './components/GuardianDashboard';
+import RoleGuard from './components/RoleGuard';
 
 import './App.css';
 
@@ -62,23 +63,23 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />
-          <Route path="/perfil" element={<Perfil />} />
-          <Route path="/dashboard-usuario" element={<DashboardUsuario />} />
-          <Route path="/dashboard-profissional" element={<DashboardProfissional />} />
-          <Route path="/buscar-profissionais" element={<BuscarProfissionais />} />
-          <Route path="/minhas-metas" element={<MinhasMetas />} />
-          <Route path="/perfil-profissional/:id" element={<PerfilProfissionalDetalhado />} />
-          <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
-          <Route path="/minha-agenda" element={<MinhaAgenda />} />
-          <Route path="/meus-clientes" element={<MeusClientes />} />
-          <Route path="/relatorios" element={<Relatorios />} />
+          <Route path="/perfil" element={<RoleGuard allowedRoles={[ 'usuario', 'responsavel', 'profissional' ]} fallback="/login"><Perfil /></RoleGuard>} />
+          <Route path="/dashboard-usuario" element={<RoleGuard allowedRoles={[ 'usuario', 'responsavel' ]} fallback="/login"><DashboardUsuario /></RoleGuard>} />
+          <Route path="/dashboard-profissional" element={<RoleGuard allowedRoles={[ 'profissional' ]} fallback="/login"><DashboardProfissional /></RoleGuard>} />
+          <Route path="/buscar-profissionais" element={<RoleGuard allowedRoles={[ 'usuario', 'responsavel' ]} fallback="/login"><BuscarProfissionais /></RoleGuard>} />
+          <Route path="/minhas-metas" element={<RoleGuard allowedRoles={[ 'usuario', 'responsavel' ]} fallback="/login"><MinhasMetas /></RoleGuard>} />
+          <Route path="/perfil-profissional/:id" element={<RoleGuard allowedRoles={[ 'usuario', 'responsavel' ]} fallback="/login"><PerfilProfissionalDetalhado /></RoleGuard>} />
+          <Route path="/meus-agendamentos" element={<RoleGuard allowedRoles={[ 'usuario', 'responsavel' ]} fallback="/login"><MeusAgendamentos /></RoleGuard>} />
+          <Route path="/minha-agenda" element={<RoleGuard allowedRoles={[ 'profissional' ]} fallback="/login"><MinhaAgenda /></RoleGuard>} />
+          <Route path="/meus-clientes" element={<RoleGuard allowedRoles={[ 'profissional' ]} fallback="/login"><MeusClientes /></RoleGuard>} />
+          <Route path="/relatorios" element={<RoleGuard allowedRoles={[ 'profissional' ]} fallback="/login"><Relatorios /></RoleGuard>} />
           <Route path="/remarcar/:id" element={<RemarcarAgendamento />} />
           <Route path="/avaliar/:idProfissional" element={<AvaliarProfissional />} />
           <Route path="/sala/:id" element={<SalaAgendamento />} />
           <Route path="/cancelar/:id" element={<CancelarAgendamento />} />
           <Route path="/minhas-trilhas" element={<MinhasTrilhas />} />
           <Route path="/jogos-educativos" element={<JogosEducativos />} />
-          <Route path="/mensagens" element={<Mensagens />} />
+          <Route path="/mensagens" element={<RoleGuard allowedRoles={[ 'usuario', 'responsavel', 'profissional' ]} fallback="/login"><Mensagens /></RoleGuard>} />
           <Route path="/meu-progresso" element={<MeuProgresso />} />
           <Route path="/area-responsavel" element={<GuardianDashboard />} />
           <Route path="*" element={<p>Página não encontrada</p>} />
