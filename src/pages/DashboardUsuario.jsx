@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaCalendarAlt, FaBrain, FaComments, FaSearch, FaChartLine, FaArrowRight, FaCheckCircle, FaClock, FaBars, FaPuzzlePiece } from 'react-icons/fa';
+import { FaCalendarAlt, FaBrain, FaComments, FaSearch, FaChartLine, FaArrowRight, FaCheckCircle, FaClock, FaBars, FaPuzzlePiece, FaFire, FaTrophy, FaLightbulb } from 'react-icons/fa';
 import ChatAxis from '../components/ChatAxis';
 import LogoutModal from '../components/LogoutModal';
 import Sidebar from '../components/Sidebar';
@@ -16,15 +16,88 @@ export default function DashboardUsuario() {
   const [activeLink, setActiveLink] = useState('home');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // ✨ Estados para sincronização em tempo real
+  const [trilhasUsuario, setTrilhasUsuario] = useState([]);
+  const [metasUsuario, setMetasUsuario] = useState([]);
+  const [estatisticas, setEstatisticas] = useState({
+    trilhasAtivas: 0,
+    trilhasConcluidas: 0,
+    metasConcluidas: 0,
+    metasTotal: 0,
+    xpTotal: 0,
+    progressoMedio: 0,
+  });
+  const [animacaoUpdate, setAnimacaoUpdate] = useState(false);
+
   const proximosAgendamentos = [
     { id: 1, profissional: 'Dra. Ana Silva', data: '15/07/2025', hora: '10:00' },
     { id: 2, profissional: 'Dr. João Pereira', data: '20/07/2025', hora: '14:30' },
   ];
 
-  const trilhasEmAndamento = [
-    { id: 1, titulo: 'Foco e Concentração', progresso: 70 },
-    { id: 2, titulo: 'Habilidades Sociais', progresso: 45 },
-  ];
+  // 🔄 Sincronização com localStorage em tempo real
+  useEffect(() => {
+    const sincronizarDados = () => {
+      // Carrega trilhas do localStorage
+      const trilhasStorage = localStorage.getItem('trilhas_usuario');
+      const trilhas = trilhasStorage ? JSON.parse(trilhasStorage) : [];
+      setTrilhasUsuario(trilhas);
+
+      // Carrega metas do localStorage
+      const metasStorage = localStorage.getItem('minhas_metas');
+      const metas = metasStorage ? JSON.parse(metasStorage) : [];
+      setMetasUsuario(metas);
+
+      // Calcula estatísticas em tempo real
+      calcularEstatisticas(trilhas, metas);
+
+      // Ativa animação de atualização
+      setAnimacaoUpdate(true);
+      setTimeout(() => setAnimacaoUpdate(false), 600);
+    };
+
+    sincronizarDados();
+
+    // Listener para detectar mudanças no localStorage (de outras abas)
+    const handleStorageChange = () => sincronizarDados();
+    window.addEventListener('storage', handleStorageChange);
+
+    // Verificar mudanças a cada 500ms (sincronização local)
+    const interval = setInterval(sincronizarDados, 500);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
+  // 📊 Função para calcular estatísticas em tempo real
+  const calcularEstatisticas = (trilhas, metas) => {
+    const trilhasAtivas = trilhas.filter(t => t.status === 'em-andamento').length;
+    const trilhasConcluidas = trilhas.filter(t => t.status === 'concluida').length;
+    // Metas usa propriedade 'concluida' (boolean)
+    const metasConcluidas = metas.filter(m => m.concluida === true).length;
+    const metasTotal = metas.length;
+
+    // Calcula XP total
+    const xpTotal = trilhas.reduce((acc, trilha) => {
+      const xpDaTrilha = (trilha.progresso * 2) + (trilha.status === 'concluida' ? 500 : 0);
+      return acc + xpDaTrilha;
+    }, 0);
+
+    // Calcula progresso médio
+    const progressoMedio = trilhas.length > 0 
+      ? Math.round(trilhas.reduce((acc, t) => acc + (t.progresso || 0), 0) / trilhas.length)
+      : 0;
+
+    setEstatisticas({
+      trilhasAtivas,
+      trilhasConcluidas,
+      metasConcluidas,
+      metasTotal,
+      xpTotal,
+      progressoMedio,
+    });
+  };
 
   const handleLogout = () => {
     setShowLogoutModal(true);
@@ -182,10 +255,22 @@ export default function DashboardUsuario() {
           </div>
         </section>
 
-        {/* Seção de Status Atual */}
-        <section className="status-section fade-in">
-          <h2>📊 Seu Progresso Atual</h2>
+        {/* Seção de Status Atual - TOTALMENTE SINCRONIZADA */}
+        <section className={`status-section fade-in ${animacaoUpdate ? 'status-animacao-update' : ''}`}>
+          <div className="status-header">
+            <h2>📊 Seu Progresso Atual</h2>
+            <div className="status-stats-quick">
+              <span className="stat-badge">
+                <FaFire className="stat-icon" /> {estatisticas.xpTotal} XP
+              </span>
+              <span className="stat-badge">
+                <FaTrophy className="stat-icon" /> {estatisticas.progressoMedio}% progresso
+              </span>
+            </div>
+          </div>
+
           <div className="status-grid">
+            {/* Card 1: Próximos Agendamentos */}
             <div className="status-card">
               <div className="status-icon">
                 <FaCalendarAlt />
@@ -210,50 +295,116 @@ export default function DashboardUsuario() {
               </div>
             </div>
 
-            <div className="status-card">
-              <div className="status-icon">
+            {/* Card 2: Trilhas Ativas - SINCRONIZADO */}
+            <div className="status-card trilhas-card">
+              <div className="status-icon trilhas-icon">
                 <FaBrain />
               </div>
               <div className="status-content">
                 <h3>Trilhas Ativas</h3>
-                {trilhasEmAndamento.length > 0 ? (
-                  <div className="status-items">
-                    {trilhasEmAndamento.slice(0, 2).map(trilha => (
-                      <div key={trilha.id} className="status-item">
-                        <div className="progress-indicator">
-                          <div className="progress-circle" style={{'--progress': `${trilha.progresso}%`}}>
-                            <span>{trilha.progresso}%</span>
+                <div className="stats-mini">
+                  <span className="mini-stat ativa"><strong>{estatisticas.trilhasAtivas}</strong> em andamento</span>
+                  <span className="mini-stat concluida"><strong>{estatisticas.trilhasConcluidas}</strong> concluída(s)</span>
+                </div>
+
+                {trilhasUsuario.filter(t => t.status === 'em-andamento').length > 0 ? (
+                  <div className="status-items trilhas-items">
+                    {trilhasUsuario
+                      .filter(t => t.status === 'em-andamento')
+                      .slice(0, 2)
+                      .map(trilha => (
+                        <div key={trilha.id} className="status-item trilha-item">
+                          <div className="progress-indicator">
+                            <div 
+                              className="progress-circle" 
+                              style={{'--progress': `${trilha.progresso || 0}%`}}
+                            >
+                              <span className="progress-text">{trilha.progresso || 0}%</span>
+                            </div>
+                          </div>
+                          <div className="trilha-info">
+                            <span className="trilha-titulo">{trilha.titulo}</span>
+                            <span className="trilha-meta">{trilha.progresso || 0}% concluído</span>
                           </div>
                         </div>
-                        <span>{trilha.titulo}</span>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 ) : (
-                  <p className="no-items">Nenhuma trilha ativa</p>
+                  <div className="no-items-container">
+                    <FaLightbulb className="no-items-icon" />
+                    <p className="no-items">Nenhuma trilha em andamento</p>
+                    <p className="no-items-hint">Comece uma trilha para sua jornada!</p>
+                  </div>
                 )}
+
                 <Link to="/minhas-trilhas" className="status-link">
                   Explorar trilhas <FaArrowRight />
                 </Link>
               </div>
             </div>
 
-            <div className="status-card">
-              <div className="status-icon">
+            {/* Card 3: Metas Concluídas - SINCRONIZADO */}
+            <div className="status-card metas-card">
+              <div className="status-icon metas-icon">
                 <FaCheckCircle />
               </div>
               <div className="status-content">
-                <h3>Metas Concluídas</h3>
-                <div className="achievement-counter">
-                  <span className="counter">3</span>
-                  <span className="counter-label">metas alcançadas este mês</span>
+                <h3>Suas Metas</h3>
+                <div className="achievement-counter-new">
+                  <div className="counter-block concluidas">
+                    <span className="counter-number">{estatisticas.metasConcluidas}</span>
+                    <span className="counter-label">concluída(s)</span>
+                  </div>
+                  <div className="counter-divider"></div>
+                  <div className="counter-block total">
+                    <span className="counter-number">{Math.max(estatisticas.metasTotal, 0)}</span>
+                    <span className="counter-label">total</span>
+                  </div>
                 </div>
+
+                {estatisticas.metasTotal > 0 ? (
+                  <div className="progress-meta-geral">
+                    <div className="progress-bar-meta">
+                      <div 
+                        className="progress-fill-meta" 
+                        style={{
+                          width: `${(estatisticas.metasConcluidas / estatisticas.metasTotal) * 100}%`
+                        }}
+                      ></div>
+                    </div>
+                    <span className="progress-meta-label">
+                      {Math.round((estatisticas.metasConcluidas / estatisticas.metasTotal) * 100)}% da jornada
+                    </span>
+                  </div>
+                ) : (
+                  <div className="no-metas">
+                    <p>Crie suas primeiras metas para começar!</p>
+                  </div>
+                )}
+
                 <Link to="/minhas-metas" className="status-link">
-                  Ver minhas metas <FaArrowRight />
+                  Gerenciar metas <FaArrowRight />
                 </Link>
               </div>
             </div>
           </div>
+
+          {/* Seção de Insights */}
+          {(trilhasUsuario.length > 0 || metasUsuario.length > 0) && (
+            <div className="status-insights">
+              <div className="insight-card">
+                <FaTrophy className="insight-icon" />
+                <div className="insight-content">
+                  <h4>Você está no caminho certo!</h4>
+                  <p>
+                    {trilhasUsuario.length > 0 
+                      ? `Você tem ${trilhasUsuario.length} trilha${trilhasUsuario.length > 1 ? 's' : ''} e já completou ${Math.round(estatisticas.progressoMedio)}% em média.` 
+                      : 'Comece uma trilha para desbloquear insights personalizados!'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
         </section>
 
         {/* Seção de Recursos Rápidos */}
