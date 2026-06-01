@@ -2,14 +2,15 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword } from "firebase/auth";
 import { getFirestore, collection, doc, setDoc, addDoc, serverTimestamp, getDocs, query, orderBy, onSnapshot, updateDoc, deleteDoc } from 'firebase/firestore';
 
+// AS CHAVES VERDADEIRAS DO SEU PROJETO ESTÃO AQUI AGORA 💅✨
 const firebaseConfig = {
-  apiKey: "AIzaSyBiztuOiweQqp3zhO29pbidEA_biLYstSU",
-  authDomain: "teaxis.firebaseapp.com",
-  projectId: "teaxis",
-  storageBucket: "teaxis.firebasestorage.app",
-  messagingSenderId: "220465530060",
-  appId: "1:220465530060:web:26d15d0167d779a15bee69",
-  measurementId: "G-M737SM8YN6"
+  apiKey: "AIzaSyBGq3DXM3g0X8TlwoWfLgY0I0jw-3vNxv4",
+  authDomain: "teaxis-64a5e.firebaseapp.com",
+  projectId: "teaxis-64a5e",
+  storageBucket: "teaxis-64a5e.firebasestorage.app",
+  messagingSenderId: "918465244954",
+  appId: "1:918465244954:web:3f7ae21a674063096a06a3",
+  measurementId: "G-TVPFGTR35E"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -22,16 +23,24 @@ provider.addScope('email');
 
 const signInWithGoogle = async () => {
   try {
+    console.log('Iniciando signInWithGoogle...');
+    console.log('Auth instance:', auth);
+    console.log('Provider instance:', provider);
+    
     const result = await signInWithPopup(auth, provider);
+    console.log('SignInWithPopup sucesso:', result);
+    
     const user = result.user;
     const token = await user.getIdToken();
-
+    
+    console.log('Token obtido:', token);
     return { user, token };
   } catch (error) {
-    console.error("Erro detalhado no login com Google:", {
+    console.error("❌ ERRO DETALHADO NO LOGIN COM GOOGLE:", {
       code: error.code,
       message: error.message,
-      error: error
+      customData: error.customData,
+      fullError: error
     });
     throw error;
   }

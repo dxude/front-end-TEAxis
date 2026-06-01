@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
+import RoleSelection from './pages/RoleSelection';
 import Perfil from './pages/Perfil';
 import DashboardProfissional from './pages/DashboardProfissional';
 import DashboardUsuario from './pages/DashboardUsuario';
@@ -60,6 +61,7 @@ function App() {
 
       <main>
         <Routes>
+          <Route path="/role-selection" element={<RoleSelection />} />
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/cadastro" element={<Cadastro />} />

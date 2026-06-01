@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../Styles/Cadastro.css';
-import '../Styles/Login.css'; // importa estilos do popup simulado
-import { FaArrowLeft, FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaGenderless, FaTransgender, FaMale, FaFemale, FaQuestionCircle, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
+import '../Styles/Login.css';
+import { FaArrowLeft, FaUser, FaBriefcase, FaGoogle, FaEnvelope, FaLock, FaCalendarAlt, FaBrain, FaMapMarkerAlt, FaVenusMars, FaGenderless, FaTransgender, FaMale, FaQuestionCircle, FaHeart, FaComments, FaSchool, FaGraduationCap, FaIdBadge, FaClock } from 'react-icons/fa';
+import { signInWithGoogle } from '../firebase';
 
 const API_REGISTRO_USUARIO = 'SUA_URL_DA_API/api/v1/usuarios/registro'; 
-const API_REGISTRO_PROFISSIONAL = 'SUA_URL_DA_API/api/v1/profissionais/registro'; 
-const API_LOGIN_SOCIAL = 'SUA_URL_DA_API/api/v1/auth/google'; 
-
-const SIMULATED_GOOGLE_LOGIN = true;
+const API_REGISTRO_PROFISSIONAL = 'SUA_URL_DA_API/api/v1/profissionais/registro';
 
 const DEFAULT_SUGGESTIONS_PROFISSIONAL = {
   especializacoes: ['Terapia Ocupacional','Psicologia','Fonoaudiologia','Neuropsicologia','Pedagogia','Psiquiatria'],
@@ -17,10 +15,55 @@ const DEFAULT_SUGGESTIONS_PROFISSIONAL = {
 
 const DAYS_OF_WEEK = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
 
+const BRAZIL_STATES = [
+  { code: 'AC', name: 'Acre', cities: ['Rio Branco','Cruzeiro do Sul'] },
+  { code: 'AL', name: 'Alagoas', cities: ['Maceió','Arapiraca'] },
+  { code: 'AP', name: 'Amapá', cities: ['Macapá','Santana'] },
+  { code: 'AM', name: 'Amazonas', cities: ['Manaus','Parintins','Itacoatiara'] },
+  { code: 'BA', name: 'Bahia', cities: ['Salvador','Feira de Santana','Vitória da Conquista'] },
+  { code: 'CE', name: 'Ceará', cities: ['Fortaleza','Sobral','Juazeiro do Norte'] },
+  { code: 'DF', name: 'Distrito Federal', cities: ['Brasília'] },
+  { code: 'ES', name: 'Espírito Santo', cities: ['Vitória','Vila Velha','Serra'] },
+  { code: 'GO', name: 'Goiás', cities: ['Goiânia','Anápolis','Luziânia'] },
+  { code: 'MA', name: 'Maranhão', cities: ['São Luís','Imperatriz'] },
+  { code: 'MT', name: 'Mato Grosso', cities: ['Cuiabá','Rondonópolis'] },
+  { code: 'MS', name: 'Mato Grosso do Sul', cities: ['Campo Grande','Dourados'] },
+  { code: 'MG', name: 'Minas Gerais', cities: ['Belo Horizonte','Uberlândia','Contagem','Juiz de Fora'] },
+  { code: 'PA', name: 'Pará', cities: ['Belém','Ananindeua','Santarém'] },
+  { code: 'PB', name: 'Paraíba', cities: ['João Pessoa','Campina Grande'] },
+  { code: 'PR', name: 'Paraná', cities: ['Curitiba','Londrina','Maringá'] },
+  { code: 'PE', name: 'Pernambuco', cities: ['Recife','Olinda','Jaboatão dos Guararapes','Caruaru'] },
+  { code: 'PI', name: 'Piauí', cities: ['Teresina','Parnamirim'] },
+  { code: 'RJ', name: 'Rio de Janeiro', cities: ['Rio de Janeiro','Niterói','Petrópolis','Duque de Caxias'] },
+  { code: 'RN', name: 'Rio Grande do Norte', cities: ['Natal','Mossoró'] },
+  { code: 'RS', name: 'Rio Grande do Sul', cities: ['Porto Alegre','Caxias do Sul','Pelotas'] },
+  { code: 'RO', name: 'Rondônia', cities: ['Porto Velho','Ji-Paraná'] },
+  { code: 'RR', name: 'Roraima', cities: ['Boa Vista'] },
+  { code: 'SC', name: 'Santa Catarina', cities: ['Florianópolis','Joinville','Blumenau'] },
+  { code: 'SP', name: 'São Paulo', cities: ['São Paulo','Campinas','Santos','São José dos Campos'] },
+  { code: 'SE', name: 'Sergipe', cities: ['Aracaju','Nossa Senhora do Socorro'] },
+  { code: 'TO', name: 'Tocantins', cities: ['Palmas','Araguaína'] }
+];
+
+const GENDER_OPTIONS = [
+  { key: 'cis', label: 'Cisgênero', desc: 'Pessoa cuja identidade de gênero corresponde ao sexo atribuído no nascimento.', icon: FaVenusMars },
+  { key: 'trans', label: 'Transgênero', desc: 'Pessoa cuja identidade de gênero difere do sexo atribuído no nascimento.', icon: FaTransgender },
+  { key: 'nb', label: 'Não-binário', desc: 'Identidade fora das categorias exclusivamente masculino ou feminino.', icon: FaGenderless },
+  { key: 'fluid', label: 'Gênero-fluido', desc: 'Identidade de gênero que pode variar ao longo do tempo.', icon: FaMale },
+  { key: 'nao-dizer', label: 'Prefiro não dizer', desc: 'Prefere não informar sua identidade de gênero.', icon: FaQuestionCircle }
+];
+
+const DEFAULT_SUGGESTIONS = {
+  hobbies: ['Leitura','Música','Esportes','Desenho','Jogos','Programação','Culinária','Dança'],
+  modoComunicacao: ['Oral','Escrita','Visual','Aumentativa/Alternativa','Gestual','Simbólica'],
+  preferenciasSensoriais: ['Sensível a ruídos','Sensível a luz','Prefere silêncio','Texturas específicas','Conforto tátil'],
+  neurodivergencias: ['Autismo','TDAH','Dislexia','Dispraxia','TEA','Transtorno do Processamento Sensorial','Altas Habilidades']
+};
+
+// FUNÇÃO FALTANTE PARA FORMATAR A DISPONIBILIDADE
 const formatDisponibilidade = (days, start, end) => {
   if (!days || days.length === 0) return '';
-  const hours = `${String(start).padStart(2,'0')}:00 - ${String(end).padStart(2,'0')}:00`;
-  return `${days.join(', ')} • ${hours}`;
+  return `${days.join(', ')} das ${String(start).padStart(2, '0')}:00 às ${String(end).padStart(2, '0')}:00`;
 };
 
 const Cadastro = () => {
@@ -31,62 +74,18 @@ const Cadastro = () => {
   // Conta
   const [account, setAccount] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
 
-  // Detalhes - usuário
-    const [detalhesUsuario, setDetalhesUsuario] = useState({ dataNascimento: '', tipoNeurodivergencia: [], hobbies: [], genero: '', cidade: '', estado: '', distrito: '', preferenciasSensoriais: [], modoComunicacao: [], historicoEscolar: '' });
+  // Detalhes - usuario
+  const [detalhesUsuario, setDetalhesUsuario] = useState({ dataNascimento: '', tipoNeurodivergencia: [], hobbies: [], genero: '', cidade: '', estado: '', distrito: '', preferenciasSensoriais: [], modoComunicacao: [], historicoEscolar: '' });
 
-    // UI helpers for enhanced controls
-    const [dobDay, setDobDay] = useState('');
-    const [dobMonth, setDobMonth] = useState('');
-    const [dobYear, setDobYear] = useState('');
-    const [genderHoverText, setGenderHoverText] = useState('');
-    const [showGenderMenu, setShowGenderMenu] = useState(false);
-    const [stateCities, setStateCities] = useState([]);
-    const [cityQuery, setCityQuery] = useState('');
-    const [citySuggestions, setCitySuggestions] = useState([]);
-    const BRAZIL_STATES = [
-      { code: 'AC', name: 'Acre', cities: ['Rio Branco','Cruzeiro do Sul'] },
-      { code: 'AL', name: 'Alagoas', cities: ['Maceió','Arapiraca'] },
-      { code: 'AP', name: 'Amapá', cities: ['Macapá','Santana'] },
-      { code: 'AM', name: 'Amazonas', cities: ['Manaus','Parintins','Itacoatiara'] },
-      { code: 'BA', name: 'Bahia', cities: ['Salvador','Feira de Santana','Vitória da Conquista'] },
-      { code: 'CE', name: 'Ceará', cities: ['Fortaleza','Sobral','Juazeiro do Norte'] },
-      { code: 'DF', name: 'Distrito Federal', cities: ['Brasília'] },
-      { code: 'ES', name: 'Espírito Santo', cities: ['Vitória','Vila Velha','Serra'] },
-      { code: 'GO', name: 'Goiás', cities: ['Goiânia','Anápolis','Luziânia'] },
-      { code: 'MA', name: 'Maranhão', cities: ['São Luís','Imperatriz'] },
-      { code: 'MT', name: 'Mato Grosso', cities: ['Cuiabá','Rondonópolis'] },
-      { code: 'MS', name: 'Mato Grosso do Sul', cities: ['Campo Grande','Dourados'] },
-      { code: 'MG', name: 'Minas Gerais', cities: ['Belo Horizonte','Uberlândia','Contagem','Juiz de Fora'] },
-      { code: 'PA', name: 'Pará', cities: ['Belém','Ananindeua','Santarém'] },
-      { code: 'PB', name: 'Paraíba', cities: ['João Pessoa','Campina Grande'] },
-      { code: 'PR', name: 'Paraná', cities: ['Curitiba','Londrina','Maringá'] },
-      { code: 'PE', name: 'Pernambuco', cities: ['Recife','Olinda','Jaboatão dos Guararapes','Caruaru'] },
-      { code: 'PI', name: 'Piauí', cities: ['Teresina','Parnamirim'] },
-      { code: 'RJ', name: 'Rio de Janeiro', cities: ['Rio de Janeiro','Niterói','Petrópolis','Duque de Caxias'] },
-      { code: 'RN', name: 'Rio Grande do Norte', cities: ['Natal','Mossoró'] },
-      { code: 'RS', name: 'Rio Grande do Sul', cities: ['Porto Alegre','Caxias do Sul','Pelotas'] },
-      { code: 'RO', name: 'Rondônia', cities: ['Porto Velho','Ji-Paraná'] },
-      { code: 'RR', name: 'Roraima', cities: ['Boa Vista'] },
-      { code: 'SC', name: 'Santa Catarina', cities: ['Florianópolis','Joinville','Blumenau'] },
-      { code: 'SP', name: 'São Paulo', cities: ['São Paulo','Campinas','Santos','São José dos Campos'] },
-      { code: 'SE', name: 'Sergipe', cities: ['Aracaju','Nossa Senhora do Socorro'] },
-      { code: 'TO', name: 'Tocantins', cities: ['Palmas','Araguaína'] }
-    ];
-
-    const GENDER_OPTIONS = [
-      { key: 'cis', label: 'Cisgênero', desc: 'Pessoa cuja identidade de gênero corresponde ao sexo atribuído no nascimento.', icon: FaVenusMars },
-      { key: 'trans', label: 'Transgênero', desc: 'Pessoa cuja identidade de gênero difere do sexo atribuído no nascimento.', icon: FaTransgender },
-      { key: 'nb', label: 'Não-binário', desc: 'Identidade fora das categorias exclusivamente masculino ou feminino.', icon: FaGenderless },
-      { key: 'fluid', label: 'Gênero-fluido', desc: 'Identidade de gênero que pode variar ao longo do tempo.', icon: FaMale },
-      { key: 'nao-dizer', label: 'Prefiro não dizer', desc: 'Prefere não informar sua identidade de gênero.', icon: FaQuestionCircle }
-    ];
-
-    const DEFAULT_SUGGESTIONS = {
-      hobbies: ['Leitura','Música','Esportes','Desenho','Jogos','Programação','Culinária','Dança'],
-      modoComunicacao: ['Oral','Escrita','Visual','Aumentativa/Alternativa','Gestual','Simbólica'],
-      preferenciasSensoriais: ['Sensível a ruídos','Sensível a luz','Prefere silêncio','Texturas específicas','Conforto tátil'],
-      neurodivergencias: ['Autismo','TDAH','Dislexia','Dispraxia','TEA','Transtorno do Processamento Sensorial','Altas Habilidades']
-    };
+  // UI helpers
+  const [dobDay, setDobDay] = useState('');
+  const [dobMonth, setDobMonth] = useState('');
+  const [dobYear, setDobYear] = useState('');
+  const [genderHoverText, setGenderHoverText] = useState('');
+  const [showGenderMenu, setShowGenderMenu] = useState(false);
+  const [stateCities, setStateCities] = useState([]);
+  const [cityQuery, setCityQuery] = useState('');
+  const [citySuggestions, setCitySuggestions] = useState([]);
 
   // Detalhes - profissional
   const [detalhesProfissional, setDetalhesProfissional] = useState({ dataNascimento: '', certificacoes: '', especializacoes: [], metodosUtilizados: [], disponibilidade: '', cidade: '', estado: '', genero: '' });
@@ -95,20 +94,15 @@ const Cadastro = () => {
   const [disponibilidadeEnd, setDisponibilidadeEnd] = useState(17);
 
   const [showSimPopup, setShowSimPopup] = useState(false);
-  const addChipProf = (key, value) => {
-    setDetalhesProfissional((p) => ({ ...p, [key]: Array.from(new Set([...(p[key]||[]), value])) }));
-  };
-  const removeChipProf = (key, value) => {
-    setDetalhesProfissional((p) => ({ ...p, [key]: (p[key]||[]).filter(v => v !== value) }));
-  };
-  const toggleDisponibilidadeDay = (day) => {
-    setDisponibilidadeDays((prev) => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
-  };
   const [simPopupMessage, setSimPopupMessage] = useState('');
 
+  const addChipProf = (key, value) => setDetalhesProfissional((p) => ({ ...p, [key]: Array.from(new Set([...(p[key]||[]), value])) }));
+  const removeChipProf = (key, value) => setDetalhesProfissional((p) => ({ ...p, [key]: (p[key]||[]).filter(v => v !== value) }));
+  const toggleDisponibilidadeDay = (day) => setDisponibilidadeDays((prev) => prev.includes(day) ? prev.filter(d => d !== day) : [...prev, day]);
+
   const handleAccountChange = (e) => setAccount({ ...account, [e.target.name]: e.target.value });
+  
   const handleDetalhesUsuarioChange = (e) => {
-    // aceita evento do input ou objeto { name, value }
     if (e && e.target && e.target.name) {
       setDetalhesUsuario({ ...detalhesUsuario, [e.target.name]: e.target.value });
     } else if (e && e.name) {
@@ -116,37 +110,42 @@ const Cadastro = () => {
     }
   };
 
-    // Date of birth composed handling
-    useEffect(() => {
-      if (dobDay && dobMonth && dobYear) {
-        setDetalhesUsuario((prev) => ({ ...prev, dataNascimento: `${dobYear}-${String(dobMonth).padStart(2,'0')}-${String(dobDay).padStart(2,'0')}` }));
-      }
-    }, [dobDay, dobMonth, dobYear]);
+  // CORREÇÃO DO LOOP INFINITO 1: Só atualiza se a data for realmente nova
+  useEffect(() => {
+    if (dobDay && dobMonth && dobYear) {
+      const formattedDate = `${dobYear}-${String(dobMonth).padStart(2,'0')}-${String(dobDay).padStart(2,'0')}`;
+      setDetalhesUsuario((prev) => {
+        if (prev.dataNascimento === formattedDate) return prev; // Para o looping aqui!
+        return { ...prev, dataNascimento: formattedDate };
+      });
+    }
+  }, [dobDay, dobMonth, dobYear]);
 
-    const handleStateChange = (e) => {
-      const code = e.target.value;
-      setDetalhesUsuario((p) => ({ ...p, estado: code, cidade: '' }));
-      const found = BRAZIL_STATES.find(s => s.code === code);
-      setStateCities(found ? found.cities : []);
-    };
+  const handleStateChange = (e) => {
+    const code = e.target.value;
+    setDetalhesUsuario((p) => ({ ...p, estado: code, cidade: '' }));
+    const found = BRAZIL_STATES.find(s => s.code === code);
+    setStateCities(found ? found.cities : []);
+  };
 
-    useEffect(() => {
-      if (!cityQuery) { setCitySuggestions([]); return; }
-      const q = cityQuery.trim().toLowerCase();
-      if (!q) { setCitySuggestions([]); return; }
-      // Prefer searching within selected state's cities, fallback to all cities
-      const source = (stateCities && stateCities.length>0) ? stateCities : BRAZIL_STATES.flatMap(s => s.cities || []);
-      const matches = source.filter(c => c.toLowerCase().startsWith(q)).slice(0, 50);
-      setCitySuggestions(matches);
-    }, [cityQuery, stateCities, BRAZIL_STATES]);
+  useEffect(() => {
+    if (!cityQuery) { 
+      setCitySuggestions(prev => prev.length === 0 ? prev : []); 
+      return; 
+    }
+    const q = cityQuery.trim().toLowerCase();
+    if (!q) { 
+      setCitySuggestions(prev => prev.length === 0 ? prev : []); 
+      return; 
+    }
+    const source = (stateCities && stateCities.length>0) ? stateCities : BRAZIL_STATES.flatMap(s => s.cities || []);
+    const matches = source.filter(c => c.toLowerCase().startsWith(q)).slice(0, 50);
+    setCitySuggestions(matches);
+  }, [cityQuery, stateCities]);
 
-    const addChip = (key, value) => {
-      setDetalhesUsuario((p) => ({ ...p, [key]: Array.from(new Set([...(p[key]||[]), value])) }));
-    };
-
-    const removeChip = (key, value) => {
-      setDetalhesUsuario((p) => ({ ...p, [key]: (p[key]||[]).filter(v => v !== value) }));
-    };
+  const addChip = (key, value) => setDetalhesUsuario((p) => ({ ...p, [key]: Array.from(new Set([...(p[key]||[]), value])) }));
+  const removeChip = (key, value) => setDetalhesUsuario((p) => ({ ...p, [key]: (p[key]||[]).filter(v => v !== value) }));
+  
   const handleDetalhesProfissionalChange = (e) => {
     if (e && e.target && e.target.name) {
       setDetalhesProfissional({ ...detalhesProfissional, [e.target.name]: e.target.value });
@@ -155,36 +154,55 @@ const Cadastro = () => {
     }
   };
 
+  // CORREÇÃO DO LOOP INFINITO 2: Trava de atualização da disponibilidade
   useEffect(() => {
-    setDetalhesProfissional((prev) => ({
-      ...prev,
-      disponibilidade: formatDisponibilidade(disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd)
-    }));
+    const novaDisponibilidade = formatDisponibilidade(disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd);
+    setDetalhesProfissional((prev) => {
+      if (prev.disponibilidade === novaDisponibilidade) return prev; // Para o looping aqui!
+      return { ...prev, disponibilidade: novaDisponibilidade };
+    });
   }, [disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd]);
 
-  const handleSimulatedGoogle = () => {
-    setSimPopupMessage('Modo Google simulado - redirecionando...');
-    setShowSimPopup(true);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('teaxis_role', perfil || 'usuario');
-      localStorage.setItem('login_method', 'google_simulado');
-      localStorage.setItem('teaxis_auth_token', 'demo_google_token');
-    }
-    setTimeout(() => {
-      setShowSimPopup(false);
-      if (perfil === 'profissional') {
+  const handleGoogleSignup = async () => {
+    try {
+      console.log('🔐 Iniciando signup com Google...');
+      const { user, token } = await signInWithGoogle();
+      
+      console.log('✅ Google auth sucesso:', user.email);
+      localStorage.setItem('teaxis_auth_token', token);
+      localStorage.setItem('user_email', user.email);
+      localStorage.setItem('login_method', 'google');
+      const role = localStorage.getItem('teaxis_role') || 'usuario';
+      
+      alert('✅ Cadastro com Google realizado com sucesso!');
+      
+      if (role === 'profissional') {
         navigate('/dashboard-profissional');
       } else {
         navigate('/dashboard-usuario');
       }
-    }, 1000);
+    } catch (error) {
+      console.error('❌ ERRO ao fazer signup com Google:', error);
+      let mensagemErro = 'Erro ao fazer signup com Google.';
+      
+      if (error.code === 'auth/popup-blocked') {
+        mensagemErro = '❌ Popup bloqueado. Permita popups no navegador.';
+      } else if (error.code === 'auth/cancelled-popup-request') {
+        mensagemErro = '❌ Signup cancelado pelo usuário.';
+      } else if (error.code === 'auth/unauthorized-domain' || error.code === 'auth/configuration-not-found') {
+        mensagemErro = '❌ Domínio não autorizado no Firebase. Adicione a URL atual lá no painel.';
+      } else if (error.code === 'auth/network-request-failed') {
+        mensagemErro = '❌ Erro de conexão. Verifique internet.';
+      }
+      
+      alert(mensagemErro);
+    }
   };
 
   const handleCadastroSubmit = (e) => {
     e.preventDefault();
 
     if (currentStep === 1) {
-      // valida campos de conta
       if (!account.nome || !account.email || !account.senha || !account.confirmarSenha) {
         alert('Por favor preencha todos os campos iniciais.');
         return;
@@ -197,7 +215,6 @@ const Cadastro = () => {
       return;
     }
 
-    // Aqui enviar os dados ao backend (ou Firebase) — por agora apenas log
     const payload = {
       account,
       perfil,
@@ -206,7 +223,7 @@ const Cadastro = () => {
     };
 
     console.log('Dados para registo:', payload);
-    alert('Cadastro (cliente) executado com sucesso (demo).');
+    alert('Cadastro executado com sucesso (demo).');
     navigate('/login');
   };
 
@@ -274,7 +291,7 @@ const Cadastro = () => {
               setDisponibilidadeEnd={setDisponibilidadeEnd}
               toggleDisponibilidadeDay={toggleDisponibilidadeDay}
               onSubmit={handleCadastroSubmit}
-              onSimulateGoogle={handleSimulatedGoogle}
+              onGoogleSignup={handleGoogleSignup}
                   onBackToPerfil={handleBackToPerfil}
                   dobDay={dobDay}
                   setDobDay={setDobDay}
@@ -297,6 +314,9 @@ const Cadastro = () => {
                   DEFAULT_SUGGESTIONS={DEFAULT_SUGGESTIONS}
                   addChip={addChip}
                   removeChip={removeChip}
+                  addChipProf={addChipProf}
+                  removeChipProf={removeChipProf}
+                  DEFAULT_SUGGESTIONS_PROFISSIONAL={DEFAULT_SUGGESTIONS_PROFISSIONAL}
             />
             </ErrorBoundary>
           ) : (
@@ -336,12 +356,12 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, disponibilidadeDays, setDisponibilidadeDays, disponibilidadeStart, disponibilidadeEnd, setDisponibilidadeStart, setDisponibilidadeEnd, toggleDisponibilidadeDay, onSubmit, onSimulateGoogle, onBackToPerfil, dobDay, setDobDay, dobMonth, setDobMonth, dobYear, setDobYear, GENDER_OPTIONS, showGenderMenu, setShowGenderMenu, genderHoverText, setGenderHoverText, BRAZIL_STATES, stateCities, handleStateChange, cityQuery, setCityQuery, citySuggestions, setCitySuggestions, DEFAULT_SUGGESTIONS, addChip, removeChip }) => {
+const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccountChange, detalhesUsuario, handleDetalhesUsuarioChange, detalhesProfissional, handleDetalhesProfissionalChange, disponibilidadeDays, setDisponibilidadeDays, disponibilidadeStart, disponibilidadeEnd, setDisponibilidadeStart, setDisponibilidadeEnd, toggleDisponibilidadeDay, onSubmit, onGoogleSignup, onBackToPerfil, dobDay, setDobDay, dobMonth, setDobMonth, dobYear, setDobYear, GENDER_OPTIONS, showGenderMenu, setShowGenderMenu, genderHoverText, setGenderHoverText, BRAZIL_STATES, stateCities, handleStateChange, cityQuery, setCityQuery, citySuggestions, setCitySuggestions, DEFAULT_SUGGESTIONS, addChip, removeChip, addChipProf, removeChipProf, DEFAULT_SUGGESTIONS_PROFISSIONAL }) => {
     return (
         <form className="cadastro-form auth-card" onSubmit={onSubmit}>
             <div className="form-header">
                 <div>
-                    <span className="eyebrow">Cadastro TEAxis</span>
+                    <span className="eyebrow">Cadastro</span>
                     <h2 className="text-dark mb-2">Crie a sua conta como {tipo === 'usuario' ? 'Utilizador' : tipo === 'responsavel' ? 'Responsável' : 'Profissional'}</h2>
                     <p className="form-subtitle">Primeiro confirme seus dados básicos e depois preencha os detalhes do seu perfil.</p>
                 </div>
@@ -358,7 +378,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                 </div>
             </div>
 
-            <button type="button" className="btn btn-social btn-google mb-4" onClick={onSimulateGoogle}>
+            <button type="button" className="btn btn-social btn-google mb-4" onClick={onGoogleSignup}>
                 <FaGoogle className="mr-2" /> Continuar com Google
             </button>
 
@@ -394,13 +414,13 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                         <span>Quase lá</span>
                         <div />
                     </div>
-                    <p className="step-description">Agora complete os detalhes adicionais para que o TEAxis personalize sua experiência.</p>
+                    <p className="step-description">Agora complete os detalhes adicionais para personalizarmos sua experiência.</p>
 
                     {(tipo === 'usuario' || tipo === 'responsavel') && (
                       <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg details-panel">
                         <h3 className="text-lilac-main font-bold mb-4">Dados para o Perfil de Cuidado</h3>
 
-                        {/* Data de Nascimento - selects modernos */}
+                        {/* Data de Nascimento */}
                         <div className="input-group">
                           <label><FaCalendarAlt /> Data de Nascimento:</label>
                           <div className="dob-selects">
@@ -422,7 +442,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                           </div>
                         </div>
 
-                        {/* Gênero com menu e descrição */}
+                        {/* Gênero */}
                         <div className="input-group">
                           <label><FaVenusMars /> Gênero:</label>
                           <div className="gender-control">
@@ -499,7 +519,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                           <input id="distrito" name="distrito" type="text" placeholder="Ex: Boa Viagem" value={detalhesUsuario.distrito} onChange={handleDetalhesUsuarioChange} />
                         </div>
 
-                        {/* Hobbies - chips com sugestões */}
+                        {/* Hobbies */}
                         <div className="input-group">
                           <label><FaHeart /> Hobbies:</label>
                           <div className="chip-list">
@@ -515,7 +535,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                           <input placeholder="Adicionar hobby e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('hobbies', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
                         </div>
 
-                        {/* Modo de Comunicação - chips */}
+                        {/* Modo de Comunicação */}
                         <div className="input-group">
                           <label><FaComments /> Modo de Comunicação:</label>
                           <div className="chip-list">
@@ -531,7 +551,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                           <input placeholder="Adicionar modo de comunicação e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('modoComunicacao', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
                         </div>
 
-                        {/* Preferências sensoriais - chips + livre */}
+                        {/* Preferências sensoriais */}
                         <div className="input-group">
                           <label>Preferências Sensoriais:</label>
                           <div className="chip-list">
@@ -547,10 +567,10 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                           <input placeholder="Adicionar preferência e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('preferenciasSensoriais', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
                         </div>
 
-                        {/* Histórico Escolar - instruções claras */}
+                        {/* Histórico Escolar */}
                         <div className="input-group">
                           <label><FaSchool /> Histórico Escolar / Acadêmico:</label>
-                          <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Se for estudante, indique o ano/curso e principais dificuldades. Se não for, descreva suas principais dificuldades relacionadas ao aprendizado." value={detalhesUsuario.historicoEscolar} onChange={handleDetalhesUsuarioChange} rows="3" />
+                          <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Descreva suas principais dificuldades relacionadas ao aprendizado." value={detalhesUsuario.historicoEscolar} onChange={handleDetalhesUsuarioChange} rows="3" />
                         </div>
                       </div>
                     )}
@@ -685,10 +705,10 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
     );
 };
 
-// Componente de Seleção de Perfil (Para Reutilização)
+// Componente de Seleção de Perfil
 const PerfilSelector = ({ setPerfil }) => (
     <div className="perfil-selector">
-        <h2 className="text-dark mb-8 text-2xl font-bold">Como quer usar o TEAxis?</h2>
+        <h2 className="text-dark mb-8 text-2xl font-bold">Como quer usar o sistema?</h2>
         
         <div className="card-selection-wrapper">
             <div 

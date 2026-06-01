@@ -27,9 +27,11 @@ const Login = () => {
 
     try {
       setLoadingGoogle(true);
+      console.log('🔐 Iniciando login com Google...');
       const { user, token } = await signInWithGoogle();
 
-      // Salvar token e papel no localStorage para autenticação simulada
+      console.log('✅ Google auth sucesso:', user.email);
+      // Salvar token e papel no localStorage
       localStorage.setItem("teaxis_auth_token", token);
       localStorage.setItem("login_method", "google");
       localStorage.setItem("user_email", user.email);
@@ -42,23 +44,26 @@ const Login = () => {
         navigate('/dashboard-usuario');
       }
     } catch (error) {
-      console.error("Detalhes do erro de login com Google:", error);
-      console.error("Código do erro:", error.code);
-      console.error("Mensagem do erro:", error.message);
+      console.error("❌ ERRO de login com Google:", error);
+      console.error("Código:", error.code);
+      console.error("Mensagem:", error.message);
       
-      let mensagemErro = "Erro ao fazer login com Google. Por favor, tente novamente.";
+      let mensagemErro = "Erro ao fazer login com Google.";
       
       if (error.code === "auth/popup-blocked") {
-        mensagemErro = "O popup foi bloqueado. Verifique as configurações do seu navegador.";
+        mensagemErro = "❌ Popup bloqueado. Permita popups no navegador.";
       } else if (error.code === "auth/cancelled-popup-request") {
-        mensagemErro = "Login cancelado.";
+        mensagemErro = "❌ Login cancelado pelo usuário.";
       } else if (error.code === "auth/operation-not-supported-in-this-environment") {
-        mensagemErro = "Login com Google não disponível neste ambiente.";
+        mensagemErro = "❌ Google Auth não disponível. Verifique console.";
       } else if (error.code === "auth/unauthorized-domain") {
-        mensagemErro = "Domínio não autorizado. Contate o suporte.";
+        mensagemErro = "❌ Domínio não autorizado no Firebase. Veja console.";
+      } else if (error.code === "auth/network-request-failed") {
+        mensagemErro = "❌ Erro de conexão. Verifique internet.";
       }
       
-      alert(mensagemErro);
+      console.log('Mensagem final:', mensagemErro);
+      alert(mensagemErro + "\n\nVeja o console (F12) para detalhes.");
     } finally {
       setLoadingGoogle(false);
     }
