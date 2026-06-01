@@ -11,10 +11,20 @@ export default function Navbar() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setUserRole(localStorage.getItem('teaxis_role'));
-      setIsAuthed(!!localStorage.getItem('teaxis_auth_token'));
-    }
+    const updateFromStorage = () => {
+      if (typeof window !== 'undefined') {
+        setUserRole(localStorage.getItem('teaxis_role'));
+        setIsAuthed(!!localStorage.getItem('teaxis_auth_token'));
+      }
+    };
+
+    updateFromStorage();
+    window.addEventListener('storage', updateFromStorage);
+    window.addEventListener('teaxis:auth_changed', updateFromStorage);
+    return () => {
+      window.removeEventListener('storage', updateFromStorage);
+      window.removeEventListener('teaxis:auth_changed', updateFromStorage);
+    };
   }, []);
 
   const toggleMobileMenu = () => {
@@ -31,6 +41,7 @@ export default function Navbar() {
       localStorage.removeItem('teaxis_role');
       localStorage.removeItem('login_method');
       localStorage.removeItem('user_email');
+      localStorage.removeItem('user_photo');
     }
     setUserRole(null);
     setIsAuthed(false);

@@ -101,6 +101,16 @@ export default function Sidebar({
           filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
         }
 
+        .sidebar-avatar {
+          width: 72px;
+          height: 72px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 3px solid rgba(255,255,255,0.85);
+          box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+          margin-bottom: 1rem;
+        }
+
         .user-welcome-premium {
           font-size: 1.15rem;
           font-weight: 700;
@@ -251,13 +261,16 @@ export default function Sidebar({
 
         <div className="sidebar-header-premium">
           <img src={logoTeaxis} alt="Logo TEAxis" className="sidebar-logo-premium" />
+          {typeof window !== 'undefined' && localStorage.getItem('user_photo') && (
+            <img src={localStorage.getItem('user_photo')} alt="Avatar" className="sidebar-avatar" />
+          )}
           <p className="user-welcome-premium">{
             (() => {
               try {
                 const role = typeof window !== 'undefined' ? localStorage.getItem('teaxis_role') : null;
                 if (role === 'profissional') return `Olá, ${userName}`;
               } catch (e) {}
-              return `Olá, seja bem vindo, ${userName}`;
+              return `Seja bem vindo(a), ${userName}`;
             })()
           }</p>
           <span className="user-badge">Meu Espaço</span>

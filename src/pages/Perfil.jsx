@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { FaArrowLeft, FaCheckCircle, FaUser, FaMapMarkerAlt, FaClipboard, FaBrain } from 'react-icons/fa';
 import '../Styles/Perfil.css';
@@ -38,6 +38,10 @@ export default function Perfil() {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSavePopup, setShowSavePopup] = useState(false);
+  const [savePopupMessage, setSavePopupMessage] = useState('');
+  const [savePopupType, setSavePopupType] = useState('success');
+  const popupTimeoutRef = useRef(null);
 
   // Alterei o ícone do último passo para ficar mais coerente visualmente
   const steps = [
@@ -51,16 +55,22 @@ export default function Perfil() {
     const storedRole = localStorage.getItem('teaxis_role') || 'usuario';
     setUserRole(storedRole === 'profissional' ? 'profissional' : 'usuario');
     setAccountType(storedRole === 'profissional' ? 'professional' : 'user');
+    const storedName = localStorage.getItem('user_name');
     const storedEmail = localStorage.getItem('user_email');
-    if (storedEmail) {
-      setUserName(storedEmail);
+    const storedPhoto = localStorage.getItem('user_photo');
+
+    setUserName(storedName || storedEmail || 'Bem-vindo');
+    if (storedPhoto) {
+      setProfilePicture(storedPhoto);
     }
-    // Valida apenas quando o passo muda, não em cada input
+  }, []);
+
+  useEffect(() => {
     validateCurrentStep();
   }, [currentStep]);
 
-  const validateCurrentStep = () => {
-    let newErrors = {};
+  const getCurrentStepErrors = () => {
+    const newErrors = {};
 
     if (currentStep === 0) {
       if (!fullName.trim()) newErrors.fullName = 'Nome completo é obrigatório';
@@ -87,9 +97,16 @@ export default function Perfil() {
       }
     }
 
+    return newErrors;
+  };
+
+  const validateCurrentStep = () => {
+    const newErrors = getCurrentStepErrors();
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
+  const isCurrentStepValid = () => Object.keys(getCurrentStepErrors()).length === 0;
 
   const canProceedToNextStep = () => {
     if (currentStep === 0) {
@@ -123,11 +140,31 @@ export default function Perfil() {
     }
   };
 
+  const closeSavePopup = (navigateAfter = false) => {
+    if (popupTimeoutRef.current) {
+      clearTimeout(popupTimeoutRef.current);
+      popupTimeoutRef.current = null;
+    }
+    setShowSavePopup(false);
+    setIsSubmitting(false);
+    if (navigateAfter) {
+      if (savePopupType === 'success') {
+        if (accountType === 'professional') {
+          navigate('/dashboard-profissional');
+        } else {
+          navigate('/dashboard-usuario');
+        }
+      }
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!fullName || !phone || !birthDate || !street || !number || !zipCode || !neighborhood || !city || !state) {
-      alert('Por favor, preencha todos os dados pessoais e de endereço.');
+      setSavePopupMessage('Por favor, preencha todos os dados pessoais e de endereço.');
+      setSavePopupType('error');
+      setShowSavePopup(true);
       return;
     }
 
@@ -138,22 +175,36 @@ export default function Perfil() {
 
     if (accountType === 'user') {
       if (!neurodivergenceType || !sensoryPreferences || !learningStyle || !userInterests || !userGoals) {
-        alert('Por favor, preencha todas as informações adicionais.');
+        setSavePopupMessage('Por favor, preencha todas as informações adicionais.');
+        setSavePopupType('error');
+        setShowSavePopup(true);
         return;
       }
       profileData = { ...profileData, neurodivergenceType, sensoryPreferences, learningStyle, userInterests, userGoals };
       console.log('Perfil de Usuário Atualizado:', profileData);
-      alert('Perfil atualizado com sucesso! ✨');
-      navigate('/dashboard-usuario');
+      setSavePopupMessage('Perfil atualizado com sucesso! ✨');
+      setSavePopupType('success');
+      setShowSavePopup(true);
+      setIsSubmitting(true);
+      popupTimeoutRef.current = window.setTimeout(() => {
+        closeSavePopup(true);
+      }, 5000);
     } else if (accountType === 'professional') {
       if (!specialty || !professionalRegistration || !bio) {
-        alert('Por favor, preencha todos os dados obrigatórios para profissionais.');
+        setSavePopupMessage('Por favor, preencha todos os dados obrigatórios para profissionais.');
+        setSavePopupType('error');
+        setShowSavePopup(true);
         return;
       }
       profileData = { ...profileData, specialty, professionalRegistration, bio };
       console.log('Perfil de Profissional Atualizado:', profileData);
-      alert('Perfil de Profissional atualizado com sucesso! ✨');
-      navigate('/dashboard-profissional');
+      setSavePopupMessage('Perfil de Profissional atualizado com sucesso! ✨');
+      setSavePopupType('success');
+      setShowSavePopup(true);
+      setIsSubmitting(true);
+      popupTimeoutRef.current = window.setTimeout(() => {
+        closeSavePopup(true);
+      }, 5000);
     }
   };
 
@@ -408,12 +459,25 @@ export default function Perfil() {
                   Próximo Passo →
                 </button>
               ) : (
-                <button type="submit" className="btn-finalizar" disabled={!validateCurrentStep() || isSubmitting}>
+                <button type="submit" className="btn-finalizar" disabled={!isCurrentStepValid() || isSubmitting}>
                   {isSubmitting ? 'Salvando...' : 'Salvar Perfil ✨'}
                 </button>
               )}
             </div>
           </form>
+
+          {showSavePopup && (
+            <div className="save-popup-backdrop" role="alert" aria-live="assertive" onClick={() => closeSavePopup(savePopupType === 'success')}>
+              <div className={`save-popup-card ${savePopupType}`} onClick={(e) => e.stopPropagation()}>
+                <img src={logoTeaxis} alt="TEAxis" className="save-popup-logo" />
+                <h3>{savePopupType === 'success' ? 'Sucesso!' : 'Ops...'}</h3>
+                <p>{savePopupMessage}</p>
+                <button type="button" className="save-popup-close" onClick={() => closeSavePopup(savePopupType === 'success')}>
+                  Fechar
+                </button>
+              </div>
+            </div>
+          )}
         </section>
       </div>
     </div>

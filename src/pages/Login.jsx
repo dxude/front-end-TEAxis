@@ -17,13 +17,19 @@ const Login = () => {
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingEmail, setLoadingEmail] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [showCaptchaPopup, setShowCaptchaPopup] = useState(false);
   const loginType = searchParams.get('type');
 
   const handleCaptcha = (value) => setCaptchaValido(!!value);
 
+  const handleCaptchaWarning = () => {
+    setShowCaptchaPopup(true);
+    setTimeout(() => setShowCaptchaPopup(false), 4200);
+  };
+
   const handleGoogleLogin = async () => {
     if (!captchaValido) {
-      alert("Por favor, confirme que você não é um robô antes de continuar.");
+      handleCaptchaWarning();
       return;
     }
 
@@ -38,7 +44,11 @@ const Login = () => {
       localStorage.setItem("login_method", "google");
       localStorage.setItem("user_email", user.email);
       localStorage.setItem("user_name", user.displayName || user.email);
+      localStorage.setItem("user_photo", user.photoURL || '');
       localStorage.setItem("teaxis_role", loginType || 'usuario');
+
+      // Notificar outras partes da app que o auth mudou
+      window.dispatchEvent(new Event('teaxis:auth_changed'));
 
       // Mostrar pop-up estilizado por pelo menos 7 segundos antes de redirecionar
       setShowLoginPopup(true);
@@ -82,7 +92,7 @@ const Login = () => {
     console.log('handleLoginEmail called', { email, senha, captchaValido });
 
     if (!captchaValido) {
-      alert("Por favor, confirme que você não é um robô antes de continuar.");
+      handleCaptchaWarning();
       return;
     }
 
@@ -102,13 +112,18 @@ const Login = () => {
       const data = await response.json();
       const teaxisToken = data.token;
 
-      // Tenta extrair nome retornado pela API (vários formatos possíveis)
+      // Tenta extrair nome e foto retornados pela API (vários formatos possíveis)
       const extractedName = data.user?.name || data.user?.displayName || data.name || data.nome || email;
+      const extractedPhoto = data.user?.photo || data.user?.photoURL || data.photoURL || data.foto || '';
 
       localStorage.setItem("teaxis_auth_token", teaxisToken);
       localStorage.setItem("teaxis_role", loginType || 'usuario');
       localStorage.setItem("user_email", email);
       localStorage.setItem("user_name", extractedName);
+      localStorage.setItem("user_photo", extractedPhoto);
+
+      // Notificar outras partes da app que o auth mudou
+      window.dispatchEvent(new Event('teaxis:auth_changed'));
 
       // Mostrar pop-up estilizado por pelo menos 7 segundos antes de redirecionar
       setShowLoginPopup(true);
@@ -226,23 +241,39 @@ const Login = () => {
               <h3>Bem-vindo(a) ao TEAxis</h3>
               <p>Após o login não esqueça de atualizar seus dados e informações em seu "Perfil".</p>
             </div>
-            <style>{`
-              .login-popup-backdrop {
-                position: fixed; inset: 0; display:flex; align-items:center; justify-content:center;
-                background: rgba(2,6,23,0.45); z-index: 9999;
-              }
-              .login-popup-card {
-                background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,249,255,0.98));
-                border-radius: 14px; padding: 28px; width: 360px; max-width: 92%; text-align:center;
-                box-shadow: 0 10px 40px rgba(2,6,23,0.35); font-family: 'Inter', system-ui, sans-serif;
-                color: #0f172a;
-              }
-              .login-popup-logo { width: 86px; height: auto; margin-bottom: 12px; }
-              .login-popup-card h3 { margin: 8px 0 6px; font-size: 1.1rem; color: #5b21b6; }
-              .login-popup-card p { margin: 0; color: #334155; font-size: 0.95rem; }
-            `}</style>
           </div>
         )}
+
+        {showCaptchaPopup && (
+          <div className="login-popup-backdrop" role="alert" aria-live="assertive">
+            <div className="login-popup-card login-popup-warning">
+              <img src={logoTeaxis} alt="TEAxis" className="login-popup-logo" />
+              <h3>Verificação necessária</h3>
+              <p>Antes de seguir, marque o reCAPTCHA para provar que você não é um robô.</p>
+            </div>
+          </div>
+        )}
+
+        <style>{`
+          .login-popup-backdrop {
+            position: fixed; inset: 0; display:flex; align-items:center; justify-content:center;
+            background: rgba(2,6,23,0.45); z-index: 9999;
+          }
+          .login-popup-card {
+            background: linear-gradient(180deg, rgba(219,234,254,0.98), rgba(191,219,254,0.98));
+            border-radius: 18px; padding: 28px; width: 360px; max-width: 92%; text-align:center;
+            box-shadow: 0 14px 50px rgba(15,23,42,0.25); font-family: 'Inter', system-ui, sans-serif;
+            color: #0f172a;
+            border: 1px solid rgba(59,130,246,0.18);
+          }
+          .login-popup-card.login-popup-warning {
+            background: linear-gradient(180deg, rgba(191,219,254,0.96), rgba(165,180,252,0.96));
+            border: 1px solid rgba(37,99,235,0.35);
+          }
+          .login-popup-logo { width: 86px; height: auto; margin-bottom: 12px; }
+          .login-popup-card h3 { margin: 8px 0 6px; font-size: 1.1rem; color: #1d4ed8; }
+          .login-popup-card p { margin: 0; color: #0f172a; font-size: 0.95rem; }
+        `}</style>
       </div>
     </div>
   );

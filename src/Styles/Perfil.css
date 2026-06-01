@@ -459,6 +459,69 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
 /* Animações e Mobile */
 .fade-in { animation: fadeIn 0.4s ease-out; }
 
+.save-popup-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 50;
+  padding: 1.5rem;
+}
+
+.save-popup-card {
+  width: min(420px, 100%);
+  background: rgba(255, 255, 255, 0.98);
+  border-radius: 26px;
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.25);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 2rem;
+  text-align: center;
+  animation: fadeInDown 0.35s ease-out;
+}
+
+.save-popup-card.success {
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+.save-popup-card.error {
+  border-color: rgba(239, 68, 68, 0.35);
+}
+
+.save-popup-logo {
+  width: 72px;
+  margin-bottom: 1rem;
+}
+
+.save-popup-card h3 {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem;
+  color: var(--text-dark);
+}
+
+.save-popup-card p {
+  color: #475569;
+  font-size: 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.save-popup-close {
+  background: var(--primary);
+  border: none;
+  color: white;
+  font-weight: 700;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.save-popup-close:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(30, 41, 59, 0.18);
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }

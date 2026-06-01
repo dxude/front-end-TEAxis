@@ -145,6 +145,15 @@ export default function MinhasMetas() {
   };
 
   const confirmLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('teaxis_auth_token');
+      localStorage.removeItem('teaxis_role');
+      localStorage.removeItem('login_method');
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_photo');
+      window.dispatchEvent(new Event('teaxis:auth_changed'));
+    }
     setShowLogoutModal(false);
     navigate('/login');
   };

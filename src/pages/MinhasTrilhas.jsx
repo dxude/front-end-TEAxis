@@ -197,7 +197,19 @@ export default function MinhasTrilhas() {
   const trilhasDisponíveis = TRILHAS_PRESETS.filter(p => !trilhasUsuario.find(u => u.id === p.id));
 
   const handleLogout = () => setShowLogoutModal(true);
-  const confirmLogout = () => { setShowLogoutModal(false); navigate('/login'); };
+  const confirmLogout = () => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('teaxis_auth_token');
+      localStorage.removeItem('teaxis_role');
+      localStorage.removeItem('login_method');
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_photo');
+      window.dispatchEvent(new Event('teaxis:auth_changed'));
+    }
+    setShowLogoutModal(false);
+    navigate('/login');
+  };
 
   return (
     <div className="trilhas-container-v2">
