@@ -3,7 +3,8 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FaStar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaCertificate, FaToolbox, FaCalendarAlt, FaSearch, FaUserCircle, FaSignOutAlt, FaComments, FaBullseye, FaArrowLeft } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/PerfilProfissionalDetalhado.css';
-import logoTeaxis from '../assets/imagens/fundoLogo.png'; 
+import logoTeaxis from '../assets/imagens/fundoLogo.png';
+import { carregarAgendamentos, salvarAgendamentos } from '../utils/dataSync';
 
 export default function PerfilProfissionalDetalhado() {
   const { id } = useParams(); 
@@ -94,6 +95,26 @@ export default function PerfilProfissionalDetalhado() {
     alert('Sua avaliação foi enviada com sucesso!');
     setUserRating(0);
     setUserReviewText('');
+  };
+
+  const handleAgendarConsulta = () => {
+    const userEmail = localStorage.getItem('user_email') || 'Usuário TEAxis';
+    const agendaAtual = carregarAgendamentos();
+    const novoId = agendaAtual.length > 0 ? Math.max(...agendaAtual.map(item => item.id)) + 1 : 1;
+    const novaConsulta = {
+      id: novoId,
+      profissional: professional.nome,
+      idProfissional: professional.id,
+      cliente: userEmail,
+      fromRole: 'usuario',
+      toRole: 'profissional',
+      data: '25/07/2025',
+      hora: '11:00',
+      status: 'Confirmado'
+    };
+    salvarAgendamentos([novaConsulta, ...agendaAtual]);
+    alert('Consulta agendada com sucesso! Verifique em Meus Agendamentos e no painel do profissional.');
+    navigate('/meus-agendamentos');
   };
 
   const handleLogout = () => {
@@ -191,7 +212,7 @@ export default function PerfilProfissionalDetalhado() {
             </div>
           </div>
           <div className="overview-actions">
-            <button className="btn-primary" onClick={() => alert('Agendamento de consulta iniciado!')}>
+            <button className="btn-primary" onClick={handleAgendarConsulta}>
               <FaCalendarAlt /> Agendar Consulta
             </button>
             <button className="btn-secondary" onClick={() => navigate('/mensagens')}>

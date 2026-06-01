@@ -1,41 +1,109 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaUserCircle, FaSignOutAlt, FaSearch, FaCalendarAlt, FaPaperPlane, FaReply, FaTrash, FaInfoCircle, FaCheck, FaArrowLeft } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/Mensagens.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
+import { carregarMensagens, salvarMensagens } from '../utils/dataSync';
 
 export default function Mensagens() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('recebidas'); 
   const [mensagemDetalhe, setMensagemDetalhe] = useState(null); 
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [userRole, setUserRole] = useState('usuario');
+  const [userName, setUserName] = useState('Usuário TEAxis');
+  const [destinatario, setDestinatario] = useState('');
+  const [assunto, setAssunto] = useState('');
+  const [texto, setTexto] = useState('');
+  const [mensagens, setMensagens] = useState([]);
+  const [mensagensRecebidas, setMensagensRecebidas] = useState([]);
+  const [mensagensEnviadas, setMensagensEnviadas] = useState([]);
 
-  const [mensagensRecebidas, setMensagensRecebidas] = useState([
-    { id: 1, remetente: 'Dra. Helena Costa', assunto: 'Confirmar consulta', data: '2025-07-08', lida: false, texto: 'Olá, gostaria de confirmar nossa sessão de amanhã às 10h. Se precisar reagendar, me avise!' },
-    { id: 2, remetente: 'Dr. Lucas Ribeiro', assunto: 'Feedback da sessão', data: '2025-07-05', lida: true, texto: 'Olá, espero que a sessão de hoje tenha sido produtiva. Fico à disposição para qualquer dúvida.' },
-  ]);
+  useEffect(() => {
+    const storedRole = localStorage.getItem('teaxis_role') || 'usuario';
+    const storedEmail = localStorage.getItem('user_email') || 'Usuário TEAxis';
+    setUserRole(storedRole);
+    setUserName(storedEmail);
 
-  const [mensagensEnviadas, setMensagensEnviadas] = useState([
-    { id: 101, destinatario: 'Dra. Mariana Santos', assunto: 'Dúvida sobre trilha', data: '2025-07-07', texto: 'Olá Dra. Mariana, tenho uma dúvida sobre o módulo 3 da trilha de organização.' },
-  ]);
+    const syncMessages = () => {
+      const allMessages = carregarMensagens();
+      setMensagens(allMessages);
+      const recebidas = allMessages.filter(msg => msg.toRole === storedRole);
+      const enviadas = allMessages.filter(msg => msg.fromRole === storedRole);
+      setMensagensRecebidas(recebidas);
+      setMensagensEnviadas(enviadas);
+    };
+
+    syncMessages();
+    const handleStorage = (event) => {
+      if (!event.key || event.key === 'teaxis_mensagens') {
+        syncMessages();
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    const interval = setInterval(syncMessages, 500);
+
+    return () => {
+      window.removeEventListener('storage', handleStorage);
+      clearInterval(interval);
+    };
+  }, []);
+
+  const updateStorage = (updatedMessages) => {
+    setMensagens(updatedMessages);
+    salvarMensagens(updatedMessages);
+    setMensagensRecebidas(updatedMessages.filter(msg => msg.toRole === userRole));
+    setMensagensEnviadas(updatedMessages.filter(msg => msg.fromRole === userRole));
+  };
 
   const handleMarcarLida = (id, tipo) => {
-    if (tipo === 'recebidas') {
-      setMensagensRecebidas(mensagensRecebidas.map(msg => msg.id === id ? { ...msg, lida: true } : msg ));
+    if (tipo !== 'recebidas') {
+      setMensagemDetalhe(null);
+      return;
     }
-    setMensagemDetalhe(null); 
+
+    const updatedMessages = mensagens.map(msg => msg.id === id ? { ...msg, lida: true } : msg);
+    updateStorage(updatedMessages);
+    setMensagemDetalhe(null);
   };
 
   const handleExcluirMensagem = (id, tipo) => {
-    if (window.confirm('Tem certeza que deseja excluir esta mensagem?')) {
-      if (tipo === 'recebidas') {
-        setMensagensRecebidas(mensagensRecebidas.filter(msg => msg.id !== id));
-      } else {
-        setMensagensEnviadas(mensagensEnviadas.filter(msg => msg.id !== id));
-      }
-      setMensagemDetalhe(null); 
+    if (!window.confirm('Tem certeza que deseja excluir esta mensagem?')) return;
+
+    const updatedMessages = mensagens.filter(msg => msg.id !== id);
+    updateStorage(updatedMessages);
+    setMensagemDetalhe(null);
+  };
+
+  const handleEnviarMensagem = (e) => {
+    e.preventDefault();
+
+    if (!destinatario.trim() || !assunto.trim() || !texto.trim()) {
+      alert('Preencha destinatário, assunto e mensagem antes de enviar.');
+      return;
     }
+
+    const newId = mensagens.length > 0 ? Math.max(...mensagens.map(msg => msg.id)) + 1 : 1;
+    const newMessage = {
+      id: newId,
+      fromName: userName,
+      toName: destinatario.trim(),
+      fromRole: userRole,
+      toRole: userRole === 'profissional' ? 'usuario' : 'profissional',
+      subject: assunto.trim(),
+      body: texto.trim(),
+      date: new Date().toISOString().slice(0, 10),
+      lida: false
+    };
+
+    const updatedMessages = [newMessage, ...mensagens];
+    updateStorage(updatedMessages);
+    setDestinatario('');
+    setAssunto('');
+    setTexto('');
+    setActiveTab('enviadas');
+    alert('Mensagem enviada com sucesso!');
   };
 
   return (
@@ -45,7 +113,7 @@ export default function Mensagens() {
       {/* HEADER DE VIDRO IDÊNTICO AO BUSCARESPECIALISTA */}
       <header className="mensagens-header-glass">
         <div className="header-left">
-          <Link to="/dashboard-usuario" className="back-to-space-btn">
+          <Link to={userRole === 'profissional' ? '/dashboard-profissional' : '/dashboard-usuario'} className="back-to-space-btn">
             <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
           </Link>
           <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo-small" />
@@ -99,11 +167,11 @@ export default function Mensagens() {
                   mensagensRecebidas.map(msg => (
                     <div key={msg.id} className={`mensagem-card-premium ${msg.lida ? '' : 'nao-lida'} ${mensagemDetalhe?.id === msg.id ? 'selected' : ''}`} onClick={() => setMensagemDetalhe(msg)}> 
                       <div className="card-header">
-                        <span className="remetente">{msg.remetente}</span>
-                        <span className="data">{msg.data}</span>
+                        <span className="remetente">{msg.fromName}</span>
+                        <span className="data">{msg.date}</span>
                       </div>
-                      <p className="assunto">{!msg.lida && <span className="unread-dot"></span>}{msg.assunto}</p>
-                      <p className="preview">{msg.texto.substring(0, 80)}...</p>
+                      <p className="assunto">{!msg.lida && <span className="unread-dot"></span>}{msg.subject}</p>
+                      <p className="preview">{msg.body.substring(0, 80)}...</p>
                     </div>
                   ))
                 ) : (
@@ -114,11 +182,11 @@ export default function Mensagens() {
                   mensagensEnviadas.map(msg => (
                     <div key={msg.id} className={`mensagem-card-premium ${mensagemDetalhe?.id === msg.id ? 'selected' : ''}`} onClick={() => setMensagemDetalhe(msg)}>
                       <div className="card-header">
-                        <span className="remetente">Para: {msg.destinatario}</span>
-                        <span className="data">{msg.data}</span>
+                        <span className="remetente">Para: {msg.toName}</span>
+                        <span className="data">{msg.date}</span>
                       </div>
-                      <p className="assunto">{msg.assunto}</p>
-                      <p className="preview">{msg.texto.substring(0, 80)}...</p>
+                      <p className="assunto">{msg.subject}</p>
+                      <p className="preview">{msg.body.substring(0, 80)}...</p>
                     </div>
                   ))
                 ) : (
@@ -134,15 +202,15 @@ export default function Mensagens() {
               <div className="mensagem-detalhe-premium">
                 <div className="detalhe-header">
                   <div>
-                    <h3>{mensagemDetalhe.assunto}</h3>
-                    <p><strong>{activeTab === 'recebidas' ? 'De:' : 'Para:'}</strong> {mensagemDetalhe.remetente || mensagemDetalhe.destinatario}</p>
-                    <span className="data-detalhe">{mensagemDetalhe.data}</span>
+                    <h3>{mensagemDetalhe.subject}</h3>
+                    <p><strong>{activeTab === 'recebidas' ? 'De:' : 'Para:'}</strong> {activeTab === 'recebidas' ? mensagemDetalhe.fromName : mensagemDetalhe.toName}</p>
+                    <span className="data-detalhe">{mensagemDetalhe.date}</span>
                   </div>
                   <button className="btn-close-detalhe" onClick={() => setMensagemDetalhe(null)}>✕</button>
                 </div>
                 
                 <div className="detalhe-body">
-                  <p className="mensagem-texto">{mensagemDetalhe.texto}</p>
+                  <p className="mensagem-texto">{mensagemDetalhe.body}</p>
                 </div>
 
                 <div className="detalhe-actions">
@@ -158,10 +226,31 @@ export default function Mensagens() {
             ) : (
               <div className="nova-mensagem-premium">
                 <h2><FaPaperPlane /> Enviar Nova Mensagem</h2>
-                <form className="form-nova-mensagem">
-                  <input type="text" placeholder="Destinatário (nome do profissional)" className="input-premium" required />
-                  <input type="text" placeholder="Assunto" className="input-premium" required />
-                  <textarea placeholder="Escreva sua mensagem aqui..." rows="8" className="textarea-premium" required></textarea>
+                <form className="form-nova-mensagem" onSubmit={handleEnviarMensagem}>
+                  <input
+                    type="text"
+                    placeholder="Destinatário (nome do profissional)"
+                    className="input-premium"
+                    required
+                    value={destinatario}
+                    onChange={(e) => setDestinatario(e.target.value)}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Assunto"
+                    className="input-premium"
+                    required
+                    value={assunto}
+                    onChange={(e) => setAssunto(e.target.value)}
+                  />
+                  <textarea
+                    placeholder="Escreva sua mensagem aqui..."
+                    rows="8"
+                    className="textarea-premium"
+                    required
+                    value={texto}
+                    onChange={(e) => setTexto(e.target.value)}
+                  />
                   <button type="submit" className="btn-action-premium primary submit-btn">Enviar Mensagem</button>
                 </form>
               </div>

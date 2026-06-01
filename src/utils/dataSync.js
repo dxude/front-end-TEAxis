@@ -241,3 +241,89 @@ export const calcularXPTotal = (trilhasUsuario) => {
   
   return xpTotal;
 };
+
+const MENSAGENS_KEY = 'teaxis_mensagens';
+const AGENDAMENTOS_KEY = 'teaxis_agendamentos';
+
+const defaultMensagens = [
+  {
+    id: 1,
+    fromName: 'Dra. Helena Costa',
+    toName: 'Usuário TEAxis',
+    fromRole: 'profissional',
+    toRole: 'usuario',
+    subject: 'Confirmar consulta',
+    body: 'Olá, gostaria de confirmar nossa sessão de amanhã às 10h. Se precisar reagendar, me avise!',
+    date: '2025-07-08',
+    lida: false
+  },
+  {
+    id: 2,
+    fromName: 'Dr. Lucas Ribeiro',
+    toName: 'Usuário TEAxis',
+    fromRole: 'profissional',
+    toRole: 'usuario',
+    subject: 'Feedback da sessão',
+    body: 'Olá, espero que a sessão de hoje tenha sido produtiva. Fico à disposição para qualquer dúvida.',
+    date: '2025-07-05',
+    lida: true
+  },
+  {
+    id: 101,
+    fromName: 'Usuário TEAxis',
+    toName: 'Dra. Mariana Santos',
+    fromRole: 'usuario',
+    toRole: 'profissional',
+    subject: 'Dúvida sobre trilha',
+    body: 'Olá Dra. Mariana, tenho uma dúvida sobre o módulo 3 da trilha de organização.',
+    date: '2025-07-07',
+    lida: true
+  }
+];
+
+const defaultAgendamentos = [
+  {
+    id: 1,
+    profissional: 'Dra. Helena Costa',
+    idProfissional: 1,
+    cliente: 'Usuário TEAxis',
+    fromRole: 'usuario',
+    toRole: 'profissional',
+    data: '15/07/2025',
+    hora: '10:00',
+    status: 'Confirmado'
+  },
+  {
+    id: 2,
+    profissional: 'Dr. Lucas Ribeiro',
+    idProfissional: 2,
+    cliente: 'Usuário TEAxis',
+    fromRole: 'usuario',
+    toRole: 'profissional',
+    data: '20/07/2025',
+    hora: '14:30',
+    status: 'Confirmado'
+  }
+];
+
+export const carregarMensagens = () => {
+  if (typeof window === 'undefined') return defaultMensagens;
+  const raw = localStorage.getItem(MENSAGENS_KEY);
+  return raw ? JSON.parse(raw) : defaultMensagens;
+};
+
+export const salvarMensagens = (mensagens) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(MENSAGENS_KEY, JSON.stringify(mensagens));
+};
+
+export const carregarAgendamentos = () => {
+  if (typeof window === 'undefined') return defaultAgendamentos;
+  const raw = localStorage.getItem(AGENDAMENTOS_KEY);
+  return raw ? JSON.parse(raw) : defaultAgendamentos;
+};
+
+export const salvarAgendamentos = (agendamentos) => {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(AGENDAMENTOS_KEY, JSON.stringify(agendamentos));
+};

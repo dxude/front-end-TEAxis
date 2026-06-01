@@ -6,6 +6,7 @@ import LogoutModal from '../components/LogoutModal';
 import Sidebar from '../components/Sidebar';
 import '../Styles/DashboardUsuario.css';
 import axisImg from '../assets/imagens/axis-sorridente.png';
+import { carregarAgendamentos, carregarMensagens } from '../utils/dataSync';
 
 export default function DashboardUsuario() {
   const navigate = useNavigate();
@@ -28,8 +29,10 @@ export default function DashboardUsuario() {
     progressoMedio: 0,
   });
   const [animacaoUpdate, setAnimacaoUpdate] = useState(false);
+  const [agendamentosUsuario, setAgendamentosUsuario] = useState([]);
+  const [mensagensNaoLidas, setMensagensNaoLidas] = useState(0);
 
-  const proximosAgendamentos = [
+  const defaultProximosAgendamentos = [
     { id: 1, profissional: 'Dra. Ana Silva', data: '15/07/2025', hora: '10:00' },
     { id: 2, profissional: 'Dr. João Pereira', data: '20/07/2025', hora: '14:30' },
   ];
@@ -46,6 +49,18 @@ export default function DashboardUsuario() {
       const metasStorage = localStorage.getItem('minhas_metas');
       const metas = metasStorage ? JSON.parse(metasStorage) : [];
       setMetasUsuario(metas);
+
+      // Carrega agendamentos compartilhados
+      const userEmail = localStorage.getItem('user_email');
+      const agenda = carregarAgendamentos();
+      const agendamentosFiltrados = userEmail
+        ? agenda.filter(item => item.cliente === userEmail)
+        : agenda.filter(item => item.toRole === 'usuario');
+      setAgendamentosUsuario(agendamentosFiltrados.length > 0 ? agendamentosFiltrados : defaultProximosAgendamentos);
+
+      // Carrega mensagens compartilhadas
+      const mensagens = carregarMensagens();
+      setMensagensNaoLidas(mensagens.filter(msg => msg.toRole === 'usuario' && !msg.lida).length);
 
       // Calcula estatísticas em tempo real
       calcularEstatisticas(trilhas, metas);
@@ -132,6 +147,7 @@ export default function DashboardUsuario() {
             <span className="hero-eyebrow">Painel do Usuário</span>
             <h1>{userName}, seu centro de apoio está pronto.</h1>
             <p>Organize seus agendamentos, acompanhe trilhas e encontre apoio com um visual leve e intuitivo.</p>
+            <p className="hero-subnote">Você tem <strong>{agendamentosUsuario.length}</strong> agendamentos e <strong>{mensagensNaoLidas}</strong> mensagens não lidas.</p>
             <div className="hero-buttons">
               <Link to="/buscar-profissionais" className="btn btn-primary">Encontrar Especialista</Link>
               <Link to="/minhas-trilhas" className="btn btn-secondary">Explorar Trilhas</Link>
@@ -277,9 +293,9 @@ export default function DashboardUsuario() {
               </div>
               <div className="status-content">
                 <h3>Próximos Agendamentos</h3>
-                {proximosAgendamentos.length > 0 ? (
+                {agendamentosUsuario.length > 0 ? (
                   <div className="status-items">
-                    {proximosAgendamentos.slice(0, 2).map(agendamento => (
+                    {agendamentosUsuario.slice(0, 2).map(agendamento => (
                       <div key={agendamento.id} className="status-item">
                         <FaClock className="item-icon" />
                         <span>{agendamento.profissional} - {agendamento.data}</span>

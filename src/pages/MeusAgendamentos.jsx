@@ -1,44 +1,25 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaCalendarAlt, FaUserCircle, FaSignOutAlt, FaSearch, FaTimesCircle, FaCheckCircle, FaInfoCircle, FaStar, FaArrowLeft, FaVideo } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/MeusAgendamentos.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
+import { carregarAgendamentos } from '../utils/dataSync';
 
 export default function MeusAgendamentos() {
   const navigate = useNavigate();
 
-  const [agendamentos, setAgendamentos] = useState([
-    {
-      id: 1,
-      profissional: 'Dra. Helena Costa',
-      especializacao: 'Psicologia',
-      data: '15/07/2025',
-      hora: '10:00',
-      status: 'Confirmado',
-      linkSala: '#',
-      idProfissional: 1
-    },
-    {
-      id: 2,
-      profissional: 'Dr. Lucas Ribeiro',
-      especializacao: 'Terapia Ocupacional',
-      data: '20/07/2025',
-      hora: '14:30',
-      status: 'Confirmado',
-      linkSala: '#',
-      idProfissional: 2
-    },
-    {
-      id: 3,
-      profissional: 'Dra. Mariana Santos',
-      especializacao: 'Psicopedagogia',
-      data: '10/06/2025',
-      hora: '09:00',
-      status: 'Concluído',
-      idProfissional: 3
-    },
-  ]);
+  const [agendamentos, setAgendamentos] = useState([]);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  useEffect(() => {
+    const userEmail = localStorage.getItem('user_email');
+    const agenda = carregarAgendamentos();
+    const filtered = userEmail
+      ? agenda.filter(item => item.cliente === userEmail)
+      : agenda.filter(item => item.toRole === 'usuario');
+    setAgendamentos(filtered.length > 0 ? filtered : agenda.filter(item => item.toRole === 'usuario'));
+  }, []);
 
   const handleCancelamento = (idAgendamento) => {
     navigate(`/cancelar/${idAgendamento}`);
@@ -55,8 +36,6 @@ export default function MeusAgendamentos() {
   const handleAvaliar = (idProfissional) => {
     navigate(`/avaliar/${idProfissional}`);
   };
-
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
     setShowLogoutModal(true);

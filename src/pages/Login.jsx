@@ -29,13 +29,18 @@ const Login = () => {
       setLoadingGoogle(true);
       const { user, token } = await signInWithGoogle();
 
-      // Salvar token no localStorage para autenticação
+      // Salvar token e papel no localStorage para autenticação simulada
       localStorage.setItem("teaxis_auth_token", token);
       localStorage.setItem("login_method", "google");
       localStorage.setItem("user_email", user.email);
+      localStorage.setItem("teaxis_role", loginType || 'usuario');
 
       alert("✅ Login com Google realizado com sucesso!");
-      navigate("/dashboard-usuario");
+      if (loginType === 'profissional') {
+        navigate('/dashboard-profissional');
+      } else {
+        navigate('/dashboard-usuario');
+      }
     } catch (error) {
       console.error("Detalhes do erro de login com Google:", error);
       console.error("Código do erro:", error.code);
@@ -86,8 +91,13 @@ const Login = () => {
       const teaxisToken = data.token;
 
       localStorage.setItem("teaxis_auth_token", teaxisToken);
+      localStorage.setItem("teaxis_role", loginType || 'usuario');
       alert("✅ Login realizado com sucesso! Redirecionando...");
-      navigate("/dashboard-usuario");
+      if (loginType === 'profissional') {
+        navigate('/dashboard-profissional');
+      } else {
+        navigate('/dashboard-usuario');
+      }
     } catch (error) {
       alert(error.message || String(error));
     } finally {

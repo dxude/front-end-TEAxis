@@ -18,6 +18,9 @@ import MinhasTrilhas from './pages/MinhasTrilhas';
 import JogosEducativos from './pages/JogosEducativos';
 import Mensagens from './pages/Mensagens';
 import MeuProgresso from './pages/MeuProgresso';
+import MinhaAgenda from './pages/MinhaAgenda';
+import MeusClientes from './pages/MeusClientes';
+import Relatorios from './pages/Relatorios';
 import RemarcarAgendamento from './pages/RemarcarAgendamento';
 import AvaliarProfissional from './pages/AvaliarProfissional';
 import SalaAgendamento from './pages/SalaAgendamento';
@@ -37,6 +40,9 @@ function App() {
     '/buscar-profissionais',
     '/minhas-metas',
     '/meus-agendamentos',
+    '/minha-agenda',
+    '/meus-clientes',
+    '/relatorios',
     '/minhas-trilhas',
     '/jogos-educativos',
     '/mensagens',
@@ -63,6 +69,9 @@ function App() {
           <Route path="/minhas-metas" element={<MinhasMetas />} />
           <Route path="/perfil-profissional/:id" element={<PerfilProfissionalDetalhado />} />
           <Route path="/meus-agendamentos" element={<MeusAgendamentos />} />
+          <Route path="/minha-agenda" element={<MinhaAgenda />} />
+          <Route path="/meus-clientes" element={<MeusClientes />} />
+          <Route path="/relatorios" element={<Relatorios />} />
           <Route path="/remarcar/:id" element={<RemarcarAgendamento />} />
           <Route path="/avaliar/:idProfissional" element={<AvaliarProfissional />} />
           <Route path="/sala/:id" element={<SalaAgendamento />} />

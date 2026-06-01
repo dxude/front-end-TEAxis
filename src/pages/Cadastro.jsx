@@ -165,9 +165,18 @@ const Cadastro = () => {
   const handleSimulatedGoogle = () => {
     setSimPopupMessage('Modo Google simulado - redirecionando...');
     setShowSimPopup(true);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('teaxis_role', perfil || 'usuario');
+      localStorage.setItem('login_method', 'google_simulado');
+      localStorage.setItem('teaxis_auth_token', 'demo_google_token');
+    }
     setTimeout(() => {
       setShowSimPopup(false);
-      navigate('/dashboard-usuario');
+      if (perfil === 'profissional') {
+        navigate('/dashboard-profissional');
+      } else {
+        navigate('/dashboard-usuario');
+      }
     }, 1000);
   };
 
