@@ -22,6 +22,9 @@ export default function DashboardProfissional() {
 
   useEffect(() => {
     const syncDashboard = () => {
+      // Ler nome do profissional salvo no login, se existir
+      const savedName = localStorage.getItem('user_name');
+      if (savedName) setProfessionalName(savedName);
       const agenda = carregarAgendamentos();
       const profAgenda = agenda.filter(item => item.toRole === 'profissional');
       if (profAgenda.length > 0) {

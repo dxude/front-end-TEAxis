@@ -4,6 +4,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import "../Styles/Login.css";
 import { FaGoogle, FaEnvelope, FaLock, FaHeart } from "react-icons/fa";
 import { signInWithGoogle } from "../firebase";
+import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
 const API_LOGIN_EMAIL = "https://back-end-plataforma-teaxis.onrender.com/api/v1/auth/login";
 
@@ -15,6 +16,7 @@ const Login = () => {
   const [senha, setSenha] = useState("");
   const [loadingGoogle, setLoadingGoogle] = useState(false);
   const [loadingEmail, setLoadingEmail] = useState(false);
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
   const loginType = searchParams.get('type');
 
   const handleCaptcha = (value) => setCaptchaValido(!!value);
@@ -31,18 +33,23 @@ const Login = () => {
       const { user, token } = await signInWithGoogle();
 
       console.log('✅ Google auth sucesso:', user.email);
-      // Salvar token e papel no localStorage
+      // Salvar token, papel, email e nome no localStorage
       localStorage.setItem("teaxis_auth_token", token);
       localStorage.setItem("login_method", "google");
       localStorage.setItem("user_email", user.email);
+      localStorage.setItem("user_name", user.displayName || user.email);
       localStorage.setItem("teaxis_role", loginType || 'usuario');
 
-      alert("✅ Login com Google realizado com sucesso!");
-      if (loginType === 'profissional') {
-        navigate('/dashboard-profissional');
-      } else {
-        navigate('/dashboard-usuario');
-      }
+      // Mostrar pop-up estilizado por pelo menos 7 segundos antes de redirecionar
+      setShowLoginPopup(true);
+      setTimeout(() => {
+        setShowLoginPopup(false);
+        if (loginType === 'profissional') {
+          navigate('/dashboard-profissional');
+        } else {
+          navigate('/dashboard-usuario');
+        }
+      }, 7000);
     } catch (error) {
       console.error("❌ ERRO de login com Google:", error);
       console.error("Código:", error.code);
@@ -95,14 +102,24 @@ const Login = () => {
       const data = await response.json();
       const teaxisToken = data.token;
 
+      // Tenta extrair nome retornado pela API (vários formatos possíveis)
+      const extractedName = data.user?.name || data.user?.displayName || data.name || data.nome || email;
+
       localStorage.setItem("teaxis_auth_token", teaxisToken);
       localStorage.setItem("teaxis_role", loginType || 'usuario');
-      alert("✅ Login realizado com sucesso! Redirecionando...");
-      if (loginType === 'profissional') {
-        navigate('/dashboard-profissional');
-      } else {
-        navigate('/dashboard-usuario');
-      }
+      localStorage.setItem("user_email", email);
+      localStorage.setItem("user_name", extractedName);
+
+      // Mostrar pop-up estilizado por pelo menos 7 segundos antes de redirecionar
+      setShowLoginPopup(true);
+      setTimeout(() => {
+        setShowLoginPopup(false);
+        if (loginType === 'profissional') {
+          navigate('/dashboard-profissional');
+        } else {
+          navigate('/dashboard-usuario');
+        }
+      }, 7000);
     } catch (error) {
       alert(error.message || String(error));
     } finally {
@@ -202,6 +219,30 @@ const Login = () => {
             Não tem conta? <Link to="/cadastro">Crie sua conta aqui!</Link>
           </p>
         </div>
+        {showLoginPopup && (
+          <div className="login-popup-backdrop" role="dialog" aria-modal="true">
+            <div className="login-popup-card">
+              <img src={logoTeaxis} alt="TEAxis" className="login-popup-logo" />
+              <h3>Bem-vindo(a) ao TEAxis</h3>
+              <p>Após o login não esqueça de atualizar seus dados e informações em seu "Perfil".</p>
+            </div>
+            <style>{`
+              .login-popup-backdrop {
+                position: fixed; inset: 0; display:flex; align-items:center; justify-content:center;
+                background: rgba(2,6,23,0.45); z-index: 9999;
+              }
+              .login-popup-card {
+                background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,249,255,0.98));
+                border-radius: 14px; padding: 28px; width: 360px; max-width: 92%; text-align:center;
+                box-shadow: 0 10px 40px rgba(2,6,23,0.35); font-family: 'Inter', system-ui, sans-serif;
+                color: #0f172a;
+              }
+              .login-popup-logo { width: 86px; height: auto; margin-bottom: 12px; }
+              .login-popup-card h3 { margin: 8px 0 6px; font-size: 1.1rem; color: #5b21b6; }
+              .login-popup-card p { margin: 0; color: #334155; font-size: 0.95rem; }
+            `}</style>
+          </div>
+        )}
       </div>
     </div>
   );

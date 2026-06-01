@@ -251,7 +251,15 @@ export default function Sidebar({
 
         <div className="sidebar-header-premium">
           <img src={logoTeaxis} alt="Logo TEAxis" className="sidebar-logo-premium" />
-          <p className="user-welcome-premium">Olá, {userName}!</p>
+          <p className="user-welcome-premium">{
+            (() => {
+              try {
+                const role = typeof window !== 'undefined' ? localStorage.getItem('teaxis_role') : null;
+                if (role === 'profissional') return `Olá, ${userName}`;
+              } catch (e) {}
+              return `Olá, seja bem vindo, ${userName}`;
+            })()
+          }</p>
           <span className="user-badge">Meu Espaço</span>
         </div>
 

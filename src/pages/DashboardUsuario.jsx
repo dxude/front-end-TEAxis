@@ -40,6 +40,9 @@ export default function DashboardUsuario() {
   // 🔄 Sincronização com localStorage em tempo real
   useEffect(() => {
     const sincronizarDados = () => {
+      // Carrega nome do usuário salvo no login
+      const savedName = localStorage.getItem('user_name');
+      if (savedName) setUserName(savedName);
       // Carrega trilhas do localStorage
       const trilhasStorage = localStorage.getItem('trilhas_usuario');
       const trilhas = trilhasStorage ? JSON.parse(trilhasStorage) : [];
