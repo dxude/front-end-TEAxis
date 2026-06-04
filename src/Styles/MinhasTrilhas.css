@@ -140,7 +140,7 @@
 
 .header-logo-v2 {
   height: 40px;
-  animation: float 3s ease-in-out infinite;
+  animation: none;
 }
 
 .header-nav-v2 {
