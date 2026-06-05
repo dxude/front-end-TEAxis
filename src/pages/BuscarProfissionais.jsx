@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaArrowLeft, FaGraduationCap } from 'react-icons/fa';
+import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaArrowLeft, FaGraduationCap, FaBookOpen, FaBullseye } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/BuscarProfissionais.css';
-import logoTeaxis from '../assets/imagens/fundoLogo.png';
+import logoPlataforma from '../assets/imagens/fundoLogo.png';
 
 export default function BuscarProfissionais() {
   const navigate = useNavigate();
@@ -19,12 +19,7 @@ export default function BuscarProfissionais() {
 
   const confirmLogout = () => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('teaxis_auth_token');
-      localStorage.removeItem('teaxis_role');
-      localStorage.removeItem('login_method');
-      localStorage.removeItem('user_email');
-      localStorage.removeItem('user_name');
-      localStorage.removeItem('user_photo');
+      localStorage.clear();
       window.dispatchEvent(new Event('teaxis:auth_changed'));
     }
     setShowLogoutModal(false);
@@ -35,53 +30,47 @@ export default function BuscarProfissionais() {
     {
       id: 1,
       nome: 'Dra. Helena Costa',
-      especializacao: 'Psicologia (TDAH, Ansiedade)',
+      especializacao: 'Psicologia',
+      sub: 'TDAH, Ansiedade',
       avaliacao: 4.9,
       foto: 'https://randomuser.me/api/portraits/women/68.jpg', 
-      metodos: ['Terapia Cognitivo-Comportamental', 'Mindfulness'],
-      certificacoes: ['CRP 123456', 'Pós-graduação em Neuropsicologia'],
       bio: 'Especialista em TDAH e ansiedade, com foco em adolescentes e adultos. Atendimento online e presencial em São Paulo.',
       localidades: ['São Paulo - SP', 'Online']
     },
     {
       id: 2,
       nome: 'Dr. Lucas Ribeiro',
-      especializacao: 'Terapia Ocupacional (TEA, Infantil)',
+      especializacao: 'Terapia Ocupacional',
+      sub: 'TEA, Infantil',
       avaliacao: 4.7,
       foto: 'https://randomuser.me/api/portraits/men/82.jpg',
-      metodos: ['Integração Sensorial', 'ABA'],
-      certificacoes: ['CREFITO 789012'],
-      bio: 'Terapeuta ocupacional com vasta experiência em TEA e desenvolvimento infantil. Ajudo crianças a desenvolverem autonomia e habilidades essenciais.',
+      bio: 'Terapeuta ocupacional com vasta experiência em TEA e desenvolvimento infantil. Ajudo crianças a desenvolverem autonomia e habilidades.',
       localidades: ['Rio de Janeiro - RJ', 'Online']
     },
     {
       id: 3,
       nome: 'Dra. Mariana Santos',
-      especializacao: 'Psicopedagogia (Dislexia)',
+      especializacao: 'Psicopedagogia',
+      sub: 'Dislexia',
       avaliacao: 4.8,
       foto: 'https://randomuser.me/api/portraits/women/44.jpg',
-      metodos: ['Avaliação Psicopedagógica', 'Intervenção Neurocognitiva'],
-      certificacoes: ['ABP 34567'],
-      bio: 'Psicopedagoga especializada em dislexia e transtornos de aprendizagem. Trabalho com estratégias individualizadas para o sucesso escolar.',
+      bio: 'Psicopedagoga especializada em dislexia e transtornos de aprendizagem. Trabalho com estratégias individualizadas.',
       localidades: ['Belo Horizonte - MG', 'Online']
     },
     {
       id: 4,
       nome: 'Dr. Carlos Lima',
-      especializacao: 'Fonoaudiologia (TEA, Linguagem)',
+      especializacao: 'Fonoaudiologia',
+      sub: 'TEA, Linguagem',
       avaliacao: 4.6,
       foto: 'https://randomuser.me/api/portraits/men/7.jpg',
-      metodos: ['Terapia da Linguagem', 'Comunicação Alternativa'],
-      certificacoes: ['CRFA 987654'],
-      bio: 'Fonoaudiólogo com experiência em desenvolvimento da comunicação e linguagem em crianças com TEA. Atendimento humanizado e focado nas necessidades individuais.',
+      bio: 'Fonoaudiólogo com experiência em desenvolvimento da comunicação e linguagem em crianças com TEA.',
       localidades: ['Online']
     },
   ]);
 
   const handleSearch = (e) => {
     e.preventDefault();
-    console.log('Buscando:', { searchTerm, especializacao, localizacao, disponibilidade });
-
     const filtered = profissionais.filter(prof => {
       const matchesSearchTerm = searchTerm ? prof.nome.toLowerCase().includes(searchTerm.toLowerCase()) : true;
       const matchesEspecializacao = especializacao ? prof.especializacao.toLowerCase().includes(especializacao.toLowerCase()) : true;
@@ -92,47 +81,40 @@ export default function BuscarProfissionais() {
   };
 
   return (
-    <div className="buscar-profissionais-container">
+    <div className="buscar-page-premium">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       
-      {/* HEADER DE VIDRO */}
-      <header className="buscar-header-glass">
+      {/* NAVBAR DE VIDRO PREMIUM */}
+      <header className="header-glass-premium">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">
-            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
+            <FaArrowLeft className="back-icon" /> Voltar
           </Link>
-          <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo-small" />
+          <img src={logoPlataforma} alt="Logo" className="header-logo-small" />
         </div>
         <nav className="header-nav-glass">
-          <Link to="/buscar-profissionais" className="nav-link-glass active">
-            <FaSearch className="nav-icon" /> Buscar
-          </Link>
-          <Link to="/meus-agendamentos" className="nav-link-glass">
-            <FaCalendarAlt className="nav-icon" /> Agendamentos
-          </Link>
-          <Link to="/perfil" className="nav-link-glass">
-            <FaUserCircle className="nav-icon" /> Perfil
-          </Link>
-          <button onClick={handleLogout} className="nav-link-glass logout-btn">
-            <FaSignOutAlt className="nav-icon" /> Sair
-          </button>
+          <Link to="/buscar-profissionais" className="nav-link-glass active"><FaSearch /> Buscar</Link>
+          <Link to="/meus-agendamentos" className="nav-link-glass"><FaCalendarAlt /> Agendamentos</Link>
+          <Link to="/minhas-trilhas" className="nav-link-glass"><FaBookOpen /> Trilhas</Link>
+          <Link to="/perfil" className="nav-link-glass"><FaUserCircle /> Perfil</Link>
+          <button onClick={handleLogout} className="nav-link-glass logout-btn"><FaSignOutAlt /> Sair</button>
         </nav>
       </header>
 
-      {/* BACKGROUND DECORATIVO */}
+      {/* BACKGROUND DECORATIVO ANIMADO */}
       <div className="bg-shapes">
         <div className="shape shape-1"></div>
         <div className="shape shape-2"></div>
       </div>
 
-      <main className="search-main-content">
-        <div className="search-hero-text">
+      <main className="main-content-glass">
+        <div className="search-hero-text fade-in">
           <h1>Encontre o Especialista Certo</h1>
           <p className="subtitle">Utilize a busca inteligente para encontrar profissionais que entendam a sua jornada.</p>
         </div>
 
-        {/* FORMULÁRIO DE BUSCA GLASSMORPHISM */}
-        <form onSubmit={handleSearch} className="search-form-glass">
+        {/* FORMULÁRIO DE BUSCA DE VIDRO */}
+        <form onSubmit={handleSearch} className="glass-panel-dashboard fade-in delay-1 search-form-glass">
           <div className="search-input-wrapper">
             <FaSearch className="search-icon-inside" />
             <input
@@ -150,10 +132,6 @@ export default function BuscarProfissionais() {
               <option value="terapia ocupacional">Terapia Ocupacional</option>
               <option value="psicopedagogia">Psicopedagogia</option>
               <option value="fonoaudiologia">Fonoaudiologia</option>
-              <option value="tdah">Foco em TDAH</option>
-              <option value="tea">Foco em TEA</option>
-              <option value="ansiedade">Ansiedade</option>
-              <option value="dislexia">Dislexia</option>
             </select>
             <input
               type="text"
@@ -168,30 +146,33 @@ export default function BuscarProfissionais() {
               <option value="esta semana">Esta Semana</option>
               <option value="online">Atendimento Online</option>
             </select>
-            <button type="submit" className="btn-moderno-primary search-btn-submit">
+            <button type="submit" className="btn-action-premium primary">
               Buscar
             </button>
           </div>
         </form>
 
-        {/* LISTAGEM DE PROFISSIONAIS */}
-        <section className="professional-listing">
+        {/* LISTAGEM DE PROFISSIONAIS (CARDS LIPOASPIRADOS E TRAVADOS) */}
+        <section className="professional-listing fade-in delay-2">
           {profissionais.length > 0 ? (
-            <div className="professional-grid">
+            <div className="professional-grid-premium">
               {profissionais.map(prof => (
-                <div key={prof.id} className="professional-card-premium">
-                  <div className="card-top">
-                    <img src={prof.foto} alt={prof.nome} className="professional-photo-premium" />
-                    <div className="rating-badge">
+                <div key={prof.id} className="professional-card-glass">
+                  
+                  {/* FOTO FIXA SEM ESTICAR */}
+                  <div className="card-photo-container">
+                    <img src={prof.foto} alt={prof.nome} className="card-photo-premium" />
+                    <div className="card-rating-badge">
                       <FaStar className="star-icon" /> {prof.avaliacao}
                     </div>
                   </div>
                   
                   <div className="card-body">
                     <h3>{prof.nome}</h3>
-                    <div className="specialty-tag">
+                    <span className="badge-specialization-small">
                       <FaGraduationCap /> {prof.especializacao}
-                    </div>
+                    </span>
+                    <span className="sub-specialization">Foco em: {prof.sub}</span>
                     
                     <div className="locations-wrapper">
                       {prof.localidades.map((loc, idx) => (
@@ -201,11 +182,11 @@ export default function BuscarProfissionais() {
                       ))}
                     </div>
                     
-                    <p className="professional-bio-short">{prof.bio.substring(0, 100)}...</p>
+                    <p className="professional-bio-short">{prof.bio.substring(0, 90)}...</p>
                   </div>
 
                   <div className="card-footer">
-                    <button className="btn-view-profile-premium" onClick={() => navigate(`/perfil-profissional/${prof.id}`)}>
+                    <button className="btn-action-premium secondary full-width" onClick={() => navigate(`/perfil-profissional/${prof.id}`)}>
                       Ver Perfil Completo
                     </button>
                   </div>
@@ -213,9 +194,9 @@ export default function BuscarProfissionais() {
               ))}
             </div>
           ) : (
-            <div className="no-results-glass">
+            <div className="empty-state-glass">
               <p>Nenhum profissional encontrado com os critérios selecionados.</p>
-              <button className="btn-secondary" onClick={() => { setSearchTerm(''); setEspecializacao(''); setLocalizacao(''); setDisponibilidade(''); setProfissionais(profissionais); }}>Limpar Filtros</button>
+              <button className="btn-action-premium secondary mt-3" onClick={() => { setSearchTerm(''); setEspecializacao(''); setLocalizacao(''); setDisponibilidade(''); setProfissionais(profissionais); }}>Limpar Filtros</button>
             </div>
           )}
         </section>

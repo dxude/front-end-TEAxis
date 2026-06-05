@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { FaStar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaCertificate, FaToolbox, FaCalendarAlt, FaSearch, FaUserCircle, FaSignOutAlt, FaComments, FaBullseye, FaArrowLeft } from 'react-icons/fa';
+import { FaStar, FaMapMarkerAlt, FaPhone, FaEnvelope, FaGlobe, FaCertificate, FaToolbox, FaCalendarAlt, FaSearch, FaUserCircle, FaSignOutAlt, FaComments, FaBullseye, FaArrowLeft, FaBookOpen } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/PerfilProfissionalDetalhado.css';
-import logoTeaxis from '../assets/imagens/fundoLogo.png';
+import logoPlataforma from '../assets/imagens/fundoLogo.png';
 import { carregarAgendamentos, salvarAgendamentos } from '../utils/dataSync';
 import BookingModal from '../components/BookingModal';
 
@@ -13,7 +13,7 @@ export default function PerfilProfissionalDetalhado() {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [bookingOpen, setBookingOpen] = useState(false);
 
-  const [professional, setProfessional] = useState(null); // Inicia como null para indicar carregamento
+  const [professional, setProfessional] = useState(null);
   const [userRating, setUserRating] = useState(0);
   const [userReviewText, setUserReviewText] = useState('');
 
@@ -26,7 +26,7 @@ export default function PerfilProfissionalDetalhado() {
         subEspecializacoes: ['TDAH', 'Ansiedade', 'Terapia Cognitivo-Comportamental'],
         avaliacaoMedia: 4.9,
         totalAvaliacoes: 78,
-        foto: 'https://randomuser.me/api/portraits/women/68.jpg', // URL de exemplo
+        foto: 'https://randomuser.me/api/portraits/women/68.jpg',
         bio: 'Especialista em TDAH e ansiedade, com foco em adolescentes e adultos. Ajudo a desenvolver estratégias de enfrentamento e melhorar a qualidade de vida. Atendimento online e presencial em São Paulo.',
         contato: {
           telefone: '(11) 98765-4321',
@@ -81,7 +81,7 @@ export default function PerfilProfissionalDetalhado() {
       },
     ];
     setProfessional(simulatedProfessionals.find(p => p.id === parseInt(id)));
-  }, [id]); // Dependência 'id' para recarregar se o ID mudar
+  }, [id]);
 
   const handleRatingChange = (newRating) => {
     setUserRating(newRating);
@@ -93,19 +93,17 @@ export default function PerfilProfissionalDetalhado() {
       alert('Por favor, dê uma nota e escreva seu comentário.');
       return;
     }
-    console.log('Avaliação submetida:', { profissionalId: professional.id, userRating, userReviewText });
     alert('Sua avaliação foi enviada com sucesso!');
     setUserRating(0);
     setUserReviewText('');
   };
 
   const handleAgendarConsulta = () => {
-    // abrir modal de confirmação
     setBookingOpen(true);
   };
 
   const handleConfirmBooking = () => {
-    const userEmail = localStorage.getItem('user_email') || 'Usuário TEAxis';
+    const userEmail = localStorage.getItem('user_email') || 'Usuário';
     const agendaAtual = carregarAgendamentos();
     const novoId = agendaAtual.length > 0 ? Math.max(...agendaAtual.map(item => item.id)) + 1 : 1;
     const novaConsulta = {
@@ -121,180 +119,153 @@ export default function PerfilProfissionalDetalhado() {
     };
     salvarAgendamentos([novaConsulta, ...agendaAtual]);
     setBookingOpen(false);
-    alert('Consulta agendada com sucesso! Verifique em Meus Agendamentos e no painel do profissional.');
+    alert('Consulta agendada com sucesso! Verifique em Meus Agendamentos.');
     navigate('/meus-agendamentos');
-  };
-
-  const handleLogout = () => {
-    setShowLogoutModal(true);
   };
 
   const confirmLogout = () => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('teaxis_auth_token');
-      localStorage.removeItem('teaxis_role');
-      localStorage.removeItem('login_method');
-      localStorage.removeItem('user_email');
-      localStorage.removeItem('user_name');
-      localStorage.removeItem('user_photo');
+      localStorage.clear();
       window.dispatchEvent(new Event('teaxis:auth_changed'));
     }
     setShowLogoutModal(false);
     navigate('/login');
   };
 
-  const logoutModal = (
-    <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
+  const NavbarGlass = () => (
+    <header className="header-glass-premium">
+      <div className="header-left">
+        <Link to="/dashboard-usuario" className="back-to-space-btn">
+          <FaArrowLeft className="back-icon" /> Voltar
+        </Link>
+        <img src={logoPlataforma} alt="Logo" className="header-logo-small" />
+      </div>
+      <nav className="header-nav-glass">
+        <Link to="/buscar-profissionais" className="nav-link-glass"><FaSearch /> Buscar</Link>
+        <Link to="/meus-agendamentos" className="nav-link-glass"><FaCalendarAlt /> Agendamentos</Link>
+        <Link to="/minhas-trilhas" className="nav-link-glass"><FaBookOpen /> Trilhas</Link>
+        <Link to="/perfil" className="nav-link-glass"><FaUserCircle /> Perfil</Link>
+        <button onClick={() => setShowLogoutModal(true)} className="nav-link-glass logout-btn"><FaSignOutAlt /> Sair</button>
+      </nav>
+    </header>
   );
 
   if (!professional) {
     return (
-      <div className="perfil-profissional-container">
-        {logoutModal}
-        {logoutModal}
-        <header className="perfil-profissional-header">
-          <div className="header-left">
-            <Link to="/dashboard-usuario" className="back-to-space-btn">
-              <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
-            </Link>
-            <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
-          </div>
-          <nav className="header-nav">
-            <Link to="/buscar-profissionais" className="nav-link">
-              <FaSearch className="nav-icon" /> Buscar Profissionais
-            </Link>
-            <Link to="/meus-agendamentos" className="nav-link">
-              <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
-            </Link>
-            <Link to="/perfil" className="nav-link">
-              <FaUserCircle className="nav-icon" /> Meu Perfil
-            </Link>
-            <button onClick={handleLogout} className="nav-link logout-btn">
-              <FaSignOutAlt className="nav-icon" /> Sair
-            </button>
-          </nav>
-        </header>
-        <main className="professional-detail-content loading-content">
+      <div className="perfil-page-premium">
+        <NavbarGlass />
+        <main className="main-content-glass loading-content">
           <p>Carregando perfil do profissional...</p>
         </main>
-        <BookingModal open={bookingOpen} onClose={() => setBookingOpen(false)} onConfirm={handleConfirmBooking} professional={professional} />
       </div>
     );
   }
 
   return (
-    <div className="perfil-profissional-container">
-      <header className="perfil-profissional-header">
-        <div className="header-left">
-          <Link to="/dashboard-usuario" className="back-to-space-btn">
-            <FaArrowLeft className="back-icon" /> Voltar ao Meu Espaço
-          </Link>
-          <img src={logoTeaxis} alt="Logo TEAxis" className="header-logo" />
-        </div>
-        <nav className="header-nav">
-          <Link to="/buscar-profissionais" className="nav-link">
-            <FaSearch className="nav-icon" /> Buscar Profissionais
-          </Link>
-          <Link to="/meus-agendamentos" className="nav-link">
-            <FaCalendarAlt className="nav-icon" /> Meus Agendamentos
-          </Link>
-          <Link to="/perfil" className="nav-link">
-            <FaUserCircle className="nav-icon" /> Meu Perfil
-          </Link>
-          <button onClick={handleLogout} className="nav-link logout-btn">
-            <FaSignOutAlt className="nav-icon" /> Sair
-          </button>
-        </nav>
-      </header>
+    <div className="perfil-page-premium">
+      <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
+      <NavbarGlass />
 
-      <main className="professional-detail-content">
-        <section className="professional-overview-card">
-          <div className="overview-header">
-            <img src={professional.foto} alt={professional.nome} className="professional-detail-photo" />
-            <div className="overview-info">
+      {/* BACKGROUND DECORATIVO ANIMADO */}
+      <div className="bg-shapes">
+        <div className="shape shape-1"></div>
+        <div className="shape shape-2"></div>
+      </div>
+
+      <main className="main-content-glass">
+        
+        {/* CABEÇALHO DO PERFIL */}
+        <section className="glass-panel-dashboard fade-in profile-overview">
+          <div className="profile-header-grid">
+            <div className="profile-photo-wrapper">
+              <img src={professional.foto} alt={professional.nome} className="professional-photo-premium" />
+              <div className="rating-badge">
+                <FaStar className="star-icon" /> {professional.avaliacaoMedia}
+              </div>
+            </div>
+            
+            <div className="profile-main-info">
               <h1>{professional.nome}</h1>
-              <p className="main-specialization">{professional.especializacao}</p>
-              <div className="rating-full">
-                {[...Array(5)].map((_, i) => (
-                  <FaStar key={i} className={i < Math.floor(professional.avaliacaoMedia) ? 'star-full filled' : 'star-full'} />
-                ))}
-                <span>({professional.avaliacaoMedia}) ({professional.totalAvaliacoes} avaliações)</span>
-              </div>
-              <p className="bio">{professional.bio}</p>
-              <div className="contact-info">
-                {professional.contato.telefone && <p><FaPhone /> {professional.contato.telefone}</p>}
-                {professional.contato.email && <p><FaEnvelope /> {professional.contato.email}</p>}
-                {professional.contato.site && <p><FaGlobe /> <a href={professional.contato.site} target="_blank" rel="noopener noreferrer">{professional.contato.site.replace('https://', '')}</a></p>}
-                <p><FaMapMarkerAlt /> {professional.localidades.join(', ')}</p>
+              <span className="badge-specialization">{professional.especializacao}</span>
+              <p className="bio-premium">{professional.bio}</p>
+              
+              <div className="contact-grid">
+                {professional.contato.telefone && <span><FaPhone className="text-primary"/> {professional.contato.telefone}</span>}
+                {professional.contato.email && <span><FaEnvelope className="text-primary"/> {professional.contato.email}</span>}
+                <span><FaMapMarkerAlt className="text-primary"/> {professional.localidades.join(', ')}</span>
+                {professional.contato.site && <span><FaGlobe className="text-primary"/> <a href={professional.contato.site} target="_blank" rel="noopener noreferrer">Website</a></span>}
               </div>
             </div>
-          </div>
-          <div className="overview-actions">
-            <button className="btn-primary" onClick={handleAgendarConsulta}>
-              <FaCalendarAlt /> Agendar Consulta
-            </button>
-            <button className="btn-secondary" onClick={() => navigate('/mensagens')}>
-              <FaComments /> Enviar Mensagem
-            </button>
-          </div>
-        </section>
 
-        <section className="professional-details-section">
-          <h2>Mais Detalhes</h2>
-          <div className="details-grid">
-            <div className="details-card">
-              <h3><FaCertificate /> Certificações</h3>
-              <ul>
-                {professional.certificacoes.map((cert, index) => (
-                  <li key={index}>{cert}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="details-card">
-              <h3><FaToolbox /> Métodos e Abordagens</h3>
-              <ul>
-                {professional.metodos.map((metodo, index) => (
-                  <li key={index}>{metodo}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="details-card">
-              <h3><FaBullseye /> Especializações Secundárias</h3>
-              <ul>
-                {professional.subEspecializacoes.map((sub, index) => (
-                  <li key={index}>{sub}</li>
-                ))}
-              </ul>
+            <div className="profile-actions-box">
+              <p className="action-hint">Pronto para dar o próximo passo?</p>
+              <button className="btn-action-premium primary full-width" onClick={handleAgendarConsulta}>
+                <FaCalendarAlt /> Agendar Consulta
+              </button>
+              <button className="btn-action-premium secondary full-width mt-3" onClick={() => navigate('/mensagens')}>
+                <FaComments /> Enviar Mensagem
+              </button>
             </div>
           </div>
         </section>
 
-        <section className="professional-evaluations-section">
-          <h2>Avaliações de Usuários</h2>
+        {/* DETALHES TÉCNICOS */}
+        <section className="fade-in delay-1">
+          <h2 className="section-title-premium">Conheça o Trabalho</h2>
+          <div className="details-grid-premium">
+            <div className="glass-panel-dashboard details-card-glass">
+              <div className="icon-wrapper"><FaCertificate /></div>
+              <h3>Certificações</h3>
+              <ul>
+                {professional.certificacoes.map((cert, index) => <li key={index}>{cert}</li>)}
+              </ul>
+            </div>
+            <div className="glass-panel-dashboard details-card-glass">
+              <div className="icon-wrapper"><FaToolbox /></div>
+              <h3>Métodos e Abordagens</h3>
+              <ul>
+                {professional.metodos.map((metodo, index) => <li key={index}>{metodo}</li>)}
+              </ul>
+            </div>
+            <div className="glass-panel-dashboard details-card-glass">
+              <div className="icon-wrapper"><FaBullseye /></div>
+              <h3>Sub-especializações</h3>
+              <div className="tags-container">
+                {professional.subEspecializacoes.map((sub, index) => <span key={index} className="tag-pill">{sub}</span>)}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* AVALIAÇÕES */}
+        <section className="glass-panel-dashboard fade-in delay-2 evaluations-section">
+          <h2 className="section-title-premium text-center">Avaliações de Pacientes</h2>
+          <p className="text-center text-muted mb-4">Baseado em {professional.totalAvaliacoes} avaliações.</p>
+          
           {professional.avaliacoes.length > 0 ? (
-            <div className="evaluations-list">
+            <div className="evaluations-grid">
               {professional.avaliacoes.map(avaliacao => (
-                <div key={avaliacao.id} className="evaluation-card">
-                  <div className="evaluation-header">
-                    <span className="evaluation-user">{avaliacao.usuario}</span>
-                    <div className="evaluation-stars">
+                <div key={avaliacao.id} className="evaluation-card-glass">
+                  <div className="eval-header">
+                    <strong>{avaliacao.usuario}</strong>
+                    <div className="eval-stars">
                       {[...Array(5)].map((_, i) => (
-                        <FaStar key={i} className={i < avaliacao.nota ? 'star-full filled' : 'star-full'} />
+                        <FaStar key={i} className={i < avaliacao.nota ? 'star-filled' : 'star-empty'} />
                       ))}
                     </div>
                   </div>
-                  <p className="evaluation-comment">{avaliacao.comentario}</p>
+                  <p>"{avaliacao.comentario}"</p>
                 </div>
               ))}
             </div>
           ) : (
-            <p className="no-evaluations-message">Este profissional ainda não possui avaliações.</p>
+            <p className="empty-state-glass">Este profissional ainda não possui avaliações.</p>
           )}
 
-          <div className="submit-evaluation-form">
-            <h3>Deixe sua Avaliação</h3>
+          <div className="submit-review-box">
+            <h3>Como foi sua experiência?</h3>
             <form onSubmit={handleSubmitReview}>
-              <div className="rating-input">
+              <div className="rating-selector">
                 {[...Array(5)].map((_, i) => (
                   <FaStar
                     key={i}
@@ -302,16 +273,17 @@ export default function PerfilProfissionalDetalhado() {
                     onClick={() => handleRatingChange(i + 1)}
                   />
                 ))}
-                <span>{userRating > 0 ? `${userRating} Estrelas` : 'Clique para avaliar'}</span>
+                <span className="rating-hint">{userRating > 0 ? `${userRating} Estrelas` : 'Selecione uma nota'}</span>
               </div>
               <textarea
-                placeholder="Escreva seu comentário..."
+                className="review-textarea"
+                placeholder="Compartilhe como o profissional ajudou você ou sua família..."
                 value={userReviewText}
                 onChange={(e) => setUserReviewText(e.target.value)}
-                rows="4"
+                rows="3"
                 required
-              ></textarea>
-              <button type="submit" className="btn-primary">Enviar Avaliação</button>
+              />
+              <button type="submit" className="btn-action-premium primary mt-3">Enviar Avaliação</button>
             </form>
           </div>
         </section>
