@@ -177,7 +177,7 @@ const Login = () => {
           <h2>Bem-vindo(a) de volta! 👋</h2>
           {loginType && (
             <p className="login-type-text">
-              Entrar como {loginType === 'responsavel' ? 'Responsável' : loginType === 'profissional' ? 'Profissional' : 'Usuário'}.
+              Entrar como {loginType === 'profissional' ? 'Profissional' : 'Usuário'}.
             </p>
           )}
 

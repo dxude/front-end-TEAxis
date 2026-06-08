@@ -97,13 +97,6 @@ const Home = () => {
             <div className="highlight-card">
               <FaUsers className="highlight-icon" />
               <div>
-                <strong>Para famílias e menores</strong>
-                <span>Perfil de responsável com controle e consentimento.</span>
-              </div>
-            </div>
-            <div className="highlight-card">
-              <FaLock className="highlight-icon" />
-              <div>
                 <strong>Proteção de dados</strong>
                 <span>Privacidade e LGPD em cada etapa do processo.</span>
               </div>

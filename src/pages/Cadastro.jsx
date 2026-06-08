@@ -362,7 +362,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
             <div className="form-header">
                 <div>
                     <span className="eyebrow">Cadastro</span>
-                    <h2 className="text-dark mb-2">Crie a sua conta como {tipo === 'usuario' ? 'Utilizador' : tipo === 'responsavel' ? 'Responsável' : 'Profissional'}</h2>
+                    <h2 className="text-dark mb-2">Crie a sua conta como {tipo === 'usuario' ? 'Utilizador' : 'Profissional'}</h2>
                     <p className="form-subtitle">Primeiro confirme seus dados básicos e depois preencha os detalhes do seu perfil.</p>
                 </div>
                 <div className="form-stepper">
@@ -416,7 +416,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                     </div>
                     <p className="step-description">Agora complete os detalhes adicionais para personalizarmos sua experiência.</p>
 
-                    {(tipo === 'usuario' || tipo === 'responsavel') && (
+                    {tipo === 'usuario' && (
                       <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg details-panel">
                         <h3 className="text-lilac-main font-bold mb-4">Dados para o Perfil de Cuidado</h3>
 
@@ -719,15 +719,6 @@ const PerfilSelector = ({ setPerfil }) => (
                 <h3>Sou Utilizador / Paciente</h3>
                 <p>Quero encontrar profissionais que entendam as minhas necessidades.</p>
             </div>
-            <div 
-                className="selection-card card-blue"
-                onClick={() => setPerfil('responsavel')}
-            >
-                <FaIdBadge className="card-icon" />
-                <h3>Sou Responsável / Tutor</h3>
-                <p>Gerencio perfis de crianças/adolescentes e autorizo o tratamento de dados.</p>
-            </div>
-
             <div 
                 className="selection-card card-lilac"
                 onClick={() => setPerfil('profissional')}
