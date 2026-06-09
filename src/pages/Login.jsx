@@ -196,12 +196,15 @@ const Login = () => {
 
           <form onSubmit={handleLoginEmail}>
             <div className="input-group">
-              <label>
+              <label htmlFor="loginEmail">
                 <FaEnvelope /> Email:
               </label>
               <input
+                id="loginEmail"
+                name="email"
                 type="email"
                 placeholder="Seu email"
+                autoComplete="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
@@ -209,12 +212,15 @@ const Login = () => {
             </div>
 
             <div className="input-group">
-              <label>
+              <label htmlFor="loginSenha">
                 <FaLock /> Senha:
               </label>
               <input
+                id="loginSenha"
+                name="senha"
                 type="password"
                 placeholder="Sua senha"
+                autoComplete="current-password"
                 required
                 value={senha}
                 onChange={(e) => setSenha(e.target.value)}
@@ -234,6 +240,7 @@ const Login = () => {
             Não tem conta? <Link to="/cadastro">Crie sua conta aqui!</Link>
           </p>
         </div>
+        
         {showLoginPopup && (
           <div className="login-popup-backdrop" role="dialog" aria-modal="true">
             <div className="login-popup-card">

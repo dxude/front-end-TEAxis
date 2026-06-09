@@ -60,7 +60,6 @@ const DEFAULT_SUGGESTIONS = {
   neurodivergencias: ['Autismo','TDAH','Dislexia','Dispraxia','TEA','Transtorno do Processamento Sensorial','Altas Habilidades']
 };
 
-// FUNÇÃO FALTANTE PARA FORMATAR A DISPONIBILIDADE
 const formatDisponibilidade = (days, start, end) => {
   if (!days || days.length === 0) return '';
   return `${days.join(', ')} das ${String(start).padStart(2, '0')}:00 às ${String(end).padStart(2, '0')}:00`;
@@ -110,12 +109,11 @@ const Cadastro = () => {
     }
   };
 
-  // CORREÇÃO DO LOOP INFINITO 1: Só atualiza se a data for realmente nova
   useEffect(() => {
     if (dobDay && dobMonth && dobYear) {
       const formattedDate = `${dobYear}-${String(dobMonth).padStart(2,'0')}-${String(dobDay).padStart(2,'0')}`;
       setDetalhesUsuario((prev) => {
-        if (prev.dataNascimento === formattedDate) return prev; // Para o looping aqui!
+        if (prev.dataNascimento === formattedDate) return prev;
         return { ...prev, dataNascimento: formattedDate };
       });
     }
@@ -154,11 +152,10 @@ const Cadastro = () => {
     }
   };
 
-  // CORREÇÃO DO LOOP INFINITO 2: Trava de atualização da disponibilidade
   useEffect(() => {
     const novaDisponibilidade = formatDisponibilidade(disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd);
     setDetalhesProfissional((prev) => {
-      if (prev.disponibilidade === novaDisponibilidade) return prev; // Para o looping aqui!
+      if (prev.disponibilidade === novaDisponibilidade) return prev;
       return { ...prev, disponibilidade: novaDisponibilidade };
     });
   }, [disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd]);
@@ -390,19 +387,19 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                 <div className="form-step">
                     <div className="input-group">
                         <label htmlFor="nome"><FaUser /> Nome Completo:</label>
-                        <input id="nome" name="nome" type="text" placeholder="Insira o seu nome" required value={account.nome} onChange={handleAccountChange} />
+                        <input id="nome" name="nome" type="text" placeholder="Insira o seu nome" required value={account.nome} onChange={handleAccountChange} autoComplete="name" />
                     </div>
                     <div className="input-group">
                         <label htmlFor="email"><FaEnvelope /> Email:</label>
-                        <input id="email" name="email" type="email" placeholder="Insira o seu email" required value={account.email} onChange={handleAccountChange} />
+                        <input id="email" name="email" type="email" placeholder="Insira o seu email" required value={account.email} onChange={handleAccountChange} autoComplete="email" />
                     </div>
                     <div className="input-group">
                         <label htmlFor="senha"><FaLock /> Palavra-passe:</label>
-                        <input id="senha" name="senha" type="password" placeholder="Crie a sua palavra-passe" required value={account.senha} onChange={handleAccountChange} />
+                        <input id="senha" name="senha" type="password" placeholder="Crie a sua palavra-passe" required value={account.senha} onChange={handleAccountChange} autoComplete="new-password" />
                     </div>
                     <div className="input-group">
                         <label htmlFor="confirmar"><FaLock /> Confirme a Palavra-passe:</label>
-                        <input id="confirmar" name="confirmarSenha" type="password" placeholder="Repita a palavra-passe" required value={account.confirmarSenha} onChange={handleAccountChange} />
+                        <input id="confirmar" name="confirmarSenha" type="password" placeholder="Repita a palavra-passe" required value={account.confirmarSenha} onChange={handleAccountChange} autoComplete="new-password" />
                     </div>
                 </div>
             )}
@@ -479,7 +476,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
 
                         {/* Neurodivergência */}
                         <div className="input-group">
-                          <label><FaBrain /> Tipo de Neurodivergência:</label>
+                          <label htmlFor="tipoNeurodivergencia"><FaBrain /> Tipo de Neurodivergência:</label>
                           <div className="chip-list">
                             {(detalhesUsuario.tipoNeurodivergencia||[]).map(item => (
                               <span className="chip" key={item}>{item} <button type="button" onClick={()=>removeChip('tipoNeurodivergencia',item)}>×</button></span>
@@ -495,18 +492,20 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
 
                         {/* Estado -> Cidade -> Distrito */}
                         <div className="input-group">
-                          <label><FaMapMarkerAlt /> Estado:</label>
-                          <select name="estado" value={detalhesUsuario.estado} onChange={(e)=>{ handleStateChange(e); }}>
+                          <label htmlFor="estado"><FaMapMarkerAlt /> Estado:</label>
+                          <select id="estado" name="estado" value={detalhesUsuario.estado} onChange={(e)=>{ handleStateChange(e); }}>
                             <option value="">Selecione o estado</option>
                             {BRAZIL_STATES.map(s=> <option key={s.code} value={s.code}>{s.name}</option>)}
                           </select>
-                          <label className="mt-2">Cidade:</label>
-                          <select name="cidade" value={detalhesUsuario.cidade} onChange={handleDetalhesUsuarioChange}>
+                          
+                          <label htmlFor="cidade" className="mt-2">Cidade:</label>
+                          <select id="cidade" name="cidade" value={detalhesUsuario.cidade} onChange={handleDetalhesUsuarioChange}>
                             <option value="">Selecione a cidade</option>
                             {stateCities.map(c => <option key={c} value={c}>{c}</option>)}
                           </select>
+                          
                           <div className="city-search">
-                            <input type="text" aria-label="Buscar cidade" placeholder="Ou digite sua cidade para buscar..." value={cityQuery} onChange={(e)=>setCityQuery(e.target.value)} />
+                            <input type="text" id="buscaCidade" name="buscaCidade" aria-label="Buscar cidade" placeholder="Ou digite sua cidade para buscar..." value={cityQuery} onChange={(e)=>setCityQuery(e.target.value)} />
                             {citySuggestions.length > 0 && (
                               <ul className="city-suggestions">
                                 {citySuggestions.map(c => (
@@ -515,13 +514,14 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                               </ul>
                             )}
                           </div>
-                          <label className="mt-2">Distrito (livre):</label>
+                          
+                          <label htmlFor="distrito" className="mt-2">Distrito (livre):</label>
                           <input id="distrito" name="distrito" type="text" placeholder="Ex: Boa Viagem" value={detalhesUsuario.distrito} onChange={handleDetalhesUsuarioChange} />
                         </div>
 
                         {/* Hobbies */}
                         <div className="input-group">
-                          <label><FaHeart /> Hobbies:</label>
+                          <label htmlFor="inputHobbies"><FaHeart /> Hobbies:</label>
                           <div className="chip-list">
                             {(detalhesUsuario.hobbies||[]).map(h => (
                               <span className="chip" key={h}>{h} <button type="button" onClick={()=>removeChip('hobbies',h)}>×</button></span>
@@ -532,12 +532,12 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                               <button type="button" key={s} className="suggestion" onClick={()=>addChip('hobbies',s)}>{s}</button>
                             ))}
                           </div>
-                          <input placeholder="Adicionar hobby e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('hobbies', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
+                          <input id="inputHobbies" name="inputHobbies" placeholder="Adicionar hobby e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('hobbies', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
                         </div>
 
                         {/* Modo de Comunicação */}
                         <div className="input-group">
-                          <label><FaComments /> Modo de Comunicação:</label>
+                          <label htmlFor="inputComunicacao"><FaComments /> Modo de Comunicação:</label>
                           <div className="chip-list">
                             {(detalhesUsuario.modoComunicacao||[]).map(m => (
                               <span className="chip" key={m}>{m} <button type="button" onClick={()=>removeChip('modoComunicacao',m)}>×</button></span>
@@ -548,12 +548,12 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                               <button type="button" key={s} className="suggestion" onClick={()=>addChip('modoComunicacao',s)}>{s}</button>
                             ))}
                           </div>
-                          <input placeholder="Adicionar modo de comunicação e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('modoComunicacao', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
+                          <input id="inputComunicacao" name="inputComunicacao" placeholder="Adicionar modo de comunicação e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('modoComunicacao', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
                         </div>
 
                         {/* Preferências sensoriais */}
                         <div className="input-group">
-                          <label>Preferências Sensoriais:</label>
+                          <label htmlFor="inputPreferencias">Preferências Sensoriais:</label>
                           <div className="chip-list">
                             {(detalhesUsuario.preferenciasSensoriais||[]).map(p => (
                               <span className="chip" key={p}>{p} <button type="button" onClick={()=>removeChip('preferenciasSensoriais',p)}>×</button></span>
@@ -564,12 +564,12 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                               <button type="button" key={s} className="suggestion" onClick={()=>addChip('preferenciasSensoriais',s)}>{s}</button>
                             ))}
                           </div>
-                          <input placeholder="Adicionar preferência e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('preferenciasSensoriais', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
+                          <input id="inputPreferencias" name="inputPreferencias" placeholder="Adicionar preferência e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter' && e.target.value.trim()){ addChip('preferenciasSensoriais', e.target.value.trim()); e.target.value=''; e.preventDefault(); } }} />
                         </div>
 
                         {/* Histórico Escolar */}
                         <div className="input-group">
-                          <label><FaSchool /> Histórico Escolar / Acadêmico:</label>
+                          <label htmlFor="historicoEscolar"><FaSchool /> Histórico Escolar / Acadêmico:</label>
                           <textarea id="historicoEscolar" name="historicoEscolar" placeholder="Descreva suas principais dificuldades relacionadas ao aprendizado." value={detalhesUsuario.historicoEscolar} onChange={handleDetalhesUsuarioChange} rows="3" />
                         </div>
                       </div>
@@ -578,10 +578,12 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                     {tipo === 'profissional' && (
                         <div className="dados-adicionais mt-6 p-4 border border-lilac-main rounded-lg details-panel">
                             <h3 className="text-lilac-main font-bold mb-4">Dados de Registo e Atuação</h3>
+                            
                             <div className="input-group">
                                 <label htmlFor="dataNascimentoProf"><FaCalendarAlt /> Data de Nascimento:</label>
                                 <input id="dataNascimentoProf" name="dataNascimento" type="date" value={detalhesProfissional.dataNascimento} onChange={handleDetalhesProfissionalChange} />
                             </div>
+                            
                             <div className="input-group">
                               <label><FaVenusMars /> Gênero:</label>
                               <div className="gender-control">
@@ -615,10 +617,12 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                                 <div className="gender-tooltip">{genderHoverText || 'Passe o mouse sobre uma opção para ver mais detalhes.'}</div>
                               </div>
                             </div>
+                            
                             <div className="input-group">
                                 <label htmlFor="certificacoes"><FaIdBadge /> Certificações (Registo Profissional):</label>
                                 <input id="certificacoes" name="certificacoes" type="text" placeholder="Nº de Registo e Conselho (Ex: CRP 00/0000)" value={detalhesProfissional.certificacoes} onChange={handleDetalhesProfissionalChange} />
                             </div>
+                            
                             <div className="input-group">
                                 <label htmlFor="especializacoesProf"><FaGraduationCap /> Especializações:</label>
                                 <div className="chip-list">
@@ -633,6 +637,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                                 </div>
                                 <input id="especializacoesProf" type="text" placeholder="Adicionar especialização e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter'){ e.preventDefault(); if(e.currentTarget.value.trim()){ addChipProf('especializacoes', e.currentTarget.value.trim()); e.currentTarget.value=''; } } }} />
                             </div>
+                            
                             <div className="input-group">
                                 <label htmlFor="metodosUtilizadosProf"><FaGraduationCap /> Métodos/Abordagens Utilizadas:</label>
                                 <div className="chip-list">
@@ -647,6 +652,7 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                                 </div>
                                 <input id="metodosUtilizadosProf" type="text" placeholder="Adicionar método/abordagem e pressionar Enter" onKeyDown={(e)=>{ if(e.key==='Enter'){ e.preventDefault(); if(e.currentTarget.value.trim()){ addChipProf('metodosUtilizados', e.currentTarget.value.trim()); e.currentTarget.value=''; } } }} />
                             </div>
+                            
                             <div className="input-group">
                                 <label><FaClock /> Disponibilidade (Horário e Dias):</label>
                                 <div className="availability-panel">
@@ -664,21 +670,22 @@ const CadastroForm = ({ tipo, currentStep, setCurrentStep, account, handleAccoun
                                   </div>
                                   <div className="availability-range">
                                     <div className="availability-range-row">
-                                      <label>Início: {String(disponibilidadeStart).padStart(2,'0')}:00</label>
-                                      <input type="range" min="6" max="20" step="1" value={disponibilidadeStart} onChange={(e) => setDisponibilidadeStart(Number(e.target.value))} />
+                                      <label htmlFor="dispStart">Início: {String(disponibilidadeStart).padStart(2,'0')}:00</label>
+                                      <input id="dispStart" type="range" min="6" max="20" step="1" value={disponibilidadeStart} onChange={(e) => setDisponibilidadeStart(Number(e.target.value))} />
                                     </div>
                                     <div className="availability-range-row">
-                                      <label>Fim: {String(disponibilidadeEnd).padStart(2,'0')}:00</label>
-                                      <input type="range" min="7" max="22" step="1" value={disponibilidadeEnd} onChange={(e) => setDisponibilidadeEnd(Number(e.target.value))} />
+                                      <label htmlFor="dispEnd">Fim: {String(disponibilidadeEnd).padStart(2,'0')}:00</label>
+                                      <input id="dispEnd" type="range" min="7" max="22" step="1" value={disponibilidadeEnd} onChange={(e) => setDisponibilidadeEnd(Number(e.target.value))} />
                                     </div>
                                   </div>
                                   <div className="availability-summary">{formatDisponibilidade(disponibilidadeDays, disponibilidadeStart, disponibilidadeEnd) || 'Selecione dias e horário'}</div>
                                 </div>
                             </div>
+                            
                             <div className="input-group">
                                 <label htmlFor="cidadeProf"><FaMapMarkerAlt /> Cidade/Distrito Base:</label>
                                 <input id="cidadeProf" name="cidade" type="text" placeholder="Cidade" value={detalhesProfissional.cidade} onChange={handleDetalhesProfissionalChange} />
-                                <input id="estadoProf" name="estado" type="text" placeholder="Distrito (Ex: Porto)" value={detalhesProfissional.estado} onChange={handleDetalhesProfissionalChange} className="mt-2" />
+                                <input id="estadoProf" name="estado" type="text" placeholder="Distrito (Ex: Porto)" aria-label="Distrito ou Estado Base" value={detalhesProfissional.estado} onChange={handleDetalhesProfissionalChange} className="mt-2" />
                             </div>
                         </div>
                     )}
