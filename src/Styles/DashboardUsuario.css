@@ -1,9 +1,5 @@
-/* ==========================================================================
-   DASHBOARD ORIGINAL - ESTÉTICA ACOLHEDORA COM CENTRALIZAÇÃO CORRIGIDA
-   ========================================================================== */
-
 .dashboard-container {
-    display: block; /* Trocado de flex para block para não forçar alinhamento à esquerda */
+    display: block; 
     min-height: 100vh;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     background: linear-gradient(180deg, #A7D3F4 0%, #CBB5E8 38%, #FFF3B0 70%, #B2E2BF 100%);
@@ -409,9 +405,7 @@
     border: 1px solid rgba(123, 63, 242, 0.05); display: flex; justify-content: space-between; align-items: center;
     position: relative; z-index: 2; gap: 2rem; overflow: hidden; box-sizing: border-box;
 }
-.robot-panel.with-chat { flex-direction: column; align-items: stretch; }
-.robot-panel.with-chat .robot-visual { width: 100%; }
-.robot-panel.with-chat .robot-copy { width: 100%; }
+
 .robot-copy { flex: 1; }
 .robot-tag { font-size: 0.9rem; color: #7B3FF2; font-weight: 600; margin: 0 0 0.5rem 0; text-transform: uppercase; letter-spacing: 0.5px; }
 .robot-copy h2 { font-size: 1.8rem; color: #1F2937; margin: 0 0 1rem 0; font-weight: 700; }
@@ -459,8 +453,6 @@
 }
 .robot-chat-button:hover { transform: translateX(50%) scale(1.1); box-shadow: 0 12px 32px rgba(123, 63, 242, 0.4); }
 .robot-chat-button:active { transform: translateX(50%) scale(0.95); }
-
-.robot-chat-section { margin-top: 2rem; padding: 2rem; background: white; border-radius: 20px; box-shadow: 0 20px 40px rgba(123, 63, 242, 0.1); border: 1px solid rgba(123, 63, 242, 0.05); position: relative; }
 
 /* Responsividade */
 @media (max-width: 1024px) {
@@ -1051,5 +1043,45 @@
     .stats-mini {
         flex-direction: column;
         gap: 0.5rem;
+    }
+}
+
+/* ==================== CHAT FLUTUANTE (SÓ O COMPONENTE PURO) ==================== */
+.floating-chat-wrapper {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 9999;
+    
+    /* Controla a largura para não esmagar no mobile */
+    width: 380px;
+    max-width: calc(100vw - 2rem);
+    
+    /* O MILAGRE ACONTECE AQUI: Arrancando qualquer caixa invisível */
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    
+    animation: slideUpChat 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes slideUpChat {
+    from { 
+        opacity: 0; 
+        transform: translateY(40px) scale(0.9); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+    }
+}
+
+@media (max-width: 480px) {
+    .floating-chat-wrapper {
+        bottom: 1rem;
+        right: 1rem;
+        width: calc(100vw - 2rem);
     }
 }

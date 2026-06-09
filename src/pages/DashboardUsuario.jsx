@@ -40,20 +40,17 @@ export default function DashboardUsuario() {
   // 🔄 Sincronização com localStorage em tempo real
   useEffect(() => {
     const sincronizarDados = () => {
-      // Carrega nome do usuário salvo no login
       const savedName = localStorage.getItem('user_name');
       if (savedName) setUserName(savedName);
-      // Carrega trilhas do localStorage
+      
       const trilhasStorage = localStorage.getItem('trilhas_usuario');
       const trilhas = trilhasStorage ? JSON.parse(trilhasStorage) : [];
       setTrilhasUsuario(trilhas);
 
-      // Carrega metas do localStorage
       const metasStorage = localStorage.getItem('minhas_metas');
       const metas = metasStorage ? JSON.parse(metasStorage) : [];
       setMetasUsuario(metas);
 
-      // Carrega agendamentos compartilhados
       const userEmail = localStorage.getItem('user_email');
       const agenda = carregarAgendamentos();
       const agendamentosFiltrados = userEmail
@@ -61,25 +58,19 @@ export default function DashboardUsuario() {
         : agenda.filter(item => item.toRole === 'usuario');
       setAgendamentosUsuario(agendamentosFiltrados.length > 0 ? agendamentosFiltrados : defaultProximosAgendamentos);
 
-      // Carrega mensagens compartilhadas
       const mensagens = carregarMensagens();
       setMensagensNaoLidas(mensagens.filter(msg => msg.toRole === 'usuario' && !msg.lida).length);
 
-      // Calcula estatísticas em tempo real
       calcularEstatisticas(trilhas, metas);
 
-      // Ativa animação de atualização
       setAnimacaoUpdate(true);
       setTimeout(() => setAnimacaoUpdate(false), 600);
     };
 
     sincronizarDados();
 
-    // Listener para detectar mudanças no localStorage (de outras abas)
     const handleStorageChange = () => sincronizarDados();
     window.addEventListener('storage', handleStorageChange);
-
-    // Verificar mudanças a cada 500ms (sincronização local)
     const interval = setInterval(sincronizarDados, 500);
 
     return () => {
@@ -92,17 +83,14 @@ export default function DashboardUsuario() {
   const calcularEstatisticas = (trilhas, metas) => {
     const trilhasAtivas = trilhas.filter(t => t.status === 'em-andamento').length;
     const trilhasConcluidas = trilhas.filter(t => t.status === 'concluida').length;
-    // Metas usa propriedade 'concluida' (boolean)
     const metasConcluidas = metas.filter(m => m.concluida === true).length;
     const metasTotal = metas.length;
 
-    // Calcula XP total
     const xpTotal = trilhas.reduce((acc, trilha) => {
       const xpDaTrilha = (trilha.progresso * 2) + (trilha.status === 'concluida' ? 500 : 0);
       return acc + xpDaTrilha;
     }, 0);
 
-    // Calcula progresso médio
     const progressoMedio = trilhas.length > 0 
       ? Math.round(trilhas.reduce((acc, t) => acc + (t.progresso || 0), 0) / trilhas.length)
       : 0;
@@ -139,7 +127,7 @@ export default function DashboardUsuario() {
     <div className="dashboard-container">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       
-      {/* Botão Hamburger (As três linhas) */}
+      {/* Botão Hamburger */}
       <button className="hamburger-btn" onClick={() => setIsSidebarOpen(true)}>
         <FaBars />
       </button>
@@ -234,8 +222,9 @@ export default function DashboardUsuario() {
           </div>
         </section>
 
+        {/* CARD DO ROBÔ: Agora ele serve apenas para abrir o chat flutuante */}
         <section className="robot-section fade-in">
-          <div className={`robot-panel ${showChatInRobot ? 'with-chat' : ''}`}>
+          <div className="robot-panel">
             <div className="robot-copy">
               <p className="robot-tag">Chat</p>
               <h2>O Axis está aqui para te ajudar</h2>
@@ -271,19 +260,9 @@ export default function DashboardUsuario() {
                 title="Clique no botão acima ou passe o mouse para abrir o chat"
               />
             </div>
-            {showChatInRobot && (
-              <div className="robot-chat-section">
-                <ChatAxis 
-                  isOpenExternal={showChatInRobot} 
-                  onCloseExternal={setShowChatInRobot}
-                  isIntegrated={true}
-                />
-              </div>
-            )}
           </div>
         </section>
 
-        {/* Seção de Status Atual - TOTALMENTE SINCRONIZADA */}
         <section className={`status-section fade-in ${animacaoUpdate ? 'status-animacao-update' : ''}`}>
           <div className="status-header">
             <h2>📊 Seu Progresso Atual</h2>
@@ -323,7 +302,7 @@ export default function DashboardUsuario() {
               </div>
             </div>
 
-            {/* Card 2: Trilhas Ativas - SINCRONIZADO */}
+            {/* Card 2: Trilhas Ativas */}
             <div className="status-card trilhas-card">
               <div className="status-icon trilhas-icon">
                 <FaBrain />
@@ -371,7 +350,7 @@ export default function DashboardUsuario() {
               </div>
             </div>
 
-            {/* Card 3: Metas Concluídas - SINCRONIZADO */}
+            {/* Card 3: Metas Concluídas */}
             <div className="status-card metas-card">
               <div className="status-icon metas-icon">
                 <FaCheckCircle />
@@ -417,7 +396,6 @@ export default function DashboardUsuario() {
             </div>
           </div>
 
-          {/* Seção de Insights */}
           {(trilhasUsuario.length > 0 || metasUsuario.length > 0) && (
             <div className="status-insights">
               <div className="insight-card">
@@ -435,7 +413,6 @@ export default function DashboardUsuario() {
           )}
         </section>
 
-        {/* Seção de Recursos Rápidos */}
         <section className="quick-resources fade-in">
           <h2>🚀 Recursos Rápidos</h2>
           <div className="resources-grid">
@@ -457,6 +434,16 @@ export default function DashboardUsuario() {
           </div>
         </section>
       </main>
+
+      {showChatInRobot && (
+        <div className="floating-chat-wrapper fade-in">
+          <ChatAxis 
+            isOpenExternal={showChatInRobot} 
+            onCloseExternal={setShowChatInRobot}
+            isIntegrated={false}
+          />
+        </div>
+      )}
     </div>
   );
 }
