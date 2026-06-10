@@ -4,6 +4,9 @@ import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+// O "Cérebro" que acabamos de criar
+import { ProgressoProvider } from './contexts/ProgressoContext';
+
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Cadastro from './pages/Cadastro';
@@ -55,7 +58,7 @@ function App() {
     location.pathname.startsWith('/perfil-profissional/');
 
   return (
-    <>
+    <ProgressoProvider>
       {!esconderNavbar && <Navbar />}
 
       <main>
@@ -87,7 +90,7 @@ function App() {
       </main>
 
       <Footer />
-    </>
+    </ProgressoProvider>
   );
 }
 
