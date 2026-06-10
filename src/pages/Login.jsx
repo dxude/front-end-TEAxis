@@ -39,7 +39,7 @@ const Login = () => {
       const { user, token } = await signInWithGoogle();
 
       console.log('✅ Google auth sucesso:', user.email);
-      // Salvar token, papel, email e nome no localStorage
+      
       localStorage.setItem("teaxis_auth_token", token);
       localStorage.setItem("login_method", "google");
       localStorage.setItem("user_email", user.email);
@@ -47,10 +47,8 @@ const Login = () => {
       localStorage.setItem("user_photo", user.photoURL || '');
       localStorage.setItem("teaxis_role", loginType || 'usuario');
 
-      // Notificar outras partes da app que o auth mudou
       window.dispatchEvent(new Event('teaxis:auth_changed'));
 
-      // Mostrar pop-up estilizado por pelo menos 7 segundos antes de redirecionar
       setShowLoginPopup(true);
       setTimeout(() => {
         setShowLoginPopup(false);
@@ -59,28 +57,10 @@ const Login = () => {
         } else {
           navigate('/dashboard-usuario');
         }
-      }, 7000);
+      }, 3000); // Reduzido de 7s para 3s para otimizar o tempo de apresentação da banca
     } catch (error) {
       console.error("❌ ERRO de login com Google:", error);
-      console.error("Código:", error.code);
-      console.error("Mensagem:", error.message);
-      
-      let mensagemErro = "Erro ao fazer login com Google.";
-      
-      if (error.code === "auth/popup-blocked") {
-        mensagemErro = "❌ Popup bloqueado. Permita popups no navegador.";
-      } else if (error.code === "auth/cancelled-popup-request") {
-        mensagemErro = "❌ Login cancelado pelo usuário.";
-      } else if (error.code === "auth/operation-not-supported-in-this-environment") {
-        mensagemErro = "❌ Google Auth não disponível. Verifique console.";
-      } else if (error.code === "auth/unauthorized-domain") {
-        mensagemErro = "❌ Domínio não autorizado no Firebase. Veja console.";
-      } else if (error.code === "auth/network-request-failed") {
-        mensagemErro = "❌ Erro de conexão. Verifique internet.";
-      }
-      
-      console.log('Mensagem final:', mensagemErro);
-      alert(mensagemErro + "\n\nVeja o console (F12) para detalhes.");
+      alert("Erro ao fazer login com Google.");
     } finally {
       setLoadingGoogle(false);
     }
@@ -105,38 +85,40 @@ const Login = () => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Falha no login. Verifique seu email e senha.");
+        throw new Error("Falha no login. Verifique seu email e senha ou se o perfil foi cadastrado.");
       }
 
       const data = await response.json();
-      const teaxisToken = data.token;
+      console.log('✅ Resposta da API recebida com sucesso:', data);
 
-      // Tenta extrair nome e foto retornados pela API (vários formatos possíveis)
-      const extractedName = data.user?.name || data.user?.displayName || data.name || data.nome || email;
-      const extractedPhoto = data.user?.photo || data.user?.photoURL || data.photoURL || data.foto || '';
+      // MAPEAMENTO CIRÚRGICO DO DTO DadosTokenJWT DO SPRING BOOT
+      const teaxisToken = data.token;
+      const usuarioData = data.usuarioResponseDTO || {};
+      
+      // Captura o papel diretamente do Neon. Se for nulo, usa a Fallback da URL da rota
+      const papelUsuario = usuarioData.perfil || loginType || 'usuario';
+      const nomeUsuario = usuarioData.nome || usuarioData.email || email;
 
       localStorage.setItem("teaxis_auth_token", teaxisToken);
-      localStorage.setItem("teaxis_role", loginType || 'usuario');
+      localStorage.setItem("teaxis_role", papelUsuario);
       localStorage.setItem("user_email", email);
-      localStorage.setItem("user_name", extractedName);
-      localStorage.setItem("user_photo", extractedPhoto);
+      localStorage.setItem("user_name", nomeUsuario);
+      localStorage.setItem("user_photo", '');
 
-      // Notificar outras partes da app que o auth mudou
       window.dispatchEvent(new Event('teaxis:auth_changed'));
 
-      // Mostrar pop-up estilizado por pelo menos 7 segundos antes de redirecionar
       setShowLoginPopup(true);
       setTimeout(() => {
         setShowLoginPopup(false);
-        if (loginType === 'profissional') {
+        if (papelUsuario === 'profissional') {
           navigate('/dashboard-profissional');
         } else {
           navigate('/dashboard-usuario');
         }
-      }, 7000);
+      }, 3000); // Sincronizado para 3 segundos para fluidez visual
     } catch (error) {
-      alert(error.message || String(error));
+      console.error('❌ Erro de processamento no login:', error);
+      alert(error.message || "Erro de conexão com o servidor do TEAxis.");
     } finally {
       setLoadingEmail(false);
     }
@@ -146,7 +128,7 @@ const Login = () => {
     <div className="cadastro-page-container login-page-container">
       <div className="auth-page-shell">
         <aside className="auth-side-panel">
-          <span className="eyebrow">Acesso Seguro</span>
+          <span className="eyebrow">Acesso Secure</span>
           <h1>Volte para o TEAxis</h1>
           <p>Entre com rapidez e continue acompanhando suas sessões, seus profissionais e suas mensagens.</p>
 
