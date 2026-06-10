@@ -21,8 +21,17 @@ export default function MeusClientes() {
   const [notes, setNotes] = useState({});
 
   useEffect(() => {
+    const professionalName = localStorage.getItem('user_name');
     const agendaCompleta = carregarAgendamentos();
-    setAgenda(agendaCompleta.filter(item => item.toRole === 'profissional'));
+    
+    // Filtro rigoroso: se não tiver nome ou não bater, agenda vira array vazio
+    const profAgenda = agendaCompleta.filter(item => 
+      item.toRole === 'profissional' && item.profissional === professionalName
+    );
+    
+    // Se o filtro retornar vazio, o estado 'agenda' será []
+    setAgenda(profAgenda);
+    
     const savedNotes = JSON.parse(localStorage.getItem('teaxis_patient_notes') || '{}');
     setNotes(savedNotes);
   }, []);
@@ -84,7 +93,7 @@ export default function MeusClientes() {
       <header className="header-glass-premium">
         <div className="header-left">
           <img src={logoTeaxis} alt="Logo" className="header-logo-small" />
-          <span className="professional-badge">Ver Pacientes</span>
+          <span className="professional-badge">Meus Pacientes</span>
         </div>
         <nav className="header-nav-glass">
           <Link to="/dashboard-profissional" className="nav-link-glass"><FaArrowLeft /> Voltar</Link>
@@ -99,7 +108,7 @@ export default function MeusClientes() {
         <section className="glass-panel-dashboard fade-in hero-prof">
           <div>
             <h1>Pacientes em foco</h1>
-            <p>Busca inteligente, histórico de atendimentos e notas rápidas para cada paciente. Tudo pronto para você entregar o cuidado mais preciso.</p>
+            <p>Busca inteligente, histórico de atendimentos e notas rápidas. Tudo pronto para você entregar o cuidado mais preciso.</p>
           </div>
           <div className="schedule-summary">
             <div className="summary-card">
@@ -137,9 +146,9 @@ export default function MeusClientes() {
               <FaFilter className="filter-icon" />
               <select className="filter-select" value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
                 <option value="all">Todos os status</option>
-                <option value="Confirmado">Próximos</option>
-                <option value="Concluído">Concluídos</option>
-                <option value="Cancelado">Cancelados</option>
+                <option value="Confirmado">Confirmado</option>
+                <option value="Concluído">Concluído</option>
+                <option value="Cancelado">Cancelado</option>
               </select>
             </div>
           </div>

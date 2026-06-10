@@ -4,7 +4,7 @@ import {
   FaBookOpen, FaPlus, FaCheck, FaArrowLeft, FaLightbulb, FaRocket, 
   FaBullseye, FaChartLine, FaFire, FaTrophy, FaSearch, FaUserCircle, 
   FaChevronDown, FaChevronUp, FaTrash, FaStar, FaClock, FaLock, FaBell, 
-  FaPlayCircle, FaTimes, FaCheckCircle, FaFilePdf, FaDownload, FaArrowRight
+  FaPlayCircle, FaTimes, FaCheckCircle, FaFilePdf, FaDownload, FaArrowRight, FaFilter
 } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import { useProgresso } from '../contexts/ProgressoContext';
@@ -12,10 +12,10 @@ import { obterProximasAcoes, gerarNotificacoes } from '../utils/dataSync';
 import '../Styles/MinhasTrilhas.css';
 import logoTeaxis from '../assets/imagens/fundoLogo.png';
 
-// BASE DE CONHECIMENTO REAL - 3 PERGUNTAS POR TRILHA
+// BASE DE CONHECIMENTO REAL - 3 PERGUNTAS POR TRILHA (COM CATEGORIAS)
 const TRILHAS_PRESETS = [
   {
-    id: 'foco', titulo: 'Foco e Concentração',
+    id: 'foco', titulo: 'Foco e Concentração', categoria: 'Produtividade',
     descricao: 'Técnicas comprovadas para minimizar distrações e maximizar sua produtividade',
     descricaoCompleta: 'Desenvolva habilidades de concentração profunda, aprenda técnicas de gestão de tempo e elimine distrações digitais.',
     dificuldade: 'Intermediária', duracao: '4 semanas', impacto: 'Melhora no foco pessoal e profissional',
@@ -32,7 +32,7 @@ const TRILHAS_PRESETS = [
               pergunta: "Por que o sistema de recompensa é crucial na adaptação do foco para mentes neurodivergentes?",
               opcoes: [
                 "Porque a punição por falta de atenção provou ser o método mais eficaz.",
-                "Porque cria picos de dopamina que auxiliam na manutenção do interesse and execução da tarefa.",
+                "Porque cria picos de dopamina que auxiliam na manutenção do interesse e execução da tarefa.",
                 "Porque elimina 100% das distrações externas do ambiente físico."
               ],
               respostaCorreta: 1
@@ -64,7 +64,7 @@ const TRILHAS_PRESETS = [
     ]
   },
   {
-    id: 'social', titulo: 'Habilidades Sociais',
+    id: 'social', titulo: 'Habilidades Sociais', categoria: 'Social',
     descricao: 'Amplie sua capacidade de se relacionar e comunicar com assertividade',
     descricaoCompleta: 'Aprenda técnicas de comunicação não-violenta, inteligência emocional e como se relacionar melhor em diferentes contextos sociais.',
     dificuldade: 'Intermediária', duracao: '5 semanas', impacto: 'Relacionamentos mais saudáveis',
@@ -113,7 +113,7 @@ const TRILHAS_PRESETS = [
     ]
   },
   {
-    id: 'organizacao', titulo: 'Organização e Planejamento',
+    id: 'organizacao', titulo: 'Organização e Planejamento', categoria: 'Produtividade',
     descricao: 'Estruture sua vida com sistemas de organização que realmente funcionam',
     descricaoCompleta: 'Domine técnicas de planejamento pessoal, gestão de tempo e sistemas de organização.',
     dificuldade: 'Fácil', duracao: '3 semanas', impacto: 'Rotina estruturada e produtiva',
@@ -161,7 +161,7 @@ const TRILHAS_PRESETS = [
     ]
   },
   {
-    id: 'sensorial', titulo: 'Regulação Sensorial no Dia a Dia',
+    id: 'sensorial', titulo: 'Regulação Sensorial no Dia a Dia', categoria: 'Saúde',
     descricao: 'Estratégias práticas para lidar com sobrecarga e criar ambientes confortáveis.',
     descricaoCompleta: 'Aprenda a mapear seu perfil sensorial, identificar gatilhos e aplicar técnicas de acomodação para viver com mais conforto e menos crises.',
     dificuldade: 'Iniciante', duracao: '3 semanas', impacto: 'Prevenção de crises e bem-estar',
@@ -209,7 +209,7 @@ const TRILHAS_PRESETS = [
     ]
   },
   {
-    id: 'ansiedade', titulo: 'Gerenciamento de Ansiedade',
+    id: 'ansiedade', titulo: 'Gerenciamento de Ansiedade', categoria: 'Saúde',
     descricao: 'Ferramentas de regulação para lidar com pensamentos acelerados.',
     descricaoCompleta: 'Entenda os mecanismos da ansiedade e pratique técnicas de grounding, respiração e reestruturação cognitiva validadas por especialistas.',
     dificuldade: 'Intermediária', duracao: '4 semanas', impacto: 'Calma mental e controle',
@@ -218,7 +218,7 @@ const TRILHAS_PRESETS = [
       { 
         id: 1, titulo: 'O Ciclo da Ansiedade', descricao: 'Reconhecendo sinais físicos', duracao: '2h', status: 'em-progresso',
         conteudo: {
-          texto: "A ansiedade é uma emoção natural de alerta (luta ou fuga), mas quando se torna crônica, afeta gravemente a saúde. Segundo a OMS (2023), o Brasil é o país com a maior proporção de pessoas ansiosas no mundo (9,3% da population).",
+          texto: "A ansiedade é uma emoção natural de alerta (luta ou fuga), mas quando se torna crônica, afeta gravemente a saúde. Segundo a OMS (2023), o Brasil é o país com a maior proporção de pessoas ansiosas no mundo (9,3% da população).",
           pdfs: [{ titulo: "Cartilha de Saúde Mental: O Ciclo da Ansiedade", tamanho: "2.7 MB" }, { titulo: "Guia de Técnicas de Aterramento", tamanho: "800 KB" }],
           pratica: "Técnica de Grounding (5-4-3-2-1): Encontre 5 coisas que você pode ver, 4 que pode tocar, 3 que pode ouvir, 2 que pode cheirar e 1 que pode provar. Isso traz o cérebro de volta para o momento presente.",
           quiz: [
@@ -258,7 +258,7 @@ const TRILHAS_PRESETS = [
     ]
   },
   {
-    id: 'autonomia', titulo: 'Autonomia e Vida Independente',
+    id: 'autonomia', titulo: 'Autonomia e Vida Independente', categoria: 'Autonomia',
     descricao: 'Passo a passo para gerenciar moradia, autocuidado e rotina com segurança.',
     descricaoCompleta: 'Um guia prático voltado para o desenvolvimento da independência no dia a dia, abordando desde tarefas domésticas até cuidados pessoais básicos.',
     dificuldade: 'Avançada', duracao: '5 semanas', impacto: 'Maior independência diária',
@@ -307,7 +307,7 @@ const TRILHAS_PRESETS = [
     ]
   },
   {
-    id: 'carreira', titulo: 'Carreira e Empregabilidade',
+    id: 'carreira', titulo: 'Carreira e Empregabilidade', categoria: 'Autonomia',
     descricao: 'Como montar currículo, fazer entrevistas e entender a dinâmica do trabalho.',
     descricaoCompleta: 'Preparação para o mercado de trabalho, valorizando seus pontos fortes e ensinando a navegar pelas dinâmicas do ambiente corporativo.',
     dificuldade: 'Avançada', duracao: '4 semanas', impacto: 'Sucesso e adaptação profissional',
@@ -356,7 +356,7 @@ const TRILHAS_PRESETS = [
     ]
   },
   {
-    id: 'familia', titulo: 'Comunicação Familiar',
+    id: 'familia', titulo: 'Comunicação Familiar', categoria: 'Social',
     descricao: 'Construindo pontes de entendimento, limites saudáveis e empatia dentro de casa.',
     descricaoCompleta: 'Trilha desenhada para ajudar na comunicação de necessidades, estabelecimento de limites e no fortalecimento de laços familiares duradouros.',
     dificuldade: 'Intermediária', duracao: '3 semanas', impacto: 'Harmonia e compreensão no lar',
@@ -411,19 +411,18 @@ export default function MinhasTrilhas() {
   const [showCriarTrilha, setShowCriarTrilha] = useState(false);
   const [expandedTrilha, setExpandedTrilha] = useState(null);
   const [filtroStatus, setFiltroStatus] = useState('todas');
+  const [filtroCategoria, setFiltroCategoria] = useState('todas'); 
   const [animacaoNovasTrilhas, setAnimacaoNovasTrilhas] = useState({});
   const [notificacoes, setNotificacoes] = useState([]);
   const [proximasAcoes, setProximasAcoes] = useState([]);
   const [showNotificacoes, setShowNotificacoes] = useState(false);
   
-  // Controle do Módulo Ativo e Estado do Quiz Dinâmico
   const [moduloAtivo, setModuloAtivo] = useState(null);
   const [perguntaAtual, setPerguntaAtual] = useState(0);
   const [opcaoQuiz, setOpcaoQuiz] = useState(null);
   const [quizStatus, setQuizStatus] = useState('respondendo'); 
   const [quizErro, setQuizErro] = useState(false);
 
-  // Controle do Modal de Sucesso Personalizado Teaxis
   const [showSucessoModal, setShowSucessoModal] = useState(false);
 
   const { dados, atualizarTrilhas } = useProgresso();
@@ -571,14 +570,28 @@ export default function MinhasTrilhas() {
     }
   };
 
+  // LOGICA ATUALIZADA DO FILTRO (Lida com o localStorage antigo)
   const trilhasFiltradas = trilhasUsuario.filter(t => {
-    if (filtroStatus === 'todas') return true;
-    if (filtroStatus === 'ativas') return ['em-andamento', 'nao-iniciada'].includes(t.status);
-    if (filtroStatus === 'concluidas') return t.status === 'concluida';
-    return true;
+    let passStatus = true;
+    if (filtroStatus === 'ativas') passStatus = ['em-andamento', 'nao-iniciada'].includes(t.status);
+    if (filtroStatus === 'concluidas') passStatus = t.status === 'concluida';
+
+    // Puxa a categoria direto do preset caso o localStorage do usuário seja antigo e não tenha a tag
+    const presetRef = TRILHAS_PRESETS.find(p => p.id === t.id);
+    const categoriaReal = t.categoria || (presetRef ? presetRef.categoria : 'Sem Categoria');
+
+    let passCategoria = true;
+    if (filtroCategoria !== 'todas') passCategoria = categoriaReal === filtroCategoria;
+
+    return passStatus && passCategoria;
   });
 
-  const trilhasDisponíveis = TRILHAS_PRESETS.filter(p => !trilhasUsuario.find(u => u.id === p.id));
+  // Aplica o filtro de categoria também nas trilhas da exploração
+  const trilhasDisponíveis = TRILHAS_PRESETS.filter(p => {
+    const naoAdicionada = !trilhasUsuario.find(u => u.id === p.id);
+    const passCategoria = filtroCategoria === 'todas' || p.categoria === filtroCategoria;
+    return naoAdicionada && passCategoria;
+  });
 
   const handleLogout = () => setShowLogoutModal(true);
   const confirmLogout = () => {
@@ -599,13 +612,12 @@ export default function MinhasTrilhas() {
     <div className="trilhas-container-v2">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
 
-      {/* MODAL DE SUCESSO TEAXIS */}
       {showSucessoModal && (
         <div className="modal-aula-overlay" onClick={() => setShowSucessoModal(false)}>
           <div className="modal-sucesso fade-in-up" onClick={(e) => e.stopPropagation()}>
             <div className="modal-sucesso-header">
               <FaTrophy style={{ fontSize: '2rem', color: '#FFD700' }} />
-              <img src={logoTeaxis} alt="Teaxis" style={{ height: '30px', marginLeft: 'auto' }} />
+              <img src={logoTeaxis} alt="Logo" style={{ height: '30px', marginLeft: 'auto' }} />
             </div>
             <div className="modal-sucesso-body">
               <h1>Parabéns!</h1>
@@ -646,19 +658,41 @@ export default function MinhasTrilhas() {
         </section>
 
         <section className="filtros-acoes-v2">
-          <div className="filtro-group">
-            <button className={`filtro-btn ${filtroStatus === 'todas' ? 'active' : ''}`} onClick={() => setFiltroStatus('todas')}>Todas ({trilhasUsuario.length})</button>
-            <button className={`filtro-btn ${filtroStatus === 'ativas' ? 'active' : ''}`} onClick={() => setFiltroStatus('ativas')}>Ativas</button>
-            <button className={`filtro-btn ${filtroStatus === 'concluidas' ? 'active' : ''}`} onClick={() => setFiltroStatus('concluidas')}>Concluídas</button>
-          </div>
-          <div className="acoes-direita">
-            <div className="xp-badge">
-              <FaFire className="fire-icon" />
-              <span>{xpTotal} XP</span>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '15px', width: '100%' }}>
+            
+            <div className="filtros-combinados" style={{ display: 'flex', gap: '15px', alignItems: 'center', flexWrap: 'wrap' }}>
+              <div className="filtro-group">
+                <button className={`filtro-btn ${filtroStatus === 'todas' ? 'active' : ''}`} onClick={() => setFiltroStatus('todas')}>Todas</button>
+                <button className={`filtro-btn ${filtroStatus === 'ativas' ? 'active' : ''}`} onClick={() => setFiltroStatus('ativas')}>Ativas</button>
+                <button className={`filtro-btn ${filtroStatus === 'concluidas' ? 'active' : ''}`} onClick={() => setFiltroStatus('concluidas')}>Concluídas</button>
+              </div>
+              
+              <div className="filtro-categoria-wrapper">
+                <FaFilter className="filter-icon-small" />
+                <select 
+                  value={filtroCategoria} 
+                  onChange={(e) => setFiltroCategoria(e.target.value)} 
+                  className="select-categoria-elegante"
+                >
+                  <option value="todas">Todas as Categorias</option>
+                  <option value="Produtividade">Produtividade e Foco</option>
+                  <option value="Saúde">Saúde e Bem-Estar</option>
+                  <option value="Social">Habilidades Sociais</option>
+                  <option value="Autonomia">Vida e Autonomia</option>
+                </select>
+              </div>
             </div>
-            <button className="btn-nova-trilha-v2" onClick={() => setShowCriarTrilha(!showCriarTrilha)}>
-              <FaPlus /> {showCriarTrilha ? 'Cancelar Exploração' : 'Explorar Trilhas'}
-            </button>
+
+            <div className="acoes-direita">
+              <div className="xp-badge">
+                <FaFire className="fire-icon" />
+                <span>{xpTotal} XP</span>
+              </div>
+              <button className="btn-nova-trilha-v2" onClick={() => setShowCriarTrilha(!showCriarTrilha)}>
+                <FaPlus /> {showCriarTrilha ? 'Cancelar Exploração' : 'Explorar Trilhas'}
+              </button>
+            </div>
+
           </div>
         </section>
 
@@ -666,12 +700,13 @@ export default function MinhasTrilhas() {
           <section className="trilhas-disponiveis-v2 fade-in-down">
             <h2>Explore Novas Trilhas</h2>
             <div className="trilhas-disponiveis-grid">
-              {trilhasDisponíveis.map(trilha => (
+              {trilhasDisponíveis.length > 0 ? trilhasDisponíveis.map(trilha => (
                 <div key={trilha.id} className="trilha-disponivel-card">
                   <div className="card-header" style={{ backgroundColor: trilha.cor }}>
                     <span className="trilha-icon">{trilha.icone}</span>
                   </div>
                   <div className="card-content">
+                    <span className="badge-categoria-disponivel">{trilha.categoria}</span>
                     <h3>{trilha.titulo}</h3>
                     <p className="descricao-breve">{trilha.descricao}</p>
                     <div className="info-trilha">
@@ -683,7 +718,11 @@ export default function MinhasTrilhas() {
                     </button>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="empty-state-small" style={{ gridColumn: '1 / -1', padding: '30px', textAlign: 'center', background: 'rgba(255,255,255,0.5)', borderRadius: '12px' }}>
+                  Nenhuma nova trilha disponível nesta categoria.
+                </div>
+              )}
             </div>
           </section>
         )}
@@ -693,7 +732,7 @@ export default function MinhasTrilhas() {
             <div className="empty-state-trilhas">
               <FaBookOpen className="empty-icon" />
               <h3>Jornada Limpa</h3>
-              <p>Clique em "Explorar Trilhas" para adicionar seu primeiro desafio.</p>
+              <p>Nenhuma trilha encontrada para este filtro. Explore novas jornadas para adicionar ao seu painel.</p>
             </div>
           ) : (
             trilhasFiltradas.map(trilha => {
@@ -701,12 +740,17 @@ export default function MinhasTrilhas() {
               const modulosConcluidos = trilha.modulos.filter(m => m.status === 'concluido').length;
               const isExpanded = expandedTrilha === trilha.id;
 
+              // Identifica a categoria real da trilha
+              const presetRef = TRILHAS_PRESETS.find(p => p.id === trilha.id);
+              const categoriaCard = trilha.categoria || (presetRef ? presetRef.categoria : 'Sem Categoria');
+
               return (
                 <div key={trilha.id} className={`trilha-card-v2 ${trilha.status} ${animacaoNovasTrilhas[trilha.id] ? 'novo' : ''}`}>
                   <div className="trilha-card-header">
                     <div className="trilha-info-header">
                       <span className="trilha-icon-large">{trilha.icone}</span>
                       <div className="trilha-titulo-info">
+                        <span className="badge-categoria-card">{categoriaCard}</span>
                         <h3>{trilha.titulo}</h3>
                         <span className={`status-tag status-${trilha.status}`}>
                           {trilha.status === 'em-andamento' ? '🔥 Em Andamento' : 
@@ -813,9 +857,7 @@ export default function MinhasTrilhas() {
         </section>
       </main>
 
-      {/* =========================================
-          MODAL DE AULA SIMULADA RICA
-          ========================================= */}
+      {/* MODAL DE AULA */}
       {moduloAtivo && (
         <div className="modal-aula-overlay" onClick={() => setModuloAtivo(null)}>
           <div className="modal-aula-card fade-in-up" onClick={(e) => e.stopPropagation()}>
@@ -967,7 +1009,56 @@ export default function MinhasTrilhas() {
             animation: fadeInUp 0.4s ease-out forwards;
         }
 
-        /* --- ESTILOS DO MODAL DE SUCESSO TEAXIS --- */
+        .filtro-categoria-wrapper {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          background: #ffffff;
+          padding: 6px 12px;
+          border-radius: 8px;
+          border: 1px solid #cbd5e1;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .filter-icon-small {
+          color: #64748b;
+          font-size: 0.9rem;
+        }
+        .select-categoria-elegante {
+          border: none;
+          background: transparent;
+          color: #334155;
+          font-weight: 600;
+          font-size: 0.95rem;
+          outline: none;
+          cursor: pointer;
+          font-family: inherit;
+        }
+        
+        .badge-categoria-card {
+          background: #f1f5f9;
+          color: #64748b;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 0.75rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          display: inline-block;
+          margin-bottom: 6px;
+        }
+
+        .badge-categoria-disponivel {
+          background: rgba(0,0,0,0.05);
+          color: #475569;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 0.7rem;
+          font-weight: bold;
+          text-transform: uppercase;
+          display: inline-block;
+          margin-bottom: 12px;
+        }
+
         .modal-sucesso {
             display: flex;
             flex-direction: column;
@@ -1026,7 +1117,6 @@ export default function MinhasTrilhas() {
             box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
         }
 
-        /* --- ESTILOS DO MODAL DE AULA E QUIZ --- */
         .cursor-pointer { cursor: pointer; transition: transform 0.2s; }
         .cursor-pointer:hover { transform: scale(1.01); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .btn-acessar-aula { background: #7B3FF2; color: white; border: none; padding: 8px 16px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-weight: bold; cursor: pointer; }

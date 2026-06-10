@@ -7,6 +7,7 @@ import logoTeaxis from '../assets/imagens/fundoLogo.png';
 import { carregarAgendamentos } from '../utils/dataSync';
 
 const parseDate = (value) => {
+  if (!value) return new Date();
   const [day, month, year] = value.split('/').map(Number);
   return new Date(year, month - 1, day);
 };
@@ -21,8 +22,14 @@ export default function MinhaAgenda() {
   const [copySuccess, setCopySuccess] = useState('');
 
   useEffect(() => {
+    // FILTRAGEM RIGOROSA PELO NOME DO PROFISSIONAL LOGADO
+    const professionalName = localStorage.getItem('user_name');
     const agendaCompleta = carregarAgendamentos();
-    const profAgenda = agendaCompleta.filter(item => item.toRole === 'profissional');
+    
+    const profAgenda = agendaCompleta.filter(item => 
+      item.toRole === 'profissional' && item.profissional === professionalName
+    );
+    
     setAgenda(profAgenda);
   }, []);
 
@@ -43,9 +50,6 @@ export default function MinhaAgenda() {
       return matchesSearch && matchesStatus;
     });
   }, [agendaOrdenada, searchQuery, statusFilter]);
-
-  const proximos = agendaFiltrada.filter(item => item.status === 'Confirmado');
-  const anteriores = agendaFiltrada.filter(item => item.status === 'Concluído' || item.status === 'Cancelado');
 
   const agendaPorData = useMemo(() => {
     return agendaFiltrada.reduce((acc, item) => {
@@ -73,26 +77,14 @@ export default function MinhaAgenda() {
     cancelados: agenda.filter(item => item.status === 'Cancelado').length,
   }), [agenda]);
 
-  const downloadFile = (filename, content, mimeType = 'text/csv') => {
-    const blob = new Blob([content], { type: mimeType });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
-  };
-
   const handleCopyAgenda = async () => {
     const text = agendaOrdenada.map(item => `${item.data} ${item.hora} — ${item.cliente} (${item.status})`).join('\n');
     try {
       await navigator.clipboard.writeText(text);
-      setCopySuccess('Agenda copiada para a área de transferência!');
+      setCopySuccess('Agenda copiada!');
       setTimeout(() => setCopySuccess(''), 2500);
     } catch (error) {
-      setCopySuccess('Não foi possível copiar.');
-      setTimeout(() => setCopySuccess(''), 2500);
+      setCopySuccess('Erro ao copiar.');
     }
   };
 
@@ -101,9 +93,11 @@ export default function MinhaAgenda() {
       ['Data', 'Hora', 'Cliente', 'Profissional', 'Status'].join(','),
       ...agendaFiltrada.map(item => [item.data, item.hora, item.cliente, item.profissional, item.status].map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')),
     ];
-    downloadFile('agenda-profissional.csv', rows.join('\n'));
-    setCopySuccess('CSV da agenda gerado e baixado!');
-    setTimeout(() => setCopySuccess(''), 2500);
+    const blob = new Blob([rows.join('\n')], { type: 'text/csv' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'minha-agenda.csv';
+    link.click();
   };
 
   const confirmarLogout = () => {
@@ -133,7 +127,7 @@ export default function MinhaAgenda() {
         <section className="glass-panel-dashboard fade-in hero-prof">
           <div>
             <h1>Agenda profissional</h1>
-            <p>Uma visão completa da sua semana com agenda inteligente, filtros e alertas de conflito para você gerir sua rotina com confiança.</p>
+            <p>Uma visão completa da sua semana com agenda inteligente, filtros e alertas de conflito.</p>
           </div>
           <div className="schedule-summary">
             <div className="summary-card">
@@ -167,13 +161,7 @@ export default function MinhaAgenda() {
           <div className="filter-group">
             <div className="filter-input-wrapper">
               <FaSearch className="filter-icon" />
-              <input
-                type="text"
-                placeholder="Buscar cliente, status ou horário"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="filter-input"
-              />
+              <input type="text" placeholder="Buscar cliente..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="filter-input" />
             </div>
             <div className="filter-select-wrapper">
               <FaFilter className="filter-icon" />
@@ -192,7 +180,7 @@ export default function MinhaAgenda() {
           {copySuccess && <div className="copy-banner">{copySuccess}</div>}
           {conflitos.length > 0 && (
             <div className="warning-banner">
-              <FaExclamationTriangle /> Existem <strong>{conflitos.length}</strong> conflitos de horário na sua agenda. Reveja os horários duplicados para evitar sobreposição.
+              <FaExclamationTriangle /> Existem <strong>{conflitos.length}</strong> conflitos de horário. Reveja a sobreposição.
             </div>
           )}
         </section>
@@ -221,7 +209,7 @@ export default function MinhaAgenda() {
                 ))}
               </div>
             ) : (
-              <div className="empty-state-small">Nenhum agendamento corresponde aos filtros.</div>
+              <div className="empty-state-small">Nenhum agendamento encontrado para este profissional.</div>
             )}
           </section>
         ) : (
@@ -250,7 +238,7 @@ export default function MinhaAgenda() {
                 ))}
               </div>
             ) : (
-              <div className="empty-state-small">A linha do tempo não encontrou agendamentos.</div>
+              <div className="empty-state-small">Sem eventos na linha do tempo.</div>
             )}
           </section>
         )}
