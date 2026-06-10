@@ -304,11 +304,6 @@ export default function Sidebar({
               </Link>
             </li>
             <li className="nav-item-premium">
-              <Link to="/jogos-educativos" className={`nav-link-premium ${activeLink === 'jogos' ? 'active' : ''}`} onClick={() => { setActiveLink('jogos'); setIsSidebarOpen(false); }}>
-                <FaPuzzlePiece className="nav-icon-premium" /> Jogos Educativos
-              </Link>
-            </li>
-            <li className="nav-item-premium">
               <Link to="/meu-progresso" className={`nav-link-premium ${activeLink === 'progresso' ? 'active' : ''}`} onClick={() => { setActiveLink('progresso'); setIsSidebarOpen(false); }}>
                 <FaChartLine className="nav-icon-premium" /> Meu Progresso
               </Link>
