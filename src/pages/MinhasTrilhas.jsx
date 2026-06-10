@@ -4,7 +4,7 @@ import {
   FaBookOpen, FaPlus, FaCheck, FaArrowLeft, FaLightbulb, FaRocket, 
   FaBullseye, FaChartLine, FaFire, FaTrophy, FaSearch, FaUserCircle, 
   FaChevronDown, FaChevronUp, FaTrash, FaStar, FaClock, FaLock, FaBell, 
-  FaPlayCircle, FaTimes, FaCheckCircle, FaFilePdf, FaDownload, FaArrowRight, FaFilter
+  FaPlayCircle, FaTimes, FaCheckCircle, FaFilePdf, FaDownload, FaArrowRight, FaFilter, FaExternalLinkAlt
 } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import { useProgresso } from '../contexts/ProgressoContext';
@@ -405,6 +405,20 @@ const TRILHAS_PRESETS = [
   }
 ];
 
+// O Dicionário de URLs agora fica do lado de fora para podermos acessá-lo facilmente
+const linksExternosPDF = {
+  "Guia de Técnicas de Deep Work Adaptadas": "https://bvsms.saude.gov.br/bvs/boletim_tematico/transtorno_deficit_atencao_v4_n4.pdf",
+  "Guia Prático de Comunicação Não-Violenta": "https://ifsp.edu.br/images/reitoria/Nucleos/Nrpc/Guia_Prtico3_Implementando_a_Comunicao_No_Violenta_CNV_em_uma_Equipe.pdf",
+  "Cartilha: Assertividade nas Relações": "https://ifsp.edu.br/images/reitoria/Nucleos/Nrpc/Guia_Prtico3_Implementando_a_Comunicao_No_Violenta_CNV_em_uma_Equipe.pdf", 
+  "Planilha de Rastreio de Tempo Adaptada": "https://proaes.ufra.edu.br/images/Documentos/Documentos/Cartilha_-Planejamento_de_Estudos_e_Manejo_do_Tempo-Equipe_de_psicologia_Assistncia-estudantil-UFRA.pdf",
+  "Cartilha de Inclusão e Regulação Sensorial (TEA)": "https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-nordeste/hc-ufpe/governanca/divgp/documentos/CartilhaTEA_compressed.pdf",
+  "Cartilha de Saúde Mental: O Ciclo da Ansiedade": "https://sites.usp.br/lepsis/wp-content/uploads/sites/107/2020/07/Sa%C3%BAde-Mental-na-Quarentena-Uma-cartilha-com-estrat%C3%A9gias-para-vestibulandos.pdf",
+  "Guia de Técnicas de Aterramento": "https://sites.usp.br/lepsis/wp-content/uploads/sites/107/2020/07/Sa%C3%BAde-Mental-na-Quarentena-Uma-cartilha-com-estrat%C3%A9gias-para-vestibulandos.pdf",
+  "Checklist Visual de Rotinas Diárias": "https://escola.defensoria.df.gov.br/wp-content/uploads/2025/06/CARTILHA-Autismo-Direitos-e-Defensoria-Publica.pdf",
+  "Guia de Acomodações Razoáveis (LBI - Lei Brasileira de Inclusão)": "https://www.pge.pa.gov.br/sites/default/files/manuais/cartilha_autismo.pdf",
+  "Dinâmicas Práticas de Escuta Ativa em Família": "https://acervodigital.ufpr.br/xmlui/bitstream/handle/1884/98122/Cartilha%20LABNEURO-UFPR%20para%20fam%C3%ADlias%20com%20adolescentes.pdf"
+};
+
 export default function MinhasTrilhas() {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -547,22 +561,9 @@ export default function MinhasTrilhas() {
     setQuizErro(false);
   };
 
-  const handleDownloadPDF = (pdfNome) => {
-    const linksExternos = {
-      "Guia de Técnicas de Deep Work Adaptadas": "https://bvsms.saude.gov.br/bvs/boletim_tematico/transtorno_deficit_atencao_v4_n4.pdf",
-      "Guia Prático de Comunicação Não-Violenta": "https://ifsp.edu.br/images/reitoria/Nucleos/Nrpc/Guia_Prtico3_Implementando_a_Comunicao_No_Violenta_CNV_em_uma_Equipe.pdf",
-      "Cartilha: Assertividade nas Relações": "https://ifsp.edu.br/images/reitoria/Nucleos/Nrpc/Guia_Prtico3_Implementando_a_Comunicao_No_Violenta_CNV_em_uma_Equipe.pdf", 
-      "Planilha de Rastreio de Tempo Adaptada": "https://proaes.ufra.edu.br/images/Documentos/Documentos/Cartilha_-Planejamento_de_Estudos_e_Manejo_do_Tempo-Equipe_de_psicologia_Assistncia-estudantil-UFRA.pdf",
-      "Cartilha de Inclusão e Regulação Sensorial (TEA)": "https://www.gov.br/hubrasil/pt-br/hospitais-universitarios/regiao-nordeste/hc-ufpe/governanca/divgp/documentos/CartilhaTEA_compressed.pdf",
-      "Cartilha de Saúde Mental: O Ciclo da Ansiedade": "https://sites.usp.br/lepsis/wp-content/uploads/sites/107/2020/07/Sa%C3%BAde-Mental-na-Quarentena-Uma-cartilha-com-estrat%C3%A9gias-para-vestibulandos.pdf",
-      "Guia de Técnicas de Aterramento": "https://sites.usp.br/lepsis/wp-content/uploads/sites/107/2020/07/Sa%C3%BAde-Mental-na-Quarentena-Uma-cartilha-com-estrat%C3%A9gias-para-vestibulandos.pdf",
-      "Checklist Visual de Rotinas Diárias": "https://escola.defensoria.df.gov.br/wp-content/uploads/2025/06/CARTILHA-Autismo-Direitos-e-Defensoria-Publica.pdf",
-      "Guia de Acomodações Razoáveis (LBI - Lei Brasileira de Inclusão)": "https://www.pge.pa.gov.br/sites/default/files/manuais/cartilha_autismo.pdf",
-      "Dinâmicas Práticas de Escuta Ativa em Família": "https://acervodigital.ufpr.br/xmlui/bitstream/handle/1884/98122/Cartilha%20LABNEURO-UFPR%20para%20fam%C3%ADlias%20com%20adolescentes.pdf"
-    };
-
-    const url = linksExternos[pdfNome];
-
+  // FUNÇÃO 1: Apenas abre o PDF em uma nova aba
+  const handleAbrirPDF = (pdfNome) => {
+    const url = linksExternosPDF[pdfNome];
     if (url) {
       window.open(url, '_blank');
     } else {
@@ -570,13 +571,44 @@ export default function MinhasTrilhas() {
     }
   };
 
-  // LOGICA ATUALIZADA DO FILTRO (Lida com o localStorage antigo)
+  // FUNÇÃO 2: Tenta forçar o download direto para a máquina do usuário
+  const handleBaixarPDF = async (pdfNome) => {
+    const url = linksExternosPDF[pdfNome];
+    if (!url) {
+      alert("O documento solicitado não está disponível no momento.");
+      return;
+    }
+    
+    try {
+      // Tenta puxar o arquivo via Fetch para forçar o download em vez de abrir
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = `${pdfNome}.pdf`; // Define o nome do arquivo a ser salvo
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      // Fallback: Se o servidor do governo bloquear o fetch (CORS), ele baixa via nova aba
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${pdfNome}.pdf`);
+      link.setAttribute('target', '_blank');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  };
+
   const trilhasFiltradas = trilhasUsuario.filter(t => {
     let passStatus = true;
     if (filtroStatus === 'ativas') passStatus = ['em-andamento', 'nao-iniciada'].includes(t.status);
     if (filtroStatus === 'concluidas') passStatus = t.status === 'concluida';
 
-    // Puxa a categoria direto do preset caso o localStorage do usuário seja antigo e não tenha a tag
     const presetRef = TRILHAS_PRESETS.find(p => p.id === t.id);
     const categoriaReal = t.categoria || (presetRef ? presetRef.categoria : 'Sem Categoria');
 
@@ -586,7 +618,6 @@ export default function MinhasTrilhas() {
     return passStatus && passCategoria;
   });
 
-  // Aplica o filtro de categoria também nas trilhas da exploração
   const trilhasDisponíveis = TRILHAS_PRESETS.filter(p => {
     const naoAdicionada = !trilhasUsuario.find(u => u.id === p.id);
     const passCategoria = filtroCategoria === 'todas' || p.categoria === filtroCategoria;
@@ -740,7 +771,6 @@ export default function MinhasTrilhas() {
               const modulosConcluidos = trilha.modulos.filter(m => m.status === 'concluido').length;
               const isExpanded = expandedTrilha === trilha.id;
 
-              // Identifica a categoria real da trilha
               const presetRef = TRILHAS_PRESETS.find(p => p.id === trilha.id);
               const categoriaCard = trilha.categoria || (presetRef ? presetRef.categoria : 'Sem Categoria');
 
@@ -887,13 +917,30 @@ export default function MinhasTrilhas() {
                     <h3>Biblioteca e Materiais Complementares</h3>
                     <div className="pdf-list">
                       {moduloAtivo.conteudoRico.pdfs.map((pdf, idx) => (
-                        <div key={idx} className="pdf-card" onClick={() => handleDownloadPDF(pdf.titulo)}>
+                        <div key={idx} className="pdf-card">
                           <FaFilePdf className="pdf-icon" />
                           <div className="pdf-info">
                             <h4>{pdf.titulo}</h4>
                             <span>Documento PDF • {pdf.tamanho}</span>
                           </div>
-                          <FaDownload className="download-icon" />
+                          
+                          {/* OS DOIS NOVOS BOTÕES DE AÇÃO DO PDF */}
+                          <div className="pdf-actions">
+                            <button 
+                              className="btn-pdf-action" 
+                              onClick={() => handleAbrirPDF(pdf.titulo)} 
+                              title="Visualizar Documento"
+                            >
+                              <FaExternalLinkAlt />
+                            </button>
+                            <button 
+                              className="btn-pdf-action" 
+                              onClick={() => handleBaixarPDF(pdf.titulo)} 
+                              title="Fazer Download"
+                            >
+                              <FaDownload />
+                            </button>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -1138,14 +1185,20 @@ export default function MinhasTrilhas() {
         
         .texto-explicativo-rico { font-size: 1.05rem; color: #334155; line-height: 1.6; margin-bottom: 24px; background: white; padding: 16px; border-radius: 8px; border: 1px solid #e2e8f0; }
         .materiais-apoio-box h3 { color: #1e293b; margin-bottom: 16px; font-size: 1.1rem; }
+        
+        /* ESTILOS ATUALIZADOS PARA OS PDFs */
         .pdf-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 24px; }
-        .pdf-card { display: flex; align-items: center; gap: 16px; background: white; border: 1px solid #cbd5e1; padding: 16px; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; }
+        .pdf-card { display: flex; align-items: center; justify-content: space-between; gap: 16px; background: white; border: 1px solid #cbd5e1; padding: 12px 16px; border-radius: 12px; transition: all 0.2s ease; }
         .pdf-card:hover { border-color: #94a3b8; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); transform: translateY(-2px); }
         .pdf-icon { font-size: 2rem; color: #ef4444; flex-shrink: 0; }
         .pdf-info { flex: 1; }
         .pdf-info h4 { margin: 0 0 4px 0; color: #334155; font-size: 0.95rem; }
         .pdf-info span { font-size: 0.8rem; color: #64748b; }
-        .download-icon { color: #94a3b8; }
+        
+        .pdf-actions { display: flex; gap: 8px; align-items: center; }
+        .btn-pdf-action { background: #f1f5f9; color: #475569; border: none; padding: 10px; border-radius: 6px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
+        .btn-pdf-action:hover { background: #e2e8f0; color: #7B3FF2; }
+
         .pratica-box { background: #e0f2fe !important; border-left-color: #3b82f6 !important; color: #1e3a8a !important; margin-bottom: 32px; }
         .pratica-icon { font-size: 1.5rem; color: #2563eb; flex-shrink: 0; margin-top: 2px; }
         
