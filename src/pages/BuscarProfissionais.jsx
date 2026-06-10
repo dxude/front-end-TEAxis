@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaArrowLeft, FaGraduationCap, FaBookOpen, FaBullseye } from 'react-icons/fa';
+import { FaSearch, FaMapMarkerAlt, FaCalendarAlt, FaStar, FaUserCircle, FaSignOutAlt, FaArrowLeft, FaGraduationCap, FaBookOpen } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
 import '../Styles/BuscarProfissionais.css';
 import logoPlataforma from '../assets/imagens/fundoLogo.png';
+
+const API_PROFISSIONAIS = 'https://back-end-plataforma-teaxis.onrender.com/api/v1/profissionais';
 
 export default function BuscarProfissionais() {
   const navigate = useNavigate();
@@ -12,6 +14,72 @@ export default function BuscarProfissionais() {
   const [localizacao, setLocalizacao] = useState('');
   const [disponibilidade, setDisponibilidade] = useState('');
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // Estados preenchidos estritamente pela API do banco Neon
+  const [profissionais, setProfissionais] = useState([]);
+  const [todosProfissionais, setTodosProfissionais] = useState([]); 
+  const [loading, setLoading] = useState(true);
+  const [erroApi, setErroApi] = useState(false);
+
+  const buscarProfissionaisDoBanco = async () => {
+    try {
+      setLoading(true);
+      setErroApi(false);
+      const response = await fetch(API_PROFISSIONAIS);
+      
+      if (response.ok) {
+        const dados = await response.json();
+        
+        // Mapeia e trata os dados vindos puramente do banco Neon
+        const listaTratada = dados.map(prof => {
+          // Extrai a primeira especialidade caso venha como array, ou trata como string
+          let espObtida = 'Especialista';
+          if (Array.isArray(prof.especializacoes) && prof.especializacoes.length > 0) {
+            espObtida = prof.especializacoes[0];
+          } else if (prof.especializacao) {
+            espObtida = prof.especializacao;
+          }
+
+          // Formata os focos/métodos de atendimento
+          let subObtido = 'Métodos integrativos';
+          if (Array.isArray(prof.metodosUtilizados) && prof.metodosUtilizados.length > 0) {
+            subObtido = prof.metodosUtilizados.join(', ');
+          } else if (prof.subEspecializacao) {
+            subObtido = prof.subEspecializacao;
+          }
+
+          return {
+            id: prof.id,
+            nome: prof.nome || 'Profissional Cadastrado',
+            especializacao: espObtida,
+            sub: subObtido,
+            avaliacao: prof.avaliacao || 5.0,
+            // Fallback apenas para a imagem caso o registro não possua fotoUrl cadastrada
+            foto: prof.fotoUrl || `https://randomuser.me/api/portraits/lego/${prof.id % 9}.jpg`,
+            bio: prof.certificacoes || prof.bio || 'Profissional com registro ativo na plataforma TEAxis.',
+            localidades: [
+              prof.cidade && prof.estado ? `${prof.cidade} - ${prof.estado}` : 'Recife - PE',
+              'Online'
+            ]
+          };
+        });
+
+        setProfissionais(listaTratada);
+        setTodosProfissionais(listaTratada);
+      } else {
+        setErroApi(true);
+      }
+    } catch (error) {
+      console.error('❌ Erro de conexão com a API Java:', error);
+      setErroApi(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    buscarProfissionaisDoBanco();
+  }, []);
 
   const handleLogout = () => {
     setShowLogoutModal(true);
@@ -26,52 +94,9 @@ export default function BuscarProfissionais() {
     navigate('/login');
   };
 
-  const [profissionais, setProfissionais] = useState([
-    {
-      id: 1,
-      nome: 'Dra. Helena Costa',
-      especializacao: 'Psicologia',
-      sub: 'TDAH, Ansiedade',
-      avaliacao: 4.9,
-      foto: 'https://randomuser.me/api/portraits/women/68.jpg', 
-      bio: 'Especialista em TDAH e ansiedade, com foco em adolescentes e adultos. Atendimento online e presencial em São Paulo.',
-      localidades: ['São Paulo - SP', 'Online']
-    },
-    {
-      id: 2,
-      nome: 'Dr. Lucas Ribeiro',
-      especializacao: 'Terapia Ocupacional',
-      sub: 'TEA, Infantil',
-      avaliacao: 4.7,
-      foto: 'https://randomuser.me/api/portraits/men/82.jpg',
-      bio: 'Terapeuta ocupacional com vasta experiência em TEA e desenvolvimento infantil. Ajudo crianças a desenvolverem autonomia e habilidades.',
-      localidades: ['Rio de Janeiro - RJ', 'Online']
-    },
-    {
-      id: 3,
-      nome: 'Dra. Mariana Santos',
-      especializacao: 'Psicopedagogia',
-      sub: 'Dislexia',
-      avaliacao: 4.8,
-      foto: 'https://randomuser.me/api/portraits/women/44.jpg',
-      bio: 'Psicopedagoga especializada em dislexia e transtornos de aprendizagem. Trabalho com estratégias individualizadas.',
-      localidades: ['Belo Horizonte - MG', 'Online']
-    },
-    {
-      id: 4,
-      nome: 'Dr. Carlos Lima',
-      especializacao: 'Fonoaudiologia',
-      sub: 'TEA, Linguagem',
-      avaliacao: 4.6,
-      foto: 'https://randomuser.me/api/portraits/men/7.jpg',
-      bio: 'Fonoaudiólogo com experiência em desenvolvimento da comunicação e linguagem em crianças com TEA.',
-      localidades: ['Online']
-    },
-  ]);
-
   const handleSearch = (e) => {
     e.preventDefault();
-    const filtered = profissionais.filter(prof => {
+    const filtered = todosProfissionais.filter(prof => {
       const matchesSearchTerm = searchTerm ? prof.nome.toLowerCase().includes(searchTerm.toLowerCase()) : true;
       const matchesEspecializacao = especializacao ? prof.especializacao.toLowerCase().includes(especializacao.toLowerCase()) : true;
       const matchesLocalizacao = localizacao ? prof.localidades.some(loc => loc.toLowerCase().includes(localizacao.toLowerCase())) : true;
@@ -84,7 +109,6 @@ export default function BuscarProfissionais() {
     <div className="buscar-page-premium">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       
-      {/* NAVBAR DE VIDRO PREMIUM */}
       <header className="header-glass-premium">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">
@@ -101,7 +125,6 @@ export default function BuscarProfissionais() {
         </nav>
       </header>
 
-      {/* BACKGROUND DECORATIVO ANIMADO */}
       <div className="bg-shapes">
         <div className="shape shape-1"></div>
         <div className="shape shape-2"></div>
@@ -113,7 +136,6 @@ export default function BuscarProfissionais() {
           <p className="subtitle">Utilize a busca inteligente para encontrar profissionais que entendam a sua jornada.</p>
         </div>
 
-        {/* FORMULÁRIO DE BUSCA DE VIDRO */}
         <form onSubmit={handleSearch} className="glass-panel-dashboard fade-in delay-1 search-form-glass">
           <div className="search-input-wrapper">
             <FaSearch className="search-icon-inside" />
@@ -152,14 +174,20 @@ export default function BuscarProfissionais() {
           </div>
         </form>
 
-        {/* LISTAGEM DE PROFISSIONAIS (CARDS LIPOASPIRADOS E TRAVADOS) */}
         <section className="professional-listing fade-in delay-2">
-          {profissionais.length > 0 ? (
+          {loading ? (
+            <div className="empty-state-glass">
+              <p>Carregando especialistas cadastrados no banco...</p>
+            </div>
+          ) : erroApi ? (
+            <div className="empty-state-glass">
+              <p>Erro ao conectar com o servidor. Verifique se o back-end está ativo.</p>
+            </div>
+          ) : profissionais.length > 0 ? (
             <div className="professional-grid-premium">
               {profissionais.map(prof => (
                 <div key={prof.id} className="professional-card-glass">
                   
-                  {/* FOTO FIXA SEM ESTICAR */}
                   <div className="card-photo-container">
                     <img src={prof.foto} alt={prof.nome} className="card-photo-premium" />
                     <div className="card-rating-badge">
@@ -182,11 +210,18 @@ export default function BuscarProfissionais() {
                       ))}
                     </div>
                     
-                    <p className="professional-bio-short">{prof.bio.substring(0, 90)}...</p>
+                    <p className="professional-bio-short">
+                      {prof.bio && prof.bio.length > 90 ? `${prof.bio.substring(0, 90)}...` : prof.bio}
+                    </p>
                   </div>
 
                   <div className="card-footer">
-                    <button className="btn-action-premium secondary full-width" onClick={() => navigate(`/perfil-profissional/${prof.id}`)}>
+                    {/* Envia os dados completos pelo state para o perfil carregar sem precisar de requisições lentas */}
+                    <button 
+                      type="button" 
+                      className="btn-action-premium secondary full-width" 
+                      onClick={() => navigate(`/perfil-profissional/${prof.id}`, { state: { profissional: prof } })}
+                    >
                       Ver Perfil Completo
                     </button>
                   </div>
@@ -195,8 +230,8 @@ export default function BuscarProfissionais() {
             </div>
           ) : (
             <div className="empty-state-glass">
-              <p>Nenhum profissional encontrado com os critérios selecionados.</p>
-              <button className="btn-action-premium secondary mt-3" onClick={() => { setSearchTerm(''); setEspecializacao(''); setLocalizacao(''); setDisponibilidade(''); setProfissionais(profissionais); }}>Limpar Filtros</button>
+              <p>Nenhum profissional cadastrado encontrado no banco Neon.</p>
+              <button type="button" className="btn-action-premium secondary mt-3" onClick={() => { setSearchTerm(''); setEspecializacao(''); setLocalizacao(''); setDisponibilidade(''); setProfissionais(todosProfissionais); }}>Limpar Filtros</button>
             </div>
           )}
         </section>
