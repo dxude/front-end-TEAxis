@@ -2,55 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaPlus, FaCheck, FaEdit, FaTrash, FaArrowLeft, FaCheckCircle, FaRegCircle, FaSearch, FaCalendarAlt, FaUserCircle, FaSignOutAlt, FaBookOpen, FaBullseye } from 'react-icons/fa';
 import LogoutModal from '../components/LogoutModal';
+import { useProgresso } from '../contexts/ProgressoContext';
 import '../Styles/MinhasMetas.css';
 import logoPlataforma from '../assets/imagens/fundoLogo.png'; 
-
-const metasDefault = [
-  { 
-    id: 1, 
-    descricao: 'Ler 10 páginas por dia', 
-    dataLimite: '2025-07-15', 
-    categoria: 'Rotina',
-    concluida: false,
-    submetas: [
-      { id: 11, texto: 'Escolher o livro', concluida: true },
-      { id: 12, texto: 'Ler 5 páginas de manhã', concluida: false },
-      { id: 13, texto: 'Ler 5 páginas à noite', concluida: false }
-    ]
-  },
-  { 
-    id: 2, 
-    descricao: 'Praticar mindfulness 15 minutos', 
-    dataLimite: '2025-06-30', 
-    categoria: 'Saúde',
-    concluida: true,
-    submetas: [
-      { id: 21, texto: 'Encontrar um lugar silencioso', concluida: true },
-      { id: 22, texto: 'Fazer o exercício de respiração', concluida: true }
-    ]
-  },
-];
 
 export default function MinhasMetas() {
   const navigate = useNavigate();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [filtroAtivo, setFiltroAtivo] = useState('todas'); 
 
-  // Carrega metas do localStorage ou usa valores padrão
-  const [metas, setMetas] = useState(() => {
-    if (typeof window !== 'undefined') {
-      const metasSalvas = localStorage.getItem('minhas_metas');
-      return metasSalvas ? JSON.parse(metasSalvas) : metasDefault;
-    }
-    return metasDefault;
-  });
+  // Conexão com o Contexto Global
+  const { dados, atualizarMetas } = useProgresso();
+  const metas = dados?.metas || [];
 
-  // Salva metas no localStorage sempre que mudam
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('minhas_metas', JSON.stringify(metas));
-    }
-  }, [metas]);
+  const setMetas = (novasMetas) => {
+    atualizarMetas(novasMetas);
+  };
 
   const [novaMeta, setNovaMeta] = useState('');
   const [novaDataLimite, setNovaDataLimite] = useState('');
@@ -102,7 +69,6 @@ export default function MinhasMetas() {
     }));
   };
 
-  // Funções do Modal de Edição
   const handleAbrirEdicao = (meta) => {
     setMetaEmEdicao({ ...meta }); 
     setNovaSubmetaModal('');
@@ -158,7 +124,7 @@ export default function MinhasMetas() {
     navigate('/login');
   };
 
-  const progressoGeral = metas.length > 0 
+  const progressoMetasUi = metas.length > 0 
     ? Math.round((metas.filter(m => m.concluida).length / metas.length) * 100) 
     : 0;
 
@@ -172,7 +138,6 @@ export default function MinhasMetas() {
     <div className="minhas-metas-container">
       <LogoutModal open={showLogoutModal} onClose={() => setShowLogoutModal(false)} onConfirm={confirmLogout} />
       
-      {/* NAVBAR DE VIDRO PREMIUM */}
       <header className="minhas-metas-header-glass">
         <div className="header-left">
           <Link to="/dashboard-usuario" className="back-to-space-btn">
@@ -203,7 +168,6 @@ export default function MinhasMetas() {
       </header>
 
       <main className="minhas-metas-content">
-        
         <section className="minhas-metas-adicionar glass-panel">
           <h2>🎯 Nova Meta</h2>
           <form onSubmit={handleAdicionarMeta} className="form-adicionar-moderno">
@@ -252,13 +216,16 @@ export default function MinhasMetas() {
             </div>
           </div>
 
-          <div className="progresso-geral-container">
-            <div className="progresso-geral-header">
-              <span className="progresso-geral-title">Progresso Geral</span>
-              <span className="progresso-geral-porcentagem">{progressoGeral}%</span>
+          {/* =========================================
+              BARRA DE PROGRESSO PREMIUM ANIMADA
+              ========================================= */}
+          <div className="progresso-general-container fade-in-up">
+            <div className="progresso-general-header">
+              <span className="progresso-general-title">Progresso desta Sessão</span>
+              <span className="progresso-general-porcentagem">{progressoMetasUi}%</span>
             </div>
-            <div className="progresso-geral-bg">
-              <div className="progresso-geral-fill" style={{ width: `${progressoGeral}%` }}></div>
+            <div className="progresso-general-bg">
+              <div className="progresso-general-fill" style={{ width: `${progressoMetasUi}%` }}></div>
             </div>
           </div>
 
@@ -308,13 +275,14 @@ export default function MinhasMetas() {
         </section>
       </main>
 
-      {/* Modal de Edição */}
+      {/* =========================================
+          MODAL DE EDIÇÃO DE METAS
+          ========================================= */}
       {metaEmEdicao && (
         <div className="modal-edicao-overlay" onClick={() => setMetaEmEdicao(null)}>
-          <div className="modal-edicao-content glass-panel" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-edicao-content glass-panel fade-in-up" onClick={(e) => e.stopPropagation()}>
             <h2>✏️ Editar Meta</h2>
             <form onSubmit={handleSalvarEdicao} className="form-adicionar-moderno">
-              
               <div className="input-group">
                 <label className="modal-label">Descrição Principal</label>
                 <input
@@ -354,7 +322,6 @@ export default function MinhasMetas() {
 
               <div className="modal-submetas-section">
                 <label className="modal-label">Tópicos / Passos</label>
-                
                 <div className="modal-submetas-lista">
                   {metaEmEdicao.submetas.map(sub => (
                     <div key={sub.id} className="modal-submeta-item">
@@ -404,6 +371,114 @@ export default function MinhasMetas() {
           </div>
         </div>
       )}
+
+      {/* =========================================
+          ESTILOS INJETADOS (BARRA DE PROGRESSO & ANIMAÇÕES)
+          ========================================= */}
+      <style>{`
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up {
+            animation: fadeInUp 0.4s ease-out forwards;
+        }
+
+        /* --- BARRA DE PROGRESSO DA SESSÃO --- */
+        .progresso-general-container {
+          background: #ffffff;
+          border: 1px solid #e2e8f0;
+          border-radius: 16px;
+          padding: 24px;
+          margin-bottom: 30px;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+          transition: all 0.3s ease;
+        }
+        .progresso-general-container:hover {
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
+          border-color: #cbd5e1;
+        }
+        .progresso-general-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 16px;
+        }
+        .progresso-general-title {
+          font-weight: 700;
+          color: #334155;
+          font-size: 1.15rem;
+        }
+        .progresso-general-porcentagem {
+          font-weight: 900;
+          color: #7b2cbf;
+          font-size: 1.4rem;
+        }
+        .progresso-general-bg {
+          width: 100%;
+          height: 14px;
+          background-color: #f1f5f9;
+          border-radius: 99px;
+          overflow: hidden;
+          box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .progresso-general-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #7b2cbf, #9d4edd);
+          border-radius: 99px;
+          transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 0 10px rgba(123, 44, 191, 0.4);
+        }
+
+        /* Melhorias Visuais Extras para os Filtros */
+        .filtros-container {
+          display: flex;
+          gap: 8px;
+          background: #f8fafc;
+          padding: 6px;
+          border-radius: 12px;
+          border: 1px solid #e2e8f0;
+        }
+        .btn-filtro {
+          border: none;
+          background: transparent;
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-weight: 600;
+          color: #64748b;
+          cursor: pointer;
+          transition: all 0.2s ease;
+        }
+        .btn-filtro:hover {
+          color: #334155;
+          background: #f1f5f9;
+        }
+        .btn-filtro.ativo {
+          background: #ffffff;
+          color: #7b2cbf;
+          box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        /* Botão Criar Modernizado */
+        .btn-moderno-primary {
+          background: #7b2cbf;
+          color: white;
+          border: none;
+          padding: 12px 24px;
+          border-radius: 8px;
+          font-weight: bold;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          transition: all 0.2s ease;
+        }
+        .btn-moderno-primary:hover {
+          background: #5a189a;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(123, 44, 191, 0.3);
+        }
+      `}</style>
     </div>
   );
 }
